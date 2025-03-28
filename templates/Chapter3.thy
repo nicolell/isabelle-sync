@@ -1,0 +1,769 @@
+theory Chapter3
+imports "HOL-IMP.BExp"
+        "HOL-IMP.ASM"
+ "HOL-IMP.AExp"
+begin
+text "Short_Theory"
+
+text\<open>
+\section*{Chapter 3}
+
+\exercise
+To show that @{const asimp_const} really folds all subexpressions of the form
+@{term "Plus (N i) (N j)"}, define a function
+\<close>
+
+
+fun optimal :: "aexp \<Rightarrow> bool" where
+"optimal (Plus (N i) (N j)) = False"|
+"optimal (Plus x y) = (if (optimal x) \<and> (optimal y) then True else False) " |
+"optimal (N i) = True" |
+"optimal (V v) = True"
+(* your definition/proof here *)
+
+value "optimal (Plus (N 0) (Plus (N 0 ) (V v)))"
+
+text\<open>
+that checks that its argument does not contain a subexpression of the form
+@{term "Plus (N i) (N j)"}. Then prove that the result of @{const asimp_const}
+is optimal:
+\<close>
+
+lemma "optimal (asimp_const a)"
+  apply (induction a)
+    apply (auto split: aexp.split)
+  done
+(* your definition/proof here *)
+
+text\<open>
+This proof needs the same \<open>split:\<close> directive as the correctness proof of
+@{const asimp_const}. This increases the chance of nontermination
+of the simplifier. Therefore @{const optimal} should be defined purely by
+pattern matching on the left-hand side,
+without \<open>case\<close> expressions on the right-hand side.
+\endexercise
+
+
+\exercise
+In this exercise we verify constant folding for @{typ aexp}
+where we sum up all constants, even if they are not next to each other.
+For example, @{term "Plus (N 1) (Plus (V x) (N 2))"} becomes
+@{term "Plus (V x) (N 3)"}. This goes beyond @{const asimp}.
+Below we follow a particular solution strategy but there are many others.
+
+First, define a function \<open>sumN\<close> that returns the sum of all
+constants in an expression and a function \<open>zeroN\<close> that replaces all
+constants in an expression by zeroes (they will be optimized away later):
+\<close>
+
+fun sumN :: "aexp \<Rightarrow> int" where
+"sumN (N n) = n" |
+"sumN (V v)  = (0::int)" |
+"sumN (Plus x y) = (sumN x) + (sumN y)"
+
+(* your definition/proof here *)
+
+fun zeroN :: "aexp \<Rightarrow> aexp" where
+"zeroN (N n) = (N (0::int))"|
+"zeroN (V v) = (V v)" |
+"zeroN (Plus x y) = Plus (zeroN x) (zeroN y)"
+(* your definition/proof here *)
+
+text\<open>
+Next, define a function \<open>sepN\<close> that produces an arithmetic expression
+that adds the results of @{const sumN} and @{const zeroN}. Prove that
+\<open>sepN\<close> preserves the value of an expression.
+\<close>
+
+definition sepN :: "aexp \<Rightarrow> aexp" where
+"sepN e = Plus (zeroN e) (N (sumN e))" 
+(* your definition/proof here *)
+
+value "aval (N 0) <>"
+
+
+lemma aval_0 [simp]: "aval (zeroN (N x)) s = aval (N 0) s"
+  apply(induction x)
+  apply(auto)
+  done
+
+lemma aval_1 [simp]: "aval (N (sumN (N x))) s = aval (N x) s"
+  apply(induction x)
+  apply(auto)
+  done
+
+
+
+lemma hhh [simp]: "((sumN (N x))::int) + ((aval (zeroN (N x)) s)::int) = (x::int)"
+  apply (induction x arbitrary: s)
+   apply(auto)
+  done
+
+lemma hhh2 [simp]: "aval (Plus (N x) (zeroN (N x))) s = x"
+  apply(induction x)
+  apply(auto)
+  done
+
+lemma aval_plus0 [simp]: "aval (Plus (N (0::int)) (N (x::int))) s = (x::int)"
+  apply(induction x arbitrary: s)
+    apply(auto)
+  done
+
+term "aval (N 0) <> "
+term "aval (sepN (N 0)) <>"
+
+lemma hg : "aval (Plus (N (0::int)) (N (x::int))) s =  x"
+  apply(induction x)
+  apply(auto)
+  done
+
+lemma hg2 :  "aval (Plus (N (0::int)) (N (x::int))) s =  sumN (N x)"
+apply(induction x)
+apply(auto)
+  done
+
+lemma hg3 [simp]:  "aval (Plus (N (0::int)) (N ( sumN (N x)))) s =  (x::int)"
+apply(induction x)
+apply(auto)
+  done
+
+lemma hg4 [simp] : "aval (Plus (zeroN (N x)) (N ( sumN (N x)))) s =  (x::int)"
+  apply (induction x)
+  apply(auto)
+  done
+
+lemma sepN0 [simp] : "aval (sepN (N 0)) s = (0::int)"
+  unfolding sepN_def
+  apply(auto)
+  done
+
+lemma hg5 [simp] :   "aval (sepN (N (int x))) s = (int x)"
+  apply (induction x)
+  unfolding sepN_def
+  apply(auto)
+  done
+
+lemma sepN_add [simp]: "aval (zeroN t) s + (sumN t) = aval t s"
+  apply(induction t)
+  apply(auto)
+  done
+
+lemma aval_sepN: "aval (sepN t) s = aval t s"
+  apply(induction t arbitrary: s)
+  unfolding sepN_def
+  unfolding sepN_add
+  apply(simp_all add: algebra_simps)
+  done
+(* your definition/proof here *)
+
+text\<open>
+Finally, define a function \<open>full_asimp\<close> that uses @{const asimp}
+to eliminate the zeroes left over by @{const sepN}.
+Prove that it preserves the value of an arithmetic expression.
+\<close>
+
+definition full_asimp :: "aexp \<Rightarrow> aexp" where
+"full_asimp t = asimp (sepN t)"
+(* your definition/proof here *)
+
+lemma aval_full_asimp: "aval (full_asimp t) s = aval t s"
+  apply(induction t)
+  unfolding full_asimp_def sepN_def
+    apply(simp_all add: algebra_simps)
+  done
+(* your definition/proof here *)
+
+
+
+text\<open>
+\endexercise
+
+
+\exercise\label{exe:subst}
+Substitution is the process of replacing a variable
+by an expression in an expression. Define a substitution function
+\<close>
+
+fun subst :: "vname \<Rightarrow> aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
+(* your definition/proof here *)
+  "subst v r (V w) = (if v = w then r else V w)"
+| "subst _ _ (N n) = N n"
+| "subst v r (Plus e1 e2) = Plus (subst v r e1) (subst v r e2)"
+
+text\<open>
+such that @{term "subst x a e"} is the result of replacing
+every occurrence of variable \<open>x\<close> by \<open>a\<close> in \<open>e\<close>.
+For example:
+@{lemma[display] "subst ''x'' (N 3) (Plus (V ''x'') (V ''y'')) = Plus (N 3) (V ''y'')" by simp}
+
+Prove the so-called \concept{substitution lemma} that says that we can either
+substitute first and evaluate afterwards or evaluate with an updated state:
+\<close>
+
+lemma subst_lemma: "aval (subst x a e) s = aval e (s(x := aval a s))"
+(* your definition/proof here *)
+  apply(induction e)
+    apply(auto)
+  done
+
+text\<open>
+As a consequence prove that we can substitute equal expressions by equal expressions
+and obtain the same result under evaluation:
+\<close>
+lemma "aval a1 s = aval a2 s
+  \<Longrightarrow> aval (subst x a1 e) s = aval (subst x a2 e) s"
+(* your definition/proof here *)
+apply(induction a1 arbitrary: a2 s)
+  apply(simp_all add: subst_lemma)
+  done
+
+text\<open>
+\endexercise
+
+\exercise
+Take a copy of theory  and modify it as follows.
+Extend type @{typ aexp} with a binary constructor \<open>Times\<close> that
+represents multiplication. Modify the definition of the functions @{const aval}
+and @{const asimp} accordingly. You can remove @{const asimp_const}.
+Function @{const asimp} should eliminate 0 and 1 from multiplications
+as well as evaluate constant subterms. Update all proofs concerned.
+\<close>
+
+typ aexp
+datatype aexp' = N' int | V' vname | Plus' aexp' aexp' | Times' aexp' aexp'
+
+
+fun aval' :: "aexp' \<Rightarrow> state \<Rightarrow> val" where
+"aval' (N' x) s = x" |
+"aval' (V' x) s = s x" |
+"aval' (Times' x y) s = (aval' x s) * (aval' y s)" |
+"aval' (Plus' x y) s = aval' x s + aval' y s"
+
+fun times :: "aexp' \<Rightarrow> aexp' \<Rightarrow> aexp'" where
+"times (N' n) (N' m) = N' (n * m)" |
+"times (N' n) x  = (if n = 0 then (N' 0) else (if n = 1 then x else Times' (N' n) x))" |
+"times x (N' n) = (if n = 0 then (N' 0) else (if n = 1 then x else Times' (N' n) x))" |
+"times x y = Times' x y"
+
+fun plus :: "aexp' \<Rightarrow> aexp' \<Rightarrow> aexp'" where
+"plus (N' n) (N' m) = N' (n + m)" |
+"plus (N' n) x  = (if n = 0 then x else Plus' (N' n) x)" |
+"plus x (N' n) = (if n = 0 then x else Plus' (N' n) x)" |
+"plus x y = Plus' x y"
+
+fun asimp' :: "aexp' \<Rightarrow> aexp'" where
+"asimp' (N' n) = (N' n)" |
+"asimp' (V' v) = (V' v)" |
+"asimp' (Times' x y) = times (asimp' x) (asimp' y)" |
+"asimp' (Plus' x y) = plus (asimp' x) (asimp' y)"
+
+value "asimp' (Plus' (V' []) (V' []))"
+
+lemma aval'_plus [simp]: "aval' (plus t1 t2) s = aval' t1 s + aval' t2 s"
+  apply(induction t1 rule: plus.induct)
+     apply(auto)
+  done
+
+lemma aval'_times [simp]: "aval' (times t1 t2) s = aval' t1 s * aval' t2 s"
+  apply(induction t1 rule: times.induct)
+     apply(auto)
+  done
+
+lemma aval'_asimp: "aval' (asimp' t) s = aval' t s"
+  apply(induction t)
+     apply(auto)
+  done
+
+
+text
+\<open>
+\endexercise
+
+\exercise
+Define a datatype \<open>aexp2\<close> of extended arithmetic expressions that has,
+in addition to the constructors of @{typ aexp}, a constructor for
+modelling a C-like post-increment operation $x{++}$, where $x$ must be a
+variable. Define an evaluation function \<open>aval2 :: aexp2 \<Rightarrow> state \<Rightarrow> val \<times> state\<close>
+that returns both the value of the expression and the new state.
+The latter is required because post-increment changes the state.
+
+Extend \<open>aexp2\<close> and \<open>aval2\<close> with a division operation. Model partiality of
+division by changing the return type of \<open>aval2\<close> to
+@{typ "(val \<times> state) option"}. In case of division by 0 let \<open>aval2\<close>
+return @{const None}. Division on @{typ int} is the infix \<open>div\<close>.
+\<close>
+
+text\<open>
+\endexercise
+
+\exercise
+The following type adds a \<open>LET\<close> construct to arithmetic expressions:
+\<close>
+
+datatype lexp = Nl int | Vl vname | Plusl lexp lexp | LET vname lexp lexp
+
+fun lval :: "lexp \<Rightarrow> state \<Rightarrow> int" where
+"lval (Nl x) s = x" |
+"lval (Vl v) s = s v" |
+"lval (Plusl e1 e2) s = (lval e1 s) + (lval e2 s)" |
+"lval (LET x e1 e2) s = lval e2 (s(x := (lval e1 s)))"
+
+fun inline :: "lexp \<Rightarrow> aexp" where
+"inline (Nl x) = N x" |
+"inline (Vl v ) = V v"|
+"inline (Plusl e1 e2) = Plus (inline e1) (inline e2)" |
+"inline (LET x e1 e2) = subst x (inline e1) (inline e2)"
+
+
+lemma lval_aval : "lval e s = aval (inline e) s"
+  apply(induction e arbitrary: s)
+  apply(simp_all add: subst_lemma)
+  done
+
+text\<open>The @{const LET} constructor introduces a local variable:
+the value of @{term "LET x e\<^sub>1 e\<^sub>2"} is the value of \<open>e\<^sub>2\<close>
+in the state where \<open>x\<close> is bound to the value of \<open>e\<^sub>1\<close> in the original state.
+Define a function @{const lval} \<open>::\<close> @{typ "lexp \<Rightarrow> state \<Rightarrow> int"}
+that evaluates @{typ lexp} expressions. Remember @{term"s(x := i)"}.
+
+
+Define a conversion @{const inline} \<open>::\<close> @{typ "lexp \<Rightarrow> aexp"}.
+The expression \mbox{@{term "LET x e\<^sub>1 e\<^sub>2"}} is inlined by substituting
+the converted form of \<open>e\<^sub>1\<close> for \<open>x\<close> in the converted form of \<open>e\<^sub>2\<close>.
+See Exercise~\ref{exe:subst} for more on substitution.
+Prove that @{const inline} is correct w.r.t.\ evaluation.
+\endexercise
+
+
+
+
+
+
+\exercise
+Show that equality and less-or-equal tests on \<open>aexp\<close> are definable
+\<close>
+
+definition Le :: "aexp \<Rightarrow> aexp \<Rightarrow> bexp" where
+"Le a b = Not  (Less b a)"
+(* your definition/proof here *)
+
+value "Le (N 2) (N 3)"
+
+definition Eq :: "aexp \<Rightarrow> aexp \<Rightarrow> bexp" where
+"Eq a b = And (Le a b) (Le b a)"
+(* your definition/proof here *)
+
+text\<open>
+and prove that they do what they are supposed to:
+\<close>
+
+lemma bval_Le: "bval (Le a1 a2) s = (aval a1 s \<le> aval a2 s)"
+  apply(induction a1)
+  unfolding Le_def
+  apply(auto)
+  done
+(* your definition/proof here *)
+
+lemma bval_Eq: "bval (Eq a1 a2) s = (aval a1 s = aval a2 s)"
+(* your definition/proof here *)
+  apply(induction a1)
+  unfolding Eq_def Le_def
+  apply(auto)
+  done
+
+text\<open>
+\endexercise
+
+\exercise
+Consider an alternative type of boolean expressions featuring a conditional:\<close>
+
+datatype ifexp = Bc2 bool | If ifexp ifexp ifexp | Less2 aexp aexp
+
+text\<open>First define an evaluation function analogously to @{const bval}:\<close>
+
+fun ifval :: "ifexp \<Rightarrow> state \<Rightarrow> bool" where
+"ifval (Bc2 b) s = b" |
+"ifval (If i t e) s = (if ifval i s then ifval t s else ifval e s)"|
+"ifval (Less2 a b) s = bval (Less a b) s" 
+
+(* your definition/proof here *)
+
+text\<open>Then define two translation functions\<close>
+
+fun b2ifexp :: "bexp \<Rightarrow> ifexp" where
+"b2ifexp (Bc b) = Bc2 b"|
+"b2ifexp (Not b) = If (b2ifexp b) (Bc2 False) (Bc2 True)" |
+"b2ifexp (And a b) = If (b2ifexp a) (b2ifexp b) (Bc2 False)" |
+"b2ifexp (Less a b) = Less2 a b"
+
+value "ifval (b2ifexp (Not (Bc True))) <>"
+
+(* your definition/proof here *)
+text "if a then b else c == (a and b) or (not a and c)"
+text "using x or y = not ( (not x) and (not y))"
+text "\<Longrightarrow> Not ()"
+
+fun if2bexp :: "ifexp \<Rightarrow> bexp" where
+"if2bexp (Bc2 b) = Bc b" |
+"if2bexp (If a b c) = Not (And  (Not (And (if2bexp a) (if2bexp b)))  (Not (And (Not (if2bexp a) ) (if2bexp c))))" |
+"if2bexp (Less2 a b) = Less a b"
+(* your definition/proof here *)
+
+value "ifval (If (Bc2 True) (Bc2 False) (Bc2 True)) <>"
+value "bval (if2bexp (If (Bc2 True) (Bc2 False) (Bc2 True)) ) <>"
+
+text\<open>and prove their correctness:\<close>
+
+lemma "bval (if2bexp exp) s = ifval exp s"
+  apply(induction exp)
+  apply(auto)
+  done
+(* your definition/proof here *)
+
+lemma "ifval (b2ifexp exp) s = bval exp s"
+  apply(induction exp)
+  apply(auto)
+  done
+(* your definition/proof here *)
+
+text\<open>
+\endexercise
+
+\exercise
+We define a new type of purely boolean expressions without any arithmetic
+\<close>
+
+datatype pbexp =
+  VAR vname | NOT pbexp | AND pbexp pbexp | OR pbexp pbexp
+
+text\<open>
+where variables range over values of type @{typ bool},
+as can be seen from the evaluation function:
+\<close>
+
+fun pbval :: "pbexp \<Rightarrow> (vname \<Rightarrow> bool) \<Rightarrow> bool" where
+"pbval (VAR x) s = s x"  |
+"pbval (NOT b) s = (\<not> pbval b s)" |
+"pbval (AND b1 b2) s = (pbval b1 s \<and> pbval b2 s)" |
+"pbval (OR b1 b2) s = (pbval b1 s \<or> pbval b2 s)"
+
+text\<open>Define a function that checks whether a boolean exression is in NNF
+(negation normal form), i.e., if @{const NOT} is only applied directly
+to @{const VAR}s:\<close>
+
+fun is_nnf :: "pbexp \<Rightarrow> bool" where
+"is_nnf (NOT (VAR _)) = True" |
+"is_nnf (VAR _) = True" |
+"is_nnf (AND e1 e2) = ((is_nnf e1) \<and> (is_nnf e2))" |
+"is_nnf (OR e1 e2) = ((is_nnf e1) \<and> (is_nnf e2))" |
+"is_nnf _ = False"
+(* your definition/proof here *)
+
+text\<open>
+Now define a function that converts a \<open>bexp\<close> into NNF by pushing
+@{const NOT} inwards as much as possible:
+\<close>
+
+fun nnf :: "pbexp \<Rightarrow> pbexp" where
+"nnf (VAR v) = VAR v" |
+"nnf (NOT (VAR v)) = (NOT (VAR v))" |
+"nnf (NOT (AND a b)) = OR (nnf (NOT a)) (nnf (NOT b))" |
+"nnf (NOT (OR a b)) = AND (nnf (NOT a)) (nnf (NOT b))" |
+"nnf (AND a b) = AND (nnf a) (nnf b)" |
+"nnf (OR a b) = OR (nnf a) (nnf b)" |
+"nnf (NOT (NOT x)) = nnf x"
+(* your definition/proof here *)
+
+text\<open>
+Prove that @{const nnf} does what it is supposed to do:
+\<close>
+
+lemma pbval_nnf: "pbval (nnf b) s = pbval b s"
+  apply(induction b rule: nnf.induct)
+  apply(auto)
+  done
+(* your definition/proof here *)
+
+lemma is_nnf_nnf: "is_nnf (nnf b)"
+  apply(induction b rule: nnf.induct)
+  apply(auto)
+  done
+(* your definition/proof here *)
+
+text\<open>
+An expression is in DNF (disjunctive normal form) if it is in NNF
+and if no @{const OR} occurs below an @{const AND}. Define a corresponding
+test:
+\<close>
+
+fun is_dnf :: "pbexp \<Rightarrow> bool" where
+"is_dnf (VAR v) = True" |
+"is_dnf (NOT (VAR v)) = True" |
+
+"is_dnf (AND x y) = (is_dnf x \<and> is_dnf y \<and> is_nnf (AND x y))" |
+"is_dnf (OR x y) =  (is_dnf x \<and> is_dnf y \<and> is_nnf (OR x y))" |
+"is_dnf (NOT x) = False"
+(* your definition/proof here *)
+
+text\<open>
+An NNF can be converted into a DNF in a bottom-up manner.
+The critical case is the conversion of @{term (sub) "AND b1 b2"}.
+Having converted \<open>b\<^sub>1\<close> and \<open>b\<^sub>2\<close>, apply distributivity of @{const AND}
+over @{const OR}. If we write @{const OR} as a multi-argument function,
+we can express the distributivity step as follows:
+\<open>dist_AND (OR a\<^sub>1 ... a\<^sub>n) (OR b\<^sub>1 ... b\<^sub>m)\<close>
+= \<open>OR (AND a\<^sub>1 b\<^sub>1) (AND a\<^sub>1 b\<^sub>2) ... (AND a\<^sub>n b\<^sub>m)\<close>. Define
+\<close>
+
+fun dist_AND :: "pbexp \<Rightarrow> pbexp \<Rightarrow> pbexp" where
+"dist_AND (OR a1 a2) x = OR (dist_AND a1 x) (dist_AND a2 x)" |
+"dist_AND x (OR a1 a2) = OR (dist_AND x a1) (dist_AND x a2)" |
+"dist_AND x y = AND x y"
+(* your definition/proof here *)
+
+text\<open>and prove that it behaves as follows:\<close>
+
+
+
+value "pbval (dist_AND (VAR x) b2) s"
+value "pbval (AND (VAR x) b2) s"
+
+lemma pbval_dist: "pbval (dist_AND b1 b2) s = pbval (AND b1 b2) s"
+  apply(induction b1 b2 rule: dist_AND.induct)
+  apply(auto)
+  done
+(* your definition/proof here *)
+
+lemma is_dnf_nnf: "is_dnf e \<Longrightarrow> is_nnf e"
+  apply(induction e rule: is_dnf.induct)
+  apply(auto)
+  done
+
+
+
+lemma is_dnf_dist: "is_dnf b1 \<Longrightarrow> is_dnf b2 \<Longrightarrow> is_dnf (dist_AND b1 b2)"
+  apply(induction b1 b2 rule: dist_AND.induct)
+  apply(simp_all add: pbval_dist is_dnf_nnf)
+  done
+(* your definition/proof here *)
+
+text\<open>Use @{const dist_AND} to write a function that converts an NNF
+  to a DNF in the above bottom-up manner.
+\<close>
+
+fun dnf_of_nnf :: "pbexp \<Rightarrow> pbexp" where
+(* your definition/proof here *)
+"dnf_of_nnf (VAR v) = (VAR v)" |
+"dnf_of_nnf (NOT v) = (NOT v)" |
+"dnf_of_nnf (AND v va) = (dist_AND (dnf_of_nnf v) (dnf_of_nnf va))" |
+"dnf_of_nnf (OR v va) = OR (dnf_of_nnf v) (dnf_of_nnf va)"
+
+text\<open>Prove the correctness of your function:\<close>
+
+lemma  "pbval (dnf_of_nnf b) s = pbval b s"
+  apply(induction b)
+  apply(simp_all add: pbval_dist)
+  done
+(* your definition/proof here *)
+
+lemma not_not : "pbval e s = pbval (NOT (NOT e)) s"
+  apply(induction e)
+  apply(auto)
+  done
+
+lemma "is_nnf b \<Longrightarrow> is_dnf (dnf_of_nnf b)"
+  apply(induction b rule: is_nnf.induct)
+  apply(simp_all add: pbval_dist is_dnf_dist is_dnf_nnf not_not)
+  done
+(* your definition/proof here *)
+
+text\<open>
+\endexercise
+
+
+\exercise\label{exe:stack-underflow}
+A \concept{stack underflow} occurs when executing an \<open>ADD\<close>
+instruction on a stack of size less than 2. In our semantics
+a term @{term "exec1 ADD s stk"} where @{prop "length stk < 2"}
+is simply some unspecified value, not an error or exception --- HOL does not have those concepts.
+Modify theory asm
+such that stack underflow is modelled by @{const None}
+and normal execution by \<open>Some\<close>, i.e., the execution functions
+have return type @{typ "stack option"}. Modify all theorems and proofs
+accordingly.
+Hint: you may find \<open>split: option.split\<close> useful in your proofs.
+\<close>
+fun exec1' :: "instr \<Rightarrow> state \<Rightarrow> stack  \<Rightarrow> stack option" where
+"exec1' (LOADI n) _ stk = Some (n # stk)" |
+"exec1' (LOAD x) s stk = Some (s(x) # stk)" |
+"exec1' ADD _ (j # i # stk) = Some ((i + j) # stk)" |
+"exec1' _ _ _ = None"
+
+fun exec' :: "instr list \<Rightarrow> state \<Rightarrow> stack  \<Rightarrow> stack option" where
+"exec' [] _ stk = Some stk" |
+"exec' (i#is) s stk = (case exec1' i s stk of None \<Rightarrow> None | Some stk' \<Rightarrow> exec' is s stk')" 
+
+
+lemma exec'_app [simp] :"(exec' is1 s stk) = (Some stk2) \<Longrightarrow> exec' (is1 @ is2) s stk = exec' is2 s stk2"
+  apply(induction is1 arbitrary: stk)
+  apply(auto split: option.split)
+  done
+
+lemma exec'_app2 [simp] :"(exec' is1 s stk) = None \<Longrightarrow> exec' (is1 @ is2) s stk = None"
+  apply(induction is1 arbitrary: stk)
+  apply(auto split: option.split)
+  done
+
+
+lemma "exec' (comp a) s stk = Some(aval a s # stk)"
+  apply(induction a arbitrary: stk)
+  apply(auto split: option.split)
+  done
+
+text\<open>
+\endexercise
+
+\exercise\label{exe:register-machine}
+This exercise is about a register machine
+and compiler for @{typ aexp}. The machine instructions are
+\<close>
+type_synonym reg = nat
+datatype instr = LDI val reg | LD vname reg | ADD reg reg
+
+text\<open>
+where type \<open>reg\<close> is a synonym for @{typ nat}.
+Instruction @{term "LDI i r"} loads \<open>i\<close> into register \<open>r\<close>,
+@{term "LD x r"} loads the value of \<open>x\<close> into register \<open>r\<close>,
+and @{term[names_short] "ADD r\<^sub>1 r\<^sub>2"} adds register \<open>r\<^sub>2\<close> to register \<open>r\<^sub>1\<close>.
+
+Define the execution of an instruction given a state and a register state;
+the result is the new register state:\<close>
+
+type_synonym rstate = "reg \<Rightarrow> val"
+
+fun exec1 :: "instr \<Rightarrow> state \<Rightarrow> rstate \<Rightarrow> rstate" where
+"exec1 (LDI i r) s rs = rs(r := i)" |
+"exec1 (LD x r) s rs = rs(r := s x)" |
+"exec1 (ADD r1 r2) s rs = rs(r1 := (rs r1) + (rs r2))"
+(* your definition/proof here *)
+
+text\<open>
+Define the execution @{const[source] exec} of a list of instructions as for the stack machine.
+
+The compiler takes an arithmetic expression \<open>a\<close> and a register \<open>r\<close>
+and produces a list of instructions whose execution places the value of \<open>a\<close>
+into \<open>r\<close>. The registers \<open>> r\<close> should be used in a stack-like fashion
+for intermediate results, the ones \<open>< r\<close> should be left alone.
+Define the compiler and prove it correct:
+\<close>
+fun exec :: "instr list \<Rightarrow> state \<Rightarrow> rstate \<Rightarrow> rstate" where
+"exec [] s rs = rs" |
+"exec (i # is) s rs = exec is s (exec1 i s rs)"
+
+fun comp :: "aexp \<Rightarrow> reg \<Rightarrow> instr list" where
+  "comp (N i) r = [LDI i r]" |
+  "comp (V x) r = [LD x r]" |
+  "comp (Plus a1 a2) r = (comp a1 r) @ (comp a2 (Suc r)) @ [ADD r (Suc r)]"
+
+value "comp (Plus (N 0) (N 0)) 1"
+value "exec (comp (Plus (N 0) (N 0)) 1) s (\<lambda>x. 1)"
+
+lemma reg_app [simp]: "exec (is1 @ is2) s rs r = exec is2 s (exec is1 s rs) r"
+  apply(induction is1 arbitrary: is2 rs s r)
+   apply(auto)
+  done
+
+lemma comp_reg [simp] : "r' <= r \<Longrightarrow> exec (comp a r) s rs r' = rs r'"
+  apply(induction a arbitrary: rs r)
+    apply(auto)
+  done
+text "this shows: comp of a register doesn't impact any other register"
+
+
+theorem comp_correct [simp]: "exec (comp a r) s rs r = aval a s"
+  apply(induction a arbitrary: r rs)
+  apply(auto)
+  done 
+(* your definition/proof here *)
+
+text\<open>
+\endexercise
+
+\exercise\label{exe:accumulator}
+This exercise is a variation of the previous one
+with a different instruction set:
+\<close>
+
+datatype instr0 = LDI0 val | LD0 vname | MV0 reg | ADD0 reg
+
+text\<open>
+All instructions refer implicitly to register 0 as a source or target:
+@{const LDI0} and @{const LD0} load a value into register 0, @{term "MV0 r"}
+copies the value in register 0 into register \<open>r\<close>, and @{term "ADD0 r"}
+adds the value in register \<open>r\<close> to the value in register 0;
+@{term "MV0 0"} and @{term "ADD0 0"} are legal. Define the execution functions
+\<close>
+
+fun exec01 :: "instr0 \<Rightarrow> state \<Rightarrow> rstate \<Rightarrow> rstate" where
+(* your definition/proof here *)
+"exec01 (LDI0 i) s rs = rs(0 := i)" |
+"exec01 (LD0 x) s rs = rs(0 := s x)" |
+"exec01 (ADD0 r) s rs = rs(0 := (rs 0) + (rs r))" |
+"exec01 (MV0 r) s rs = rs(r := (rs 0))"
+
+fun exec0 :: "instr0 list \<Rightarrow> state \<Rightarrow> rstate \<Rightarrow> rstate" where
+"exec0 [] s rs = rs" |
+"exec0 (i # is) s rs = exec0 is s (exec01 i s rs)"
+
+text\<open>
+and @{const exec0} for instruction lists.
+
+The compiler takes an arithmetic expression \<open>a\<close> and a register \<open>r\<close>
+and produces a list of instructions whose execution places the value of \<open>a\<close>
+into register 0. The registers \<open>> r\<close> should be used in a stack-like fashion
+for intermediate results, the ones \<open>\<le> r\<close> should be left alone
+(with the exception of 0). Define the compiler and prove it correct:
+\<close>
+
+fun comp0 :: "aexp \<Rightarrow> reg \<Rightarrow> instr0 list" where
+  "comp0 (N i) r = [LDI0 i]" |
+  "comp0 (V x) r = [LD0 x]" |
+  "comp0 (Plus a1 a2) r = (comp0 a1 r) @ [MV0 (Suc r)] @ (comp0 a2 (Suc r))  @ [ADD0 (Suc r)]"
+
+value "exec0 (comp0 ( (N (-1))) 0) (\<lambda>x. - 3) (\<lambda>x. - 3) 0"
+
+value "exec0 (comp0 (Plus (N 0) (N (-1))) 1) (\<lambda>x. - 3) (\<lambda>x. - 3) 0"
+value "exec0 (comp0 (Plus (N (-1)) (N (0))) 1) (\<lambda>x. - 3) (\<lambda>x. - 3) 0"
+
+lemma reg_app0 [simp]: "exec0 (is1 @ is2) s rs  = exec0 is2 s (exec0 is1 s rs) "
+  apply(induction is1 arbitrary: is2 rs s )
+   apply(auto)
+  done
+
+text " other register states aren't influenced"
+lemma comp_reg0 [simp] : "\<lbrakk>r' \<le> r; r' \<noteq> 0\<rbrakk> \<Longrightarrow> exec0 (comp0 a r) s rs r' = rs r'"
+  apply(induction a arbitrary: rs r)
+    apply(auto)
+  done
+
+text "to show: we can use comp0 to compile into 0 but if we add MV0
+ we can place the result into any register like the originalcomp can"
+lemma comp0_comp_eq : "exec0 (comp0 a r) s rs 0 = exec0 ((comp0 a r) @ [MV0 r]) s rs r"
+  apply(induction a arbitrary: r)
+    apply(auto)
+  done
+
+
+theorem "exec0 (comp0 a r) s rs 0 = aval a s"
+  apply(induction a arbitrary: r rs s)
+  apply(auto)
+  done
+
+(* your definition/proof here *)
+
+text\<open>
+\endexercise
+\<close>
+
+end
+
