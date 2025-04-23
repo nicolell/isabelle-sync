@@ -182,13 +182,8 @@ next
     then show ?thesis using Cons.prems by fastforce
   next
     case False
-    then have "x \<noteq> a" by blast
     then have "x \<in> elems xs" using Cons.prems by simp
     then obtain ys zs where "xs = ys @ x # zs" "x \<notin> elems ys" using Cons.IH by blast
-    then have "\<exists> ysa. ysa = a # ys" using Cons.IH by blast
-    then obtain ysa where "ysa = a # ys" by blast
-    then have "x \<notin> elems ysa" by (simp add: \<open>x \<notin> elems ys\<close> \<open>x \<noteq> a\<close>)
-    then have "a # xs = ysa @ x # zs" "x \<notin> elems ysa" by (simp_all add: \<open>xs = ys @ x # zs\<close> \<open>ysa = a # ys\<close>)
     then show ?thesis by auto
   qed
 qed
@@ -201,70 +196,17 @@ text\<open>
 \endexercise
 
 \exercise
-
 Extend Exercise~\ref{exe:cfg} with a function that checks if some
 \mbox{@{text "alpha list"}} is a balanced
 string of parentheses. More precisely, define a recursive function \<close>
 (* your definition/proof here *)
-datatype alpha = a | b
-inductive S :: "alpha list \<Rightarrow> bool" where
-S_emp : "S []" |
-S_app : "S xs \<Longrightarrow> S ys \<Longrightarrow> S (xs @ ys)" |
-S_gen : "S xs \<Longrightarrow> S (a # xs @ [b])"
-
-declare S.intros [simp, intro]
-
-text " balanced n w <=> S (a^n @ w) ===> this means w is either b^n or a^mb^(n+m) (otherwise false)"
 fun balanced :: "nat \<Rightarrow> alpha list \<Rightarrow> bool" where
-"balanced 0 xs = S xs" |
-"balanced n [] = False" |
-"balanced (Suc n) xs = (if last xs = b then balanced n (butlast xs) else False)" 
-
-
-value "take 2 [a,a,b,b]"
-value "drop 2 [a,a,b,b, b]"
-value "butlast [a,a,a,a,b]"
-value "replicate 2 a"
-
 (* your definition/proof here *)
 
 text\<open> such that @{term"balanced n w"}
 is true iff (informally) @{text"a\<^sup>n @ w \<in> S"}. Formally, prove \<close>
 
-lemma "S w \<Longrightarrow> balanced 0 w"
-  apply (induction w rule: S.induct)
-  apply(auto)
-  done
-
-lemma "balanced 0 w \<Longrightarrow> S w"
-  by auto
-
-corollary "balanced n w \<longleftrightarrow> S (replicate n a @ w)" (is "?L \<longleftrightarrow> ?R")
-proof - 
-  show "?L \<longleftrightarrow> ?R"
-  proof
-  assume ?L
-  show ?R
-  proof (induction rule: balanced.induct)
-    case (1 xs)
-    then show ?case using "1.prems" balanced.cases by sledgehammer
-  next
-    case (2 v)
-    then show ?case sorry
-  next
-    case (3 n v va)
-    then show ?case sorry
-  qed
-    
-
-next
-  assume ?R
-  show ?L
-  proof (induction rule: S.induct)
-  qed
-  
-qed
-qed
+corollary "balanced n w \<longleftrightarrow> S (replicate n a @ w)"
 
 
 text\<open> where @{const replicate} @{text"::"} @{typ"nat \<Rightarrow> 'a \<Rightarrow> 'a list"} is predefined

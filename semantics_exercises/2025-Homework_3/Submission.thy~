@@ -1,0 +1,85 @@
+theory Submission
+  imports Defs
+begin
+
+lemma count_app [simp] : "count (xs @ ys) x = count xs x + count ys x"
+  apply(induction xs arbitrary: x ys)
+   apply(auto)
+  done
+
+theorem S_count : "S xs \<Longrightarrow> count xs Open = count xs Close"
+  apply(induction xs rule: S.induct)
+    apply(auto)
+  done
+
+inductive T :: "paren list \<Rightarrow> bool" where
+T_empty: "T []" |
+T_append: "T xs \<Longrightarrow> T ys \<Longrightarrow> T (xs @ ys)" |
+T_paren: "T xs \<Longrightarrow> T (Open # xs @ [Close])" |
+T_open_paren: "T xs \<Longrightarrow> T (Open # xs)"
+
+declare T.intros [intro, simp]
+lemma example: "T [Open, Open]"
+  apply(rule T_open_paren)
+  apply(rule T_open_paren)
+  apply(rule T_empty)
+  done
+
+theorem S_T: "S xs \<Longrightarrow> T xs"
+  apply(induction xs rule: S.induct)
+  apply(auto)
+  done
+
+lemma T_count: "T xs \<Longrightarrow> count xs Open \<ge> count xs Close"
+  apply(induction xs rule: T.induct)
+     apply(simp_all add: S.intros T.intros S_count)
+  done
+
+declare S.intros [intro, simp]
+
+lemma lem1 : "T [] = S []"
+  apply(induction)
+   apply(simp_all add: T_empty)
+  done
+
+lemma lem2 : "\<lbrakk>T xs; Suc (count xs Open) = count xs Close \<rbrakk> \<Longrightarrow> T (Open # xs)"
+  apply(induction xs rule: T.induct)
+  apply(auto)
+  done
+
+value "S (Open # xs)"
+
+lemma lemmi : "T [] \<Longrightarrow> count [] Open = count [] Close "
+  apply(simp_all add: S_count)
+  done
+
+theorem T_S: "T xs \<Longrightarrow> count xs Open = count xs Close \<Longrightarrow> S xs"
+  apply(induction xs rule: T.induct)
+     apply(simp_all add: T.intros S.intros S_T S_count T_count arith)
+  sorry
+
+fun op_val :: "op \<Rightarrow> mstate \<Rightarrow> int"  where
+  "op_val (REG r) \<sigma>  = \<sigma> (Reg r)" |
+  "op_val (VAL v) \<sigma> = v"
+
+fun exec1 :: "instr \<Rightarrow> mstate \<Rightarrow> mstate"  where
+  "exec1 (LD r v) \<sigma> = \<sigma>((Reg r):= \<sigma>(Var v))" |
+"exec1 (ADD r a b) \<sigma> = \<sigma>(r:= (op_val a + op_val b))"
+
+fun exec :: "instr list \<Rightarrow> mstate \<Rightarrow> mstate"  where
+  "exec ((LD r v) # xs) rs = exec xs (exec1 (LD r v))" |
+  "exec ((ADD r a b) # xs) rs = exec xs (exec1 (ADD r a b))"
+
+fun cmp :: "aexp \<Rightarrow> reg \<Rightarrow> instr list"  where
+  "cmp (N n) r = [LD r ()]"
+
+theorem cmp_len: "\<not>is_N a \<Longrightarrow> num_add (cmp a r) \<le> num_plus a"
+  sorry
+
+lemma reg_var[simp]: "s (Reg r := x) o Var = s o Var"
+  by auto
+
+theorem cmp_correct: "exec (cmp a r) \<sigma> (Reg r) = aval a (\<sigma> o Var)"
+  sorry
+
+end

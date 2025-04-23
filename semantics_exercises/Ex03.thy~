@@ -1,0 +1,36 @@
+theory Ex03
+  imports "HOL-IMP.ASM"
+begin
+
+inductive star :: "('a \<Rightarrow> 'a \<Rightarrow> bool) \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" for r 
+
+lemma star_prepend: "\<lbrakk>r x y; star r y z\<rbrakk> \<Longrightarrow> star r x z"
+  sorry
+
+lemma star_append: "\<lbrakk> star r x y; r y z \<rbrakk> \<Longrightarrow> star r x z"
+  sorry
+
+inductive star' :: "('a \<Rightarrow> 'a \<Rightarrow> bool) \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" for r 
+
+lemma "star r x y = star' r x y"
+  sorry
+
+fun exec1 :: "instr \<Rightarrow> state \<Rightarrow> stack \<Rightarrow> stack option"  where
+  "exec1 _ = undefined"
+
+fun exec :: "instr list \<Rightarrow> state \<Rightarrow> stack \<Rightarrow> stack option"  where
+  "exec _ = undefined"
+
+theorem exec_comp: "exec (comp a) s stk = Some (aval a s # stk)"
+  sorry
+
+lemma 
+    assumes total: "\<forall>x y. T x y \<or> T y x"
+      and anti: "\<forall>x y. A x y \<and> A y x \<longrightarrow> x = y"
+      and subset: "\<forall>x y. T x y \<longrightarrow> A x y"
+  shows "A x y \<longrightarrow> T x y"
+    (* using assms by blast *)
+    sorry
+qed
+
+end

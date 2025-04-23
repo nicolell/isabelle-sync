@@ -205,20 +205,16 @@ lemma T_gen2 [simp]: "S xs \<Longrightarrow> T xs \<Longrightarrow> T (a # xs @ 
 
 value "[] @ [a]"
 
-lemma T_app_Nil [simp]: "T xs \<Longrightarrow> T ( [] @ xs) \<and> T (xs @ [])" by simp
-
-
-lemma T_app [simp]: "T xs \<Longrightarrow> T ys \<Longrightarrow> T (xs @ ys)"
-  sorry
+lemma T_app [simp] : "T (xs @ ys) ==> (T xs  \and)" 
 
 lemma ST: "S w \<Longrightarrow> T w"
   apply(induction rule: S.induct)
   apply(auto)
+    apply(metis T_emp S_app S_gen T_gen TS T_gen2)
   done
 (* your definition/proof here *)
 
 corollary SeqT: "S w \<longleftrightarrow> T w"
-  using TS ST by blast
 (* your definition/proof here *)
 
 text\<open>
@@ -234,27 +230,15 @@ the recursive function:
 \<close>
 
 inductive aval_rel :: "aexp \<Rightarrow> state \<Rightarrow> val \<Rightarrow> bool" where
-aval_N : "aval_rel (N n) _ n" |
-aval_V : "aval_rel (V v) s (s v)" |
-aval_Plus : "\<lbrakk>aval_rel a1 s e1; aval_rel b1 s e2\<rbrakk> \<Longrightarrow> aval_rel (Plus a1 b1) s (e1 + e2)"
 (* your definition/proof here *)
 
-declare aval_rel.intros [simp, intro]
-
-lemma aval_rel_aval: "aval_rel a1 s v \<Longrightarrow> aval a1 s = v"
-(* your definition/proof here *)
-  apply(induction rule: aval_rel.induct)
-  apply(auto)
-  done
-
-lemma aval_aval_rel: "aval a1 s = v \<Longrightarrow> aval_rel a1 s v"
-  apply(induction a1 arbitrary: s v)
-  apply(auto split: aexp.split)
-  done
+lemma aval_rel_aval: "aval_rel a s v \<Longrightarrow> aval a s = v"
 (* your definition/proof here *)
 
-corollary "aval_rel a1 s v \<longleftrightarrow> aval a1 s = v"
-  using aval_rel_aval aval_aval_rel by blast
+lemma aval_aval_rel: "aval a s = v \<Longrightarrow> aval_rel a s v"
+(* your definition/proof here *)
+
+corollary "aval_rel a s v \<longleftrightarrow> aval a s = v"
 (* your definition/proof here *)
 
 text\<open>
@@ -268,11 +252,6 @@ Define an inductive predicate
 \<close>
 
 inductive ok :: "nat \<Rightarrow> instr list \<Rightarrow> nat \<Rightarrow> bool" where
-ok_emp : "ok n [] n" |
-ok_LOADI : "ok n [LOADI x] (Suc n)" |
-ok_LOAD : "ok n [LOAD x] (Suc n)" |
-ok_ADD : "ok (Suc (Suc n)) [ADD] (Suc n)" |
-ok_app : "\<lbrakk>ok m is n'; ok n [i] m\<rbrakk> \<Longrightarrow> ok n (i # is) n'"
 (* your definition/proof here *)
 
 text\<open>
@@ -283,34 +262,19 @@ without stack underflow and that the final stack has length @{text n'}.
 Using the introduction rules for @{const ok},
 prove the following special cases: \<close>
 
-declare ok.intros [simp, intro]
-
-lemma "ok 0 [LOAD x] (Suc 0)" by simp
+lemma "ok 0 [LOAD x] (Suc 0)"
 (* your definition/proof here *)
 
-lemma "ok 0 [LOAD x, LOADI v, ADD] (Suc 0)" 
-  apply(rule ok_app)
-   apply(rule ok_app)
-    apply(rule ok_ADD)
-   apply(rule ok_LOADI)
-  apply(rule ok_LOAD)
-done
+lemma "ok 0 [LOAD x, LOADI v, ADD] (Suc 0)"
 (* your definition/proof here *)
 
-lemma "ok (Suc (Suc 0)) [LOAD x, ADD, ADD, LOAD y] (Suc (Suc 0))" 
-  apply (blast dest:  ok_app) 
-  done
+lemma "ok (Suc (Suc 0)) [LOAD x, ADD, ADD, LOAD y] (Suc (Suc 0))"
 (* your definition/proof here *)
 
 text \<open> Prove that @{text ok} correctly computes the final stack size: \<close>
 
-lemma exex1_len [simp]: "length stk = Suc (Suc n) \<Longrightarrow> length (exec1 ADD s stk) = Suc n"
-  by (smt (verit, best) Suc_length_conv exec1.simps(3))
-
 lemma "\<lbrakk>ok n is n'; length stk = n\<rbrakk> \<Longrightarrow> length (exec is s stk) = n'"
-  apply(induction arbitrary: stk  rule: ok.induct)
-      apply(auto)
-  done
+(* your definition/proof here *)
 
 text \<open>
 Lemma @{thm [source] length_Suc_conv} may come in handy.
@@ -321,17 +285,6 @@ some suitable value of @{text "?"}.
 \endexercise
 \<close>
 
-lemma ok_app_gen [simp]: "\<lbrakk>ok m is2 n'; ok n is1 m\<rbrakk> \<Longrightarrow> ok n (is1 @ is2) n'"
-  apply(induction rule: ok.induct)
-      apply(auto)
-  done
-
-lemma "ok n (comp a1) (Suc n)"
-  apply(induction rule: comp.induct)
-  apply(simp_all add: ok.intros)
-  apply(blast)
-  apply(rule ok_app)
-  done
 
 end
 
