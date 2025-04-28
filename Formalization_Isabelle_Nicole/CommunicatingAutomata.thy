@@ -93,7 +93,7 @@ abbreviation projection_on_peer_pair_language
      ("_\<downharpoonright> _ _" [90, 90, 90] 110) where
   "(L\<downharpoonright> p q) \<equiv> {(w\<down> p q) | w. w \<in> L}"
 
-
+\<comment>\<open>this looks for the pattern !x?y in a given word\<close>
 fun o_i_exists :: " ('information, 'peer) action word \<Rightarrow> bool" where
 "o_i_exists [] = False" |
 "o_i_exists [a] = False" |
@@ -278,6 +278,27 @@ lemma ReceivingFromPeers_is_subset_of_CommunicationPartners:
         ReceivingFromPeersp_ReceivingFromPeers_eq
   by auto
 
+
+\<comment>\<open>this is to show that if p receives from no one, then there is no transition where p is the receiver\<close>
+lemma empty_receiving_from_peers : 
+  fixes p :: "'peer" 
+  assumes "p \<notin> ReceivingFromPeers" and "(s1, a, s2) \<in> Transitions" and "is_input a"
+  shows "get_object a \<noteq> p"
+proof (rule ccontr)
+  assume "\<not> get_object a \<noteq> p"
+  then show "False"
+  proof
+  have "get_object a = p" using \<open>\<not> get_object a \<noteq> p\<close> by auto
+    moreover have "p \<in> ReceivingFromPeers" 
+      using ReceivingFromPeers.intros \<open>\<not> get_object a \<noteq> p\<close> assms(2,3) by auto
+  moreover have "False" 
+    using assms(1) calculation by auto
+  ultimately show "get_object a \<noteq> p"  using assms(1) by auto
+qed
+qed
+
+
+
 abbreviation step
   :: "'state \<Rightarrow> ('information, 'peer) action \<Rightarrow> 'state \<Rightarrow> bool"  ("_ \<midarrow>_\<rightarrow> _" [90, 90, 90] 110)
   where
@@ -335,6 +356,9 @@ abbreviation sendingToPeers_of_peer :: "'peer \<Rightarrow> 'peer set"  ("\<P>\<
 abbreviation receivingFromPeers_of_peer :: "'peer \<Rightarrow> 'peer set"  ("\<P>\<^sub>? _" [90] 110) where
   "\<P>\<^sub>?(p) \<equiv> CommunicatingAutomaton.ReceivingFromPeers (snd (snd (\<A> p)))"
 
+term "\<A> p"
+term "(snd (snd (\<A> p)))"
+
 abbreviation step_of_peer
   :: "'state \<Rightarrow> ('information, 'peer) action \<Rightarrow> 'peer \<Rightarrow> 'state \<Rightarrow> bool"
      ("_ \<midarrow>_\<rightarrow>_ _" [90, 90, 90, 90] 110) where
@@ -344,6 +368,9 @@ abbreviation language_of_peer
   :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L> _" [90] 110) where
   "\<L>(p) \<equiv> CommunicatingAutomaton.Lang (fst (snd (\<A> p))) (snd (snd (\<A> p)))"
 
+term "(fst (snd (\<A> p)))"
+term "(snd (snd (\<A> p)))"
+
 abbreviation output_language_of_peer
   :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L>\<^sub>! _" [90] 110) where
   "\<L>\<^sub>!(p) \<equiv> CommunicatingAutomaton.LangSend (fst (snd (\<A> p))) (snd (snd (\<A> p)))"
@@ -351,6 +378,79 @@ abbreviation output_language_of_peer
 abbreviation input_language_of_peer
   :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L>\<^sub>? _" [90] 110) where
   "\<L>\<^sub>?(p) \<equiv> CommunicatingAutomaton.LangRecv (fst (snd (\<A> p))) (snd (snd (\<A> p)))"
+
+
+
+\<comment>\<open>this is to show that if p receives from no one, then there is no transition where p is the receiver\<close>
+lemma empty_receiving_from_peers2 : 
+  fixes p :: "'peer" 
+  assumes "p \<notin> ReceivingFromPeers" and "(s1, a, s2) \<in> \<R>(p)" and "is_input a"
+  shows "get_object a \<noteq> p"
+proof (rule ccontr)
+  assume "\<not> get_object a \<noteq> p"
+  then show "False"
+  proof
+  have "get_object a = p" using \<open>\<not> get_object a \<noteq> p\<close> by auto
+  moreover have "False" 
+    by (metis CommunicatingAutomaton.well_formed_transition \<open>\<not> get_object a \<noteq> p\<close> assms(2)
+        automaton_of_peer)
+  ultimately show "get_object a \<noteq> p"  using assms(1) by auto
+qed
+qed
+
+
+lemma empty_receiving_from_peers3 : 
+  fixes p :: "'peer" 
+  assumes "\<P>\<^sub>?(p) = {}" and "(s1, a, s2) \<in> \<R>(p)" and "is_input a"
+  shows "get_object a \<noteq> p"
+proof (rule ccontr)
+  assume "\<not> get_object a \<noteq> p"
+  then show "False"
+  proof
+  have "get_object a = p" using \<open>\<not> get_object a \<noteq> p\<close> by auto
+  moreover have "False" 
+    by (metis CommunicatingAutomaton.well_formed_transition \<open>\<not> get_object a \<noteq> p\<close> assms(2)
+        automaton_of_peer)
+  ultimately show "get_object a \<noteq> p"  using assms(1) by auto
+qed
+qed
+
+lemma empty_receiving_from_peers4 : 
+  fixes p :: "'peer" 
+  assumes "\<P>\<^sub>?(p) = {}" and "(s1, a, s2) \<in> \<R>(p)"
+  shows "is_output a"
+  by (metis CommunicatingAutomaton.ReceivingFromPeers.intros assms(1,2) automaton_of_peer
+      empty_iff)
+
+lemma no_input_trans_root : 
+  fixes p :: "'peer"
+  assumes "is_input a" and "\<P>\<^sub>?(p) = {}"
+  shows "(s1, a, s2) \<notin> \<R>(p)"
+  using assms(1,2) empty_receiving_from_peers4 by auto
+
+
+lemma act_in_lang_means_trans_exists : 
+  fixes p :: "'peer"
+  assumes "[a] \<in> \<L>(p)"
+  shows "\<exists>s1 s2. (s1, a, s2) \<in> \<R>(p)"
+  by (smt (verit) CommunicatingAutomaton.Traces.cases CommunicatingAutomaton.run.simps append1_eq_conv
+      append_self_conv2 assms automaton_of_peer not_Cons_self2)
+
+lemma act_not_in_lang_no_trans :
+  fixes p :: "'peer"
+  assumes "\<forall>s1 s2. (s1, a, s2) \<notin> \<R>(p)"
+  shows "[a] \<notin> \<L>(p)"
+  using act_in_lang_means_trans_exists assms by auto
+
+
+
+lemma no_input_trans_no_word_in_lang : 
+  fixes p :: "'peer"
+  assumes "(a # w) \<in> \<L>(p)"
+  shows "\<exists>s1 s2. (s1, a, s2) \<in> \<R>(p)"
+  sorry
+
+
 
 subsection \<open>Synchronous System\<close>
 
@@ -1128,36 +1228,117 @@ abbreviation InfluencedLanguageRecv :: "'peer \<Rightarrow> ('information, 'peer
 
 
 subsubsection "influenced language approaches 2"
-text "test and test2 should do the same but I am not 100% sure (hence why I try to prove it with eqtest "
-
-inductive test :: "'peer \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
-t0 : "\<lbrakk>\<P>\<^sub>?(r) = {}; w \<in> \<L>(r)\<rbrakk> \<Longrightarrow> test r w" |
-t1 : "\<lbrakk>\<P>\<^sub>?(r) = {}; \<P>\<^sub>?(q) = {r}; w \<in> \<L>(q); ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> ((\<L>(r))\<downharpoonright>\<^sub>!\<^sub>?) \<rbrakk> \<Longrightarrow> test q w" |
-t2 : "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); w' \<in> \<L>(q); test q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?); ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> (((\<L>(q))\<downharpoonright>\<^sub>!)\<downharpoonright>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> test p w"
 
 inductive test2 :: "'peer \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
-t00: "\<lbrakk>\<P>\<^sub>?(r) = {}; w \<in> \<L>(r)\<rbrakk> \<Longrightarrow> test2 r w" |
-t10: "\<lbrakk>\<P>\<^sub>?(r) = {}; \<P>\<^sub>?(q) = {r}; w \<in> \<L>(q); ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> ((\<L>(r))\<downharpoonright>\<^sub>!\<^sub>?) \<rbrakk> \<Longrightarrow> test2 q w" |
-t20: "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); test2 q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> test2 p w"
+t00: "\<lbrakk>\<P>\<^sub>?(r) = {}; w \<in> \<L>(r)\<rbrakk> \<Longrightarrow> test2 r w" | \<comment>\<open>influenced language of root r is language of r\<close>
+t20: "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); test2 q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> test2 p w" \<comment>\<open>p is any node and q its parent\<close>
+
+lemma test2_lem1 : "test2 p w \<Longrightarrow>  w \<in> \<L>(p)" using test2.simps by blast
+lemma test2_lem2 : "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); test2 q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> (((\<L>(q))\<downharpoonright>\<^sub>!)\<downharpoonright>\<^sub>!\<^sub>?)" 
+  using test2_lem1 by blast
+
+lemma input_or_output_action : "\<forall>x. is_input x \<or> is_output x"  by simp
+lemma input_or_output_word : "\<forall>w. (w \<noteq> \<epsilon>) \<Longrightarrow> (((w\<down>\<^sub>?) \<noteq> \<epsilon>) \<or> (\<epsilon> \<noteq> (w\<down>\<^sub>!)))" by blast
+
+lemma filter_recursion : "filter f (filter f xs) = filter f xs"  by simp
+
+lemma filter_head_helper :
+  assumes  "x # (filter f xs) = (filter f (x#xs))"
+shows "f x"
+proof (induction xs)
+  case Nil
+  then show ?case by (meson Cons_eq_filterD assms)
+next
+  case (Cons a xs)
+  then show ?case by simp
+qed
+
+
+
+lemma root_no_recvss :
+  assumes "\<P>\<^sub>?(r) = {}" and "w \<in> (\<L>(r))"
+  shows "w = (w\<down>\<^sub>!)"
+proof (induction w)
+  case Nil
+  then show ?case by simp
+next
+  case (Cons a w)
+  then show ?case
+  proof (cases "is_output a")
+    case True
+    then have "is_output a" by simp
+    then have "[a] = [a]\<down>\<^sub>!"  by simp
+    moreover have "[a] @ w = a # w " by simp
+    moreover have "(a # w) = ([a]\<down>\<^sub>!) @ (w\<down>\<^sub>!)" 
+      using calculation(1,2) local.Cons by presburger
+    then show ?thesis
+      by (metis calculation(1) filter_append local.Cons)
+  next
+    case False
+    then have "is_input a" by simp
+    then have "[] = [a]\<down>\<^sub>!" by simp
+    moreover have "w = ([a]\<down>\<^sub>!) @ (w\<down>\<^sub>!)"   using calculation local.Cons by auto
+    moreover have "\<exists> p. p = get_object a" by simp
+    moreover have "\<exists> q. q = get_actor a" by simp
+    ultimately show ?thesis
+    proof (cases "\<exists> s1 s2. (s1, a, s2) \<in> \<R>(r)" )
+      case True
+      then obtain s1 s2 where "(s1, a, s2) \<in> \<R>(r)" by auto
+      then show ?thesis  using False assms(1) empty_receiving_from_peers4 by blast
+    next
+      case False
+      then have "\<forall> s1 s2. (s1, a, s2) \<notin> \<R>(r)" by simp
+      then have "(a # w) \<notin> (\<L>(r))"  using \<open>is_input a\<close> local.Cons by auto
+      then show ?thesis using assms Cons.prems Cons.IH sorry
+    qed
+  qed
+qed
+
+
+lemma root_no_recvs : 
+  assumes "\<P>\<^sub>?(r) = {}" and "w \<in> (\<L>(r))"
+  shows "(w\<down>\<^sub>?) = \<epsilon>"
+proof (rule ccontr)
+  assume "(w\<down>\<^sub>?) \<noteq> \<epsilon>"
+  then show "False"
+  proof
+    have "\<exists> x  xs. (x # xs) = (w\<down>\<^sub>?)"  using \<open>w\<down>\<^sub>? \<noteq> \<epsilon>\<close> list.collapse by blast
+    moreover obtain x xs where "(x#xs) = (w\<down>\<^sub>?)" using calculation by blast
+    moreover have "(filter is_input (w\<down>\<^sub>?)) = (w\<down>\<^sub>?)" using filter_recursion by blast
+    moreover have "filter is_input (x#xs) = (x#xs)"   by (simp add: calculation(2))
+    moreover have "x # (filter is_input xs) = filter is_input (x#xs)" 
+      by (metis calculation(4) filter.simps(2) filter_id_conv list.set_intros(1))
+    moreover have "is_input x" using calculation(5) by force
+    moreover have "\<R>(r) \<noteq> {}"
+      by (metis (no_types, lifting) \<open>w\<down>\<^sub>? \<noteq> \<epsilon>\<close> assms(1,2) filter_False filter_id_conv root_no_recvss)
+    ultimately show "(w\<down>\<^sub>?) = \<epsilon>" 
+      by (metis (no_types, lifting) assms(1,2) filter_False filter_id_conv root_no_recvss)
+  qed
+qed
+
+
+lemma root_only_sends : "\<lbrakk>\<P>\<^sub>?(r) = {}; w \<in> \<L>(r)\<rbrakk> \<Longrightarrow> (w\<down>\<^sub>!) = w" sorry
+
+\<comment>\<open>this is a rule I removed from test2, because the two existing rules should suffice,
+this needs to be proven however, which is not yet fully accomplished
+in particular, it needs to be shown that if P(r) = {} (i.e. r is root), then any words in w \<in> \<L>(r) are outputs/sends
+because the root does not receive any messages.
+Also useful would be that if w \<in> \<L>(p), then for each x in w, there must be a transition in \<R>(r)\<close>
+lemma test2_rule_q_direct_child_of_root : "\<lbrakk>\<P>\<^sub>?(q) = {r}; \<P>\<^sub>?(r) = {}; w \<in> \<L>(q); ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> ((\<L>(r))\<downharpoonright>\<^sub>!\<^sub>?) \<rbrakk> \<Longrightarrow> test2 q w"
+proof
+  assume "\<P>\<^sub>?(q) = {r}" and "\<P>\<^sub>?(r) = {}" and "w \<in> \<L>(q)" and  "((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> ((\<L>(r))\<downharpoonright>\<^sub>!\<^sub>?)"
+  then have "\<exists>w'. w' \<in> \<L>(r)" using \<open>((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> ((\<L>(r))\<downharpoonright>\<^sub>!\<^sub>?)\<close> by blast
+  moreover obtain w' where "w' \<in> \<L>(r)" and "((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = w'\<down>\<^sub>!\<^sub>?" using \<open>\<exists>w'. w' \<in> \<L> r\<close>  \<open>((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> (\<L> r)\<downharpoonright>\<^sub>!\<^sub>?\<close> by blast
+  moreover have "test2 r w'"  by (simp add: \<open>\<P>\<^sub>? r = {}\<close> calculation(2) t00)
+  ultimately show ?thesis 
+  by (metis \<open>\<P>\<^sub>? q = {r}\<close> \<open>\<P>\<^sub>? r = {}\<close> \<open>w \<in> \<L> q\<close> root_only_sends test2.simps)
+  moreover have "w\<down>\<^sub>?\<down>\<^sub>!\<^sub>? = w'\<down>\<^sub>!\<down>\<^sub>!\<^sub>?" using \<open>\<P>\<^sub>? r = {}\<close> 
+    by (simp add: \<open>w' \<in> \<L> r\<close> \<open>w\<down>\<^sub>?\<down>\<^sub>!\<^sub>? = w'\<down>\<^sub>!\<^sub>?\<close> root_only_sends)
+qed
 
 lemma "\<lbrakk>x = 2; y = x + 1; y > x; y < 5\<rbrakk> \<Longrightarrow> y = 3" by auto
 
-lemma eqtest : "test2 p w \<Longrightarrow> test p w"
-proof (induction rule:test2.induct)
-  case (t00 r w)
-  then show ?case 
-    by (simp add: t0)
-next
-  case (t10 r q w)
-  then show ?case 
-    by (simp add: t1)
-next
-  case (t20 p q w w')
-  moreover have "w' \<in> \<L>(q)" using \<open>test q w'\<close> test.cases by blast
-  moreover have "((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> (((\<L>(q))\<downharpoonright>\<^sub>!)\<downharpoonright>\<^sub>!\<^sub>?)"  using calculation(6) t20.hyps(4) by auto
-  moreover have "((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" by (simp add: t20.hyps(4))
-  ultimately show ?case sorry
-qed
+
 
 abbreviation infl_lang2 :: "'peer \<Rightarrow> ('information, 'peer) action language" where
 "infl_lang2 p \<equiv> {w | w. test p w}"
