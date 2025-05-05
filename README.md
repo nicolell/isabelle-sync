@@ -12,6 +12,8 @@
     - https://do.proof.in.tum.de/competitions/
     - https://isabelle.in.tum.de/exercises/
 - [General Isabelle Zulip Chat](https://isabelle.zulipchat.com/)
+- [Library Code](https://isabelle.in.tum.de/library/HOL/index.html)
+    - [List](https://isabelle.in.tum.de/library/HOL/HOL/List.html)
 ### Semantics (TUM Course)
 - [Course Website](https://www21.in.tum.de/teaching/semantics/WS24/index.html)
 - [Lecture Recordings (public!)](https://live.rbg.tum.de/?year=2023&term=W&slug=Sem&view=3)

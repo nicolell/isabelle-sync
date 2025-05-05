@@ -101,5 +101,67 @@ proof (rule ccontr)
 qed
 qed
 
+lemma root1 :
+fixes p :: "'peer"
+assumes "𝒫⇩?(p) = {} ∧ w  ∈ ℒ(p)"
+shows "w↓⇩? = ε ∧ w↓⇩?  ∈ ℒ(p)"
+  using assms
+proof (induct w)
+  case Nil
+  then show ?case by simp
+next
+  case (Cons a w)
+  then show ?case
+  proof auto
+    have "(a # w)  ∈ ℒ(p)" 
+      by (simp add: Cons.prems)
+  then have "is_output a" using assms(1) root_head_is_output by auto
+  then have "[a]↓⇩? = ε" by simp
+  then have "([a] @ w)↓⇩? = w↓⇩?"  by (metis append_self_conv2 filter_append)
+  then have "(a # w)↓⇩? = w↓⇩?" by simp
+  then have "∃s1 s2. (s1, a, s2) ∈ ℛ(p)"
+    using ‹a # w ∈ ℒ p› no_word_no_trans by blast
+  then obtain s1 s2 where "(s1, a, s2) ∈ ℛ(p)" by auto
+  then show "(w ∈ ℒ p ⟹ w↓⇩? = ε ∧ w↓⇩? ∈ ℒ p) ⟹ 𝒫⇩? p = {} ⟹ a # w ∈ ℒ p ⟹ is_output a"using ‹is_output a› by blast
+next
+  have "(w ∈ ℒ p ⟹ w↓⇩? = ε ∧ w↓⇩? ∈ ℒ p) ⟹ 𝒫⇩? p = {} ⟹ a # w ∈ ℒ p ⟹ is_output a" 
+    using root_head_is_not_input by blast
+  then show "w↓⇩? ∈ ℒ p" using assms Cons
+  proof (cases "w↓⇩?")
+    case Nil
+    then show ?thesis
+      by (metis CommunicatingAutomaton.REmpty2 CommunicatingAutomaton.Traces.intros automaton_of_peer)
+  next
+    case (Cons b bs)
+    then have "a # w ∈ ℒ p" by (simp add: Cons.prems)
+    then have "(a # w)↓⇩? = w↓⇩?" 
+      using Cons.prems NetworkOfCA.root_head_is_output NetworkOfCA_axioms by fastforce
+    then have "∃s1 s2. (s1, a, s2) ∈ ℛ(p)" 
+      by (meson ‹a # w ∈ ℒ p› no_word_no_trans)
+    then obtain s1 s2 where "(s1, a, s2) ∈ ℛ(p)" by auto
+    define b where "b = hd (w↓⇩?)"  
+    then show ?thesis using assms Cons
+    proof (cases "∃ s3. (s2, b, s3) ∈ ℛ(p)")
+      case True
+      then show ?thesis 
+        by (metis (no_types, lifting) NetworkOfCA.no_input_trans_root NetworkOfCA_axioms assms b_def filter_eq_Cons_iff list.sel(1)
+            local.Cons)
+    next
+      case False
+      then show ?thesis sledgehammer
+    qed
+  qed
+  
+qed
+  then have "𝒫⇩?(p) = {}" 
+    using assms(1) by auto
+  then have "(𝒫⇩? p = {} ⟹ w ∈ ℒ p) ⟹ w↓⇩? = ε" using Cons.hyps  by blast
+
+  then have "w ∈ ℒ p" sledgehammer
+  then have "w↓⇩? = ε" sledgehammer
+  then have "(a # w)↓⇩? = ε" sledgehammer
+  then show ?case sledgehammer
+qed
+
 
 end
