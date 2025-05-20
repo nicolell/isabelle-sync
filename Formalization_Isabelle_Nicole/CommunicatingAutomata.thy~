@@ -2141,19 +2141,12 @@ qed
 
 
 
-abbreviation is_root_from_topology :: "'peer \<Rightarrow> bool" where
-"is_root_from_topology p \<equiv> (tree_topology \<and> \<G>\<langle>\<rightarrow>p\<rangle> = {})"
 
-abbreviation is_root_from_local :: "'peer \<Rightarrow> bool"  where
-"is_root_from_local p \<equiv> \<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q))"
-
-abbreviation is_root :: "'peer \<Rightarrow> bool"  where
-"is_root p \<equiv> tree_topology \<and> ((\<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q))) \<or> \<G>\<langle>\<rightarrow>p\<rangle> = {})"
 
 
 inductive path_to_root :: "'peer \<Rightarrow> 'peer list \<Rightarrow> bool" where
-PTRRoot: "\<lbrakk>is_root p\<rbrakk> \<Longrightarrow> path_to_root p [p]" |
-PTRNode: "\<lbrakk>tree_topology; \<P>\<^sub>?(p) = {q}; path_to_root q as\<rbrakk> \<Longrightarrow> path_to_root p (p # as)"
+PTRRoot: "\<lbrakk>\<P>\<^sub>?(p) = {}; (\<forall>q. p \<notin> \<P>\<^sub>!(q))\<rbrakk> \<Longrightarrow> path_to_root p [p]" |
+PTRNode: "\<lbrakk>\<P>\<^sub>?(p) = {q}; path_to_root q as\<rbrakk> \<Longrightarrow> path_to_root p (p # as)"
 
 lemma path_to_root_rev:
   assumes "path_to_root p ps" and "ps \<noteq> [p]"
@@ -2163,20 +2156,25 @@ lemma path_to_root_rev:
 
 lemma path_to_root_rev_empty:
   assumes "path_to_root p ps" and "ps = [p]"
-  shows "is_root p"
+  shows "\<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q))"
   by (metis assms(1,2) list.discI list.inject path_to_root.simps)
 
+fun is_root :: "'peer topology \<Rightarrow> 'peer \<Rightarrow> bool" where
+"is_root E p = ((card (E\<langle>\<rightarrow>p\<rangle>)) = 0) "
+
+abbreviation is_root2 :: "'peer \<Rightarrow> bool"  where
+"is_root2 p \<equiv> \<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q))"
 
 fun get_root :: "'peer topology \<Rightarrow> 'peer" where
-"get_root E = (THE x. is_root x)"
+"get_root E = (THE x. is_root E x)"
 
 lemma path_ends_at_root:
   assumes "path_to_root p ps"
-  shows  "is_root (last ps)"
+  shows  "is_root2 (last ps)"
   using assms
 proof (induct rule: path_to_root.induct)
   case (PTRRoot p)
-  then show ?case by auto
+  then show ?case by simp
 next
   case (PTRNode p q as)
   then show ?case by (metis last_ConsR list.discI path_to_root.cases)
@@ -2184,34 +2182,16 @@ qed
 
 lemma single_path_impl_root: 
   assumes "path_to_root p [p]"
-  shows "is_root p"
-  using assms path_to_root_rev_empty by blast
+  shows "\<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q))"
+  using assms path_to_root_rev_empty by auto
 
 
 abbreviation get_path_to_root :: "'peer \<Rightarrow>  'peer list" where
 "get_path_to_root p \<equiv>  (THE ps. path_to_root p ps)"
 
-lemma path_to_root_unique:
-  assumes "path_to_root p ps" and "path_to_root p qs"
-  shows "qs = ps"
-  using assms
-proof (induct  arbitrary: qs  rule: path_to_root.induct)
-  case (PTRRoot p)
-  then show ?case 
-    by (metis global_to_local_root insert_not_empty
-        path_to_root_rev)
-next
-  case (PTRNode p q as)
-  then show ?case by (metis empty_iff global_to_local_root insert_iff path_to_root_rev single_path_impl_root)
-qed
-
-lemma path_to_root_exists: 
-  assumes "tree_topology" and "p \<in> \<P>"
-  shows "\<exists>ps. path_to_root p ps" 
-  sorry
 
 
-(*
+
 fun infl_lang_rec :: "'peer list \<Rightarrow> ('information, 'peer) action language" where
 "infl_lang_rec [] = {}" |
 "infl_lang_rec [r::'peer] = {\<epsilon>::('information, 'peer) action word}" |
@@ -2233,61 +2213,17 @@ abbreviation InfluencedLanguageRecv :: "'peer \<Rightarrow> ('information, 'peer
 
 abbreviation ShuffledInfluencedLanguage :: "'peer \<Rightarrow> ('information, 'peer) action language" ("\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion> _" [90] 100) where
 "\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion> p \<equiv> shuffled_lang (\<L>\<^sup>* p)"
-*)
-inductive is_in_infl_lang :: "'peer \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
-IL_root: "\<lbrakk>is_root r; w \<in> \<L>(r)\<rbrakk> \<Longrightarrow> is_in_infl_lang r w" | \<comment>\<open>influenced language of root r is language of r\<close>
-IL_node: "\<lbrakk>tree_topology; \<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); is_in_infl_lang q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> is_in_infl_lang p w" \<comment>\<open>p is any node and q its parent has a matching send for each of p's receives\<close>
 
-lemma is_in_infl_lang_rev: 
-  assumes "is_in_infl_lang p w" and "\<P>\<^sub>?(p) = {q}" and "tree_topology"
-  shows "w \<in> \<L>(p)" and "\<exists>w'. is_in_infl_lang q w' \<and> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)"
-  using assms
-proof -
-  show "w \<in> \<L>(p)" using assms(1) is_in_infl_lang.simps by blast
-  show "\<exists>w'. is_in_infl_lang q w' \<and> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" by (metis assms(1,2) insert_not_empty is_in_infl_lang.simps sends_of_peer_subset_of_predecessors_in_topology
-        subset_antisym subset_insertI the_elem_eq)
-qed
-
-lemma w_in_infl_lang : "is_in_infl_lang p w \<Longrightarrow>  w \<in> \<L>(p)" using is_in_infl_lang.simps by blast
-lemma recv_has_matching_send : "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); is_in_infl_lang q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> (((\<L>(q))\<downharpoonright>\<^sub>!)\<downharpoonright>\<^sub>!\<^sub>?)" 
-  using w_in_infl_lang by blast
-
-
-abbreviation InfluencedLanguage :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L>\<^sup>* _" [90] 100) where
-"\<L>\<^sup>* p \<equiv> {w | w. is_in_infl_lang p w}"
-
-abbreviation InfluencedLanguageSend :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L>\<^sub>!\<^sup>* _" [90] 100) where
-"\<L>\<^sub>!\<^sup>* p \<equiv> (\<L>\<^sup>* p)\<downharpoonright>\<^sub>! "
-
-abbreviation InfluencedLanguageRecv :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L>\<^sub>?\<^sup>* _" [90] 100) where
-"\<L>\<^sub>?\<^sup>* p \<equiv> (\<L>\<^sup>* p)\<downharpoonright>\<^sub>! "
-
-abbreviation ShuffledInfluencedLanguage :: "'peer \<Rightarrow> ('information, 'peer) action language" ("\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion> _" [90] 100) where
-"\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion> p \<equiv> shuffled_lang (\<L>\<^sup>* p)"
-
-(*infl_lang only keeps words that can be built depending on the ancestors
-this means there may be less words in the influenced language than in the original one
-see Def. 4.2., Ex. 4.1*)
-lemma infl_lang_subset_of_lang:
-  shows "(\<L>\<^sup>* p) \<subseteq> (\<L> p)"
-  using w_in_infl_lang by fastforce
-
-lemma lang_subset_infl_lang:
-  assumes "is_root p"
-  shows "(\<L> p) \<subseteq> (\<L>\<^sup>* p)"
-proof auto
-  fix x
-  assume "x \<in> \<L> p"
-  show "is_in_infl_lang p x" using IL_root \<open>x \<in> \<L> p\<close> assms by presburger
-qed
-
-
+lemma infl_lang_root:
+  assumes "\<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q))"
+  shows "\<L>\<^sup>* p = \<L> p"
+  by (metis assms infl_lang.simps(2) insert_not_empty path_to_root.simps the_equality)
 
 lemma word_in_shuffled_infl_lang :
   fixes w :: "('information, 'peer) action word"
   assumes "w \<in> \<L>\<^sup>*(p)"
   shows "w \<in> \<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)" 
-  by (meson assms shuffle_id)
+  using assms shuffle_id by auto
 
 lemma language_shuffle_subset :
   shows "\<L>\<^sup>*(p) \<subseteq> \<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)"
@@ -2303,7 +2239,16 @@ lemma shuffled_lang_rev :
 
 
 
+subsubsection "influenced language approaches 2"
 
+
+inductive test2 :: "'peer \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
+t00: "\<lbrakk>\<P>\<^sub>?(r) = {}; w \<in> \<L>(r)\<rbrakk> \<Longrightarrow> test2 r w" | \<comment>\<open>influenced language of root r is language of r\<close>
+t20: "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); test2 q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> test2 p w" \<comment>\<open>p is any node and q its parent\<close>
+
+lemma test2_lem1 : "test2 p w \<Longrightarrow>  w \<in> \<L>(p)" using test2.simps by blast
+lemma test2_lem2 : "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>(p); test2 q w'; ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<in> (((\<L>(q))\<downharpoonright>\<^sub>!)\<downharpoonright>\<^sub>!\<^sub>?)" 
+  using test2_lem1 by blast
 
 lemma input_or_output_action : "\<forall>x. is_input x \<or> is_output x"  by simp
 lemma input_or_output_word : "\<forall>w. (w \<noteq> \<epsilon>) \<Longrightarrow> (((w\<down>\<^sub>?) \<noteq> \<epsilon>) \<or> (\<epsilon> \<noteq> (w\<down>\<^sub>!)))" by blast
@@ -2743,9 +2688,23 @@ fun conf2s :: "'peer \<Rightarrow> ('peer \<Rightarrow> ('state \<times> ('infor
 
 lemma conf2s_to_run:
   assumes "mbox_run C k w Cs"
-  shows "run_of_peer_from_state p (fst (C p)) (w\<down>\<^sub>p) (conf2s p Cs)"
+  shows "run_of_peer_from_state p (fst (C p)) w (conf2s p Cs)"
   using assms
-  sorry
+proof (induct  arbitrary: k)
+  case (MREmpty C k)
+  then show ?case by (metis CommunicatingAutomaton.REmpty2 automaton_of_peer conf2s.simps(1))
+next
+  case (MRComposedNat C0 k w xc a C)
+  then have "run_of_peer_from_state p (fst (C0 p)) w (conf2s p xc)" by simp
+  then have "fst ((last (C0 # xc)) (get_actor a)) \<midarrow>a\<rightarrow>(get_actor a) (fst (C (get_actor a)))"
+    using MRComposedNat.hyps(3) mbox_step_rev(5) by auto
+  
+  then show ?case sledgehammer
+next
+  case (MRComposedInf C0 w xc a C)
+  then show ?case sorry
+qed
+qed
 
  
 
@@ -2753,8 +2712,7 @@ inductive path_mbox_eq :: "'peer \<Rightarrow> ('information, 'peer) action word
 PM_eps: "path_mbox_eq p \<epsilon> (\<I> p) [] (\<C>\<^sub>\<I>\<^sub>\<mm>) []" |
 PM_send: "\<lbrakk>a = (!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>); C2 = get_C2 C1 (!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>) s2 \<rbrakk> \<Longrightarrow> path_mbox_eq p [a] s0 [s2] C1 [C2]" |
 PM_recv: "\<lbrakk>a = (?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>); C2 = get_C2 C1 (?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>) s2 \<rbrakk> \<Longrightarrow> path_mbox_eq p [a] s0 [s2] C1 [C2]" |
-PM_step_send: "\<lbrakk>path_mbox_eq p w s0 xs C0 Cs; fst ((last (C0#Cs)) p) \<midarrow>a\<rightarrow>p s2; a = (!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>)\<rbrakk> \<Longrightarrow> path_mbox_eq p w s0 xs C0 (Cs@[get_C2 C0 a s2])" |
-PM_step_recv: "\<lbrakk>path_mbox_eq p w s0 xs C0 Cs; fst ((last (C0#Cs)) p) \<midarrow>a\<rightarrow>p s2; a = (!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>)\<rbrakk> \<Longrightarrow> path_mbox_eq p w s0 xs C0 (Cs@[get_C2 C0 a s2])"
+PM_step: "\<lbrakk>path_mbox_eq p w s0 xs C0 Cs; \<rbrakk> \<Longrightarrow> path_mbox_eq p w s0 xs C0 Cs"
 
 
 
@@ -2772,7 +2730,7 @@ valid_send: "\<lbrakk>\<exists>p2. p2 \<in> \<S> p \<and> (fst (C1 p), (!\<langl
 fun w2cs ::  "('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) \<Rightarrow> (('information, 'peer) action word) \<Rightarrow> ('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) list option" where
 "w2cs C [] = (Some [])" |
 "w2cs C ((!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>) # w) = (Some [])" |
-"w2cs C ((?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>) # w) = (Some [])"
+"w2cs C ((?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>) # w) = (Some [])"
 
 
 (*(if ((snd (C1 p)) \<noteq> []) \<and> ((i\<^bsup>p\<rightarrow>q\<^esup>) = hd (snd (C1 p)))
@@ -2919,19 +2877,22 @@ lemma p_root:
 proof auto
   fix q
   assume "(q, p) \<in> \<G>"
-  then show "False" 
-    by (smt (verit, ccfv_threshold) CommunicatingAutomaton.SendingToPeers.intros
-        CommunicatingAutomaton.well_formed_transition Edges_rev NetworkOfCA.no_input_trans_root NetworkOfCA_axioms
-        assms(1) automaton_of_peer get_receiver.simps global_to_local_root input_message_to_act messages_used
-        output_message_to_act_both_known prod.inject single_path_impl_root)
+  then show "False" using assms(1,2) insert_image local_to_global_root mem_Collect_eq path_to_root_rev_empty
+    by auto
 qed
 
 lemma root_lang_word_facts: 
   assumes "\<P>\<^sub>?(q) = {}" and "(\<forall>p. q \<notin> \<P>\<^sub>!(p))" and "w \<in> \<L>\<^sup>*(q)" and "tree_topology"
-  shows "w = w\<down>\<^sub>q \<and> w = w\<down>\<^sub>! \<and> w \<in> \<L>(q)"
-  using assms(1,3) no_inputs_implies_only_sends_alt w_in_infl_lang w_in_peer_lang_impl_p_actor by auto
+  shows "w = w\<down>\<^sub>q \<and> w = w\<down>\<^sub>! \<and> \<L>(q) = \<L>\<^sup>*(q)"
+  using assms(1,2,3) infl_lang_root no_inputs_implies_only_sends w_in_peer_lang_impl_p_actor
+  by blast
 
-(*
+lemma root_lang_root_is_actor: 
+  assumes "w \<in> \<L>(q)" 
+  shows "w = w\<down>\<^sub>q"
+  sledgehammer
+
+
 lemma root_lang_in_mbox_traces: 
   assumes "\<P>\<^sub>?(q) = {}" and "(\<forall>p. q \<notin> \<P>\<^sub>!(p))" and "tree_topology"
   shows "\<L>(q) \<subseteq> \<T>\<^bsub>None\<^esub>"
@@ -2956,19 +2917,14 @@ proof auto
           filter_head_helper w_def w_in_peer_lang_impl_p_actor)
     then obtain i p where a_def: "a = !\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>"  by (metis \<open>is_output a\<close> get_actor.simps(1) get_sender.simps is_output.simps(2)
           local_config_step.elims message.exhaust)
-    then show ?case using Suc assms
+    then show ?case 
     proof (cases "v = \<epsilon>")
       case True
       then show ?thesis  by (metis MboxTraces.intros Suc.prems \<open>is_output a\<close> mbox_step_to_run self_append_conv2
             send_step_to_mbox_step w_def)
     next
       case False
-      then obtain xs where w_run: "run_of_peer q w xs" using Suc.prems lang_implies_run by auto
-      then obtain ys y where v_run: "run_of_peer q v ys" and a_run: "(last ([(\<I> q)]@ys))  \<midarrow>a\<rightarrow>q y" sledgehammer
-      then have "\<exists>s1 s2. (\<I> q) \<midarrow>v\<rightarrow>\<^sup>*q s1 \<and> s1 \<midarrow>a\<rightarrow>q s2" sledgehammer
-      then obtain xc C  where vrun: "mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None v (xc)" and Cl :"last xc = C" by (metis MboxTraces.cases \<open>v \<in> \<T>\<^bsub>None\<^esub>\<close>)
-      then have "(fst (C q)) \<in> \<S> q" using False is_mbox_config_def mbox_run.cases mbox_run_prod_mbox_config by fastforce
-        then obtain s2 where  C_prop: "(fst (C q), a, s2) \<in> (\<R> q)"
+then obtain xc C s2 where vrun: "mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None v (xc@[C])" and C_prop: "(fst (C q), a, s2) \<in> \<R> q"
   sledgehammer
 
       then obtain xc C where vrun: "mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None v (xc@[C])" by (smt (verit) MboxTraces.cases \<open>v \<in> \<T>\<^bsub>None\<^esub>\<close> mbox_run.cases)
@@ -2979,26 +2935,13 @@ proof auto
   qed
     
 qed
-*)
 
-(* not correct!
-lemma mbox_2_peer_run:
-  assumes "w \<in> \<T>\<^bsub>None\<^esub>"
-  shows "\<exists>p. w \<in> \<L>\<^sup>*(p)"
-  sorry
-
-
-lemma infl_word_2_mbox:
-  assumes "w \<in> \<L>\<^sup>*(p)"
-  shows "w \<in> \<T>\<^bsub>None\<^esub>"
-  sorry
-*)
 
 fun mbox_run_to_run :: "'peer \<Rightarrow> ('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) \<Rightarrow> ('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) list \<Rightarrow> 'state list" where
 "mbox_run_to_run p C0 [] = []" |
 "mbox_run_to_run p C0 (C1 # Cs) = (fst (C1 p)) # mbox_run_to_run p C0 (Cs)"
 
-(*
+
 lemma mbox_run_impl_run_for_each_peer: 
   assumes "mbox_run C None w xc" and "p \<in> \<P>"
   shows "run_of_peer_from_state p (fst (C p)) w (mbox_run_to_run p C xc)"
@@ -3015,40 +2958,82 @@ next
   case (MRComposedInf C0 w xc a C)
   then show ?case sorry
 qed
-*)
-
-lemma root_lang_is_mbox:
-  assumes "is_root p" and "w \<in> \<L>(p)"
-  shows "w \<in> \<T>\<^bsub>None\<^esub>"
-  sorry
 
 
-lemma parent_in_infl_has_matching_sends: 
-  assumes "w \<in> \<L>\<^sup>*(p)" and "path_to_root p (p#q#ps)" and "\<P>\<^sub>?(p) = {q}"
-  shows "\<exists>w'. w' \<in> \<L>\<^sup>*(q) \<and> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)"
-  by (metis assms(1,3) is_in_infl_lang.cases is_in_infl_lang_rev(2) mem_Collect_eq)
-(*
-(*go from node pn and its word wn towards the root *)
-inductive infl_path_2_mbox_w :: "('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" for w\<^sub>n :: "('information, 'peer) action word" where
-i2mROOT: "\<lbrakk>path_to_root p [p];  w\<^sub>1 \<in> \<L>\<^sup>*(p)\<rbrakk> \<Longrightarrow> infl_path_2_mbox_w w\<^sub>n w\<^sub>1 (w\<^sub>a\<^sub>c\<^sub>c)" |
-i2mNODE: "\<lbrakk>infl_path_2_mbox_w w\<^sub>n w\<^sub>i w\<^sub>a\<^sub>c\<^sub>c; path_to_root p (p # q # ps); \<P>\<^sub>?(p) = {q}; w\<^sub>1 \<in> \<L>\<^sup>*(p); w' \<in> \<L>\<^sup>*(q); ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> infl_path_2_mbox_w w (w' \<cdot> w)" 
-*)
 
-(* the base step for the root is probably not sufficient *)
-inductive infl_2_mbox :: "('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
-i2mROOT: "\<lbrakk>is_root p; w \<in> \<L>\<^sup>*(p); (w_acc\<down>\<^sub>p) = w\<rbrakk> \<Longrightarrow> infl_2_mbox w w_acc" |
-i2mNODE: "\<lbrakk>\<P>\<^sub>?(p) = {q}; w \<in> \<L>\<^sup>*(p); w' \<in> \<L>\<^sup>*(q); ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?); infl_2_mbox w (w' \<cdot> ws)\<rbrakk> \<Longrightarrow> infl_2_mbox w (w \<cdot> w' \<cdot> ws)" 
+lemma worddddddddd:
+  assumes "\<P>\<^sub>?(q) = {}" and "(\<forall>p. q \<notin> \<P>\<^sub>!(p))" and "w \<in> \<L>(q)" and tree_topology
+  shows "\<exists>xc. mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None w xc"
+  using assms
+proof (induct "length w" arbitrary: w)
+  case 0
+  then show ?case by (metis MREmpty length_0_conv)
+next
+  case (Suc x)
+  then have "w \<in> \<L>\<^sup>*(q)" by (simp add: infl_lang_root)
+  then have w_sends: "w = w\<down>\<^sub>!" using Suc.prems(3) assms(1) no_inputs_implies_only_sends by blast
+  then have "\<P>\<^sub>?(q) = {} \<and> (\<forall>p. q \<notin> \<P>\<^sub>!(p)) \<and> w \<in> \<L>\<^sup>*(q) \<and> tree_topology" by (simp add: \<open>w \<in> \<L>\<^sup>* q\<close> assms(1,2,4))
+  then have w_qact: "w = w\<down>\<^sub>q " using Suc.prems(3) w_in_peer_lang_impl_p_actor by auto
+  
+  obtain v a  where w_def: "w = v @ [a]" and len_v: "length v = x"   by (metis Suc.hyps(2) length_Suc_conv_rev)
+   
+  then obtain xs where "run_of_peer q w xs"  using Suc.prems(3) lang_implies_run by auto
+  then have "v \<in> \<L>(q)" using Lang_app Suc.prems(3) w_def by blast
+  obtain xc where xc_run: "mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None v xc" using Suc.hyps(1) \<open>\<P>\<^sub>? q = {} \<and> (\<forall>p. q \<notin> \<P>\<^sub>! p) \<and> w \<in> \<L>\<^sup>* q \<and> is_tree (\<P>) (\<G>)\<close> \<open>v \<in> \<L> q\<close>
+      len_v by blast
+
+  then show ?case using assms Suc 
+  proof (cases "v = []")
+    case True
+then have "w = [a]" by (simp add: w_def)
+    then show ?thesis using Suc.prems(3) assms(1) mbox_step_to_run root_head_is_not_input send_step_to_mbox_step
+      by blast
+  next
+    case False
+    then have "xc \<noteq> []"  using \<open>mbox_run (\<lambda>p. (\<C>\<^sub>\<I>\<^sub>\<zero> p, \<epsilon>)) None v xc\<close> mbox_run.cases by fastforce
+    
+    have "is_output a" by (metis False Nil_is_append_conv \<open>w = w\<down>\<^sub>!\<close> append1_eq_conv decompose_send is_output.simps(1)
+          w_def)
+    then have "get_actor a = q \<or> get_object a = q" by (metis (mono_tags, lifting) filter_id_conv in_set_conv_decomp w_def w_qact) 
+    have "w\<down>\<^sub>q = v\<down>\<^sub>q @ [a]\<down>\<^sub>q" by (simp add: w_def)
+    then have "get_actor a = q" by (metis (mono_tags, lifting) \<open>v \<in> \<L> q\<close> filter.simps(1) filter_head_helper same_append_eq
+          w_def w_in_peer_lang_impl_p_actor w_qact)
+    then obtain i p where a_def : "a = !\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>"  
+      by (metis \<open>is_output a\<close> action.exhaust get_actor.simps(1) get_sender.simps is_output.simps(2)
+          message.exhaust)
+
+    then have "\<exists>s2 s3. (\<I> q) \<midarrow>v\<rightarrow>\<^sup>*q s2 \<and> s2 \<midarrow>[a]\<rightarrow>\<^sup>*q s3" using Lang_app_both Suc.prems(3) w_def by blast
+    then have "\<exists>s2 s3. (\<I> q) \<midarrow>v\<rightarrow>\<^sup>*q s2 \<and> s2 \<midarrow>a\<rightarrow>q s3"  using lang_implies_trans by blast
+    then have "(fst ((last xc) q)) \<in> \<S> q" using \<open>xc \<noteq> \<epsilon>\<close> is_mbox_config_def mbox_run_prod_mbox_config xc_run by force 
+    then have "\<exists>s2. (fst ((last xc) q), a, s2)  \<in> \<R> q" sledgehammer
+    
+    then have "fst ( \<C>\<^sub>\<I>\<^sub>\<mm> q) \<midarrow>v\<rightarrow>\<^sup>*q (fst ((last xc) q))" sledgehammer
+    then have "\<exists> s3. (\<I> q) \<midarrow>v\<rightarrow>\<^sup>*q (fst ((last xc) q)) \<and> (fst ((last xc) q)) \<midarrow>a\<rightarrow>q s3" sledgehammer
+
+    have "\<exists>s2. (fst ((last xc) q), a, s2)  \<in> \<R> q" sledgehammer
+    then obtain s1 s2 C0 where "(s1, a, s2) \<in> \<R> q" and "is_mbox_config C0" and "fst (C0 p) = s1"
+and "last xc = C0" sledgehammer
+
+then have pq: "p \<noteq> q" sledgehammer
+    then show ?thesis sorry
+  qed
 
 
-(* construct w' where w' is the concatenation w1...wn where wi is in influenced language of peer i 
-(numbered by closeness to root, root is 1) 
-\<rightarrow> this construction is in mbox *)
-lemma infl_word_2_mbox :
-  assumes "w \<in> \<L>\<^sup>*(q)" 
-  shows "\<exists>w'. w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> (\<forall>p. (p \<in> \<P> \<and> \<P>\<^sub>?(p) = {q}) \<longrightarrow>  w'\<down>\<^sub>p = \<epsilon>)"
-  sorry
+  obtain i p where a_def: "a = !\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>" sledgehammer
+      then have "
+    
+    then show ?case sledgehammer
+qed
+  case Nil
+  then show ?case sorry
+next
+  case (Cons a w)
+  then show ?case sorry
+qed
+  obtain xs where "run_of_peer q w xs" using assms(3) lang_implies_run by auto
 
-
+qed
+ 
 
 (*Let N be a network such that CF = C, G(N) is a tree, q \<in> P, and w \<in> L ≬(Aq). Then there
 is an execution w\<Zprime> \<in> E(Nmbox) such that w\<Zprime>\<down>q = w and w\<Zprime>\<down>p = \<epsilon> for all p \<in> P with Pp
@@ -3059,42 +3044,40 @@ lemma lemma4_4 :
   assumes "tree_topology" and "w \<in> \<L>\<^sup>*(q)" and "q \<in> \<P>"
   shows "\<exists> w'. (w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> (\<forall>p. (p \<in> \<P> \<and> \<P>\<^sub>?(p) = {q}) \<longrightarrow>  w'\<down>\<^sub>p = \<epsilon>))"
   using assms
-proof (cases "is_root q") 
+proof (cases "path_to_root q [q]") 
   case True \<comment> \<open>q = r\<close>
-  then have "w \<in> \<L>(q)" using assms(2) is_in_infl_lang.cases by blast
-  then have "w = w\<down>\<^sub>!"  by (meson NetworkOfCA.no_inputs_implies_only_sends_alt NetworkOfCA_axioms True assms(1) global_to_local_root
-        p_root)
+  then have "\<L>\<^sup>*(q) = \<L> q" 
+    by (metis empty_iff infl_lang.simps(2) insertCI path_to_root_rev path_to_root_rev_empty
+        the_equality)
+  then have "\<P>\<^sub>?(q) = {}" 
+    by (meson NetworkOfCA.path_to_root_rev_empty NetworkOfCA_axioms True)
+  then have "w \<in> \<L>(q)" 
+    using \<open>\<L>\<^sup>* q = \<L> q\<close> assms(2) by blast
+  then have "w = w\<down>\<^sub>!" using \<open>\<P>\<^sub>? q = {}\<close> no_inputs_implies_only_sends by presburger
   then have "w\<down>\<^sub>? = \<epsilon>"  by (simp add: output_proj_input_yields_eps)
   then have t2: "w = w\<down>\<^sub>q" by (simp add: \<open>w \<in> \<L> q\<close> w_in_peer_lang_impl_p_actor)
   then have "\<forall> p. p \<noteq> q \<longrightarrow> w\<down>\<^sub>p = \<epsilon>"  by (metis NetworkOfCA.only_one_actor_proj NetworkOfCA_axioms)
-  then have t3: "(\<forall>p. (p \<in> \<P> \<and> \<P>\<^sub>?(p) = {q}) \<longrightarrow>  w\<down>\<^sub>p = \<epsilon>)" by (metis True assms(1) global_to_local_root insert_not_empty ) 
+  then have t3: "(\<forall>p. (p \<in> \<P> \<and> \<P>\<^sub>?(p) = {q}) \<longrightarrow>  w\<down>\<^sub>p = \<epsilon>)"
+    by (metis \<open>\<P>\<^sub>? q = {}\<close> insert_not_empty)
 \<comment> \<open>need to prove lemma that if w is w of root r, then mbox (unbounded) has a run for it 
-basically construct the configs, where it starts with (\<I>(r), \<epsilon>) and each step appends a send to the buffer of the respective receiver\<close>
-  then have "w \<in> \<L>(q)" by (simp add: \<open>w \<in> \<L> q\<close>)
-  then have "is_root q" using True by auto
-  then have "w \<in> \<T>\<^bsub>None\<^esub>" using \<open>w \<in> \<L> q\<close> root_lang_is_mbox by auto
+basically construct the configs, where it starts with (\<I>(r), \<epsilon>) and each step appends a send to the buffer of the respective receiver\<close> 
+  then have "\<G>\<langle>\<rightarrow>q\<rangle> = {}" by (simp add: True assms(1) p_root)
+  then have "w \<in> \<T>\<^bsub>None\<^esub>" using \<open>w \<in> \<L> q\<close> assms(1) root_to_mbox by blast
   then show ?thesis  by (metis t2 t3)
 next
-  case False (*path to root of length n>1, i.e. q is NOT root*)
-  then obtain p where q_parent: "\<P>\<^sub>?(q) = {p}" by (metis assms(2) is_in_infl_lang.simps mem_Collect_eq)
-  then obtain ps where "path_to_root p (p # ps)" by (metis UNIV_I assms(1) path_to_root_exists path_to_root_rev)
-  (*construct w from infl lang, for a given path from p to root r. 
-wn in infl lang of p, wn-1 (the matching sends) from parent of p, wn-2 with 
-the matching sends of grandparent of p, ... until we reach w1 where infl lang = lang0
-\<rightarrow> then w1 w2 .... wn (all concatenated in this order of the pth) is in mbox
-*)
+  case False
+(*
+obtain r where "path_to_root q r" 
+  define r where "path_to_root q"
+  let ?r = "get_path_to_root q" \<comment> \<open>r is path from q to root, where the last element of r is the root\<close>
+  have "last ?r = get_root (\<G>)"
+*)  
+  then show ?thesis sledgehammer
   
-(*p is q(n-1)
-  then have "path_to_root q (q#p#ps)"  by (meson path_to_root.simps q_parent)*)
-(*because w is in infl. lang. of q, p must have a word with matching sends
-  then have "\<exists>w'.  w' \<in> \<L>\<^sup>*(p) \<and> ((w'\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" *)
-
-(*construct w' s.t. w1....wn is a mbox trace*)
-
-  then obtain w' where "(w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> (\<forall>p. (p \<in> \<P> \<and> \<P>\<^sub>?(p) = {q}) \<longrightarrow>  w'\<down>\<^sub>p = \<epsilon>))" sorry
-  then show ?thesis by blast
-qed
+  qed
  
+
+
 
 
 
@@ -3128,7 +3111,7 @@ proof
         obtain v' where v'_def: "v' \<in> \<T>\<^bsub>\<infinity>\<^esub>" and
                        v'_proj_q: "(v'\<down>\<^sub>!)\<down>\<^sub>q = v" and
                        v'_proj_p: "v'\<down>\<^sub>p = \<epsilon>"
-          using lemma4_4 sorry\<comment> \<open>by metis\<close>
+          using v_def lemma4_4 sorry\<comment> \<open>by metis\<close>
           
         (* Use synchronisability to show trace is also in synchronous system *)
         have "v'\<down>\<^sub>! \<in> \<L>\<^bsub>\<infinity>\<^esub>" using v'_def by blast
