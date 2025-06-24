@@ -4079,6 +4079,12 @@ abbreviation possible_recvs_of_peer_prefix :: "('information, 'peer) action word
 definition subset_condition :: "'peer \<Rightarrow> 'peer \<Rightarrow> bool"
   where "subset_condition p q \<longleftrightarrow> (\<forall> w. (w \<in> \<L>\<^sup>*(p)) \<longrightarrow> ( (((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<downharpoonright>\<^sub>!\<^sub>?) \<subseteq> ((\<lbrakk>w\<rbrakk>\<^sub>p)\<downharpoonright>\<^sub>!\<^sub>?) ))"
 
+lemma shuffled_lang_cond_for_node:
+  assumes "(\<forall>p q. ((is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
+  shows "(\<forall>p \<in> \<P>. ((is_node p) \<longrightarrow> (((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
+  by (metis UNIV_I assms node_parent path_from_root.simps path_to_root_exists2 paths_eq root_defs_eq)
+
+
 lemma recv_in_mbox_requ_send:
   assumes "(?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>) \<in> set w" and "w \<in> \<T>\<^bsub>None\<^esub>" 
   shows "(!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>) \<in> set w"
@@ -4111,8 +4117,63 @@ lemma mbox_word_to_peer_act:
 lemma eps_in_mbox_execs: "\<epsilon> \<in> \<T>\<^bsub>None\<^esub>" using MREmpty MboxTraces.intros by blast
 
 
+section "approach1"
+
+(*show that we can shuffle executions with the same sends and receives (in isolation, respectively)*)
+lemma matched_word_is_fully_shuffled:
+  assumes "(add_matching_recvs w)\<down>\<^sub>? = v\<down>\<^sub>?" and "(add_matching_recvs w)\<down>\<^sub>! = v\<down>\<^sub>!"
+  shows "(add_matching_recvs w) \<squnion>\<squnion>\<^sub>? v \<or> v \<squnion>\<squnion>\<^sub>? (add_matching_recvs w)"
+  sorry
+
+lemma matching_recvs_match_trace:
+  assumes "w = w\<down>\<^sub>!"
+  shows "((add_matching_recvs w)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>? = (w\<down>\<^sub>!\<^sub>?)"
+proof (induct rule: add_matching_recvs.induct)
+  case 1
+  then show ?case by simp
+next
+  case (2 a w)
+  then show ?case by simp
+qed
+
+lemma shuffled_cond_for_traces:
+  assumes "(\<forall>p \<in> \<P>. ((is_node p) \<longrightarrow> (((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))" and "w \<in> \<T>\<^bsub>None\<^esub>" and "w' \<squnion>\<squnion>\<^sub>? w"
+  shows "w' \<in> \<T>\<^bsub>None\<^esub>"
+  sorry (*maybe also need to show that in an execution, the recv. cannot be before the respective send (otherwise
+the buffer is empty but we still take something out)*)
+
+lemma subset_cond_implies_all_recvs_in_exec_ex: 
+assumes "w \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!" and "tree_topology" and "(\<forall>p q. ((is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
+shows "\<exists>w_exec \<in> \<T>\<^bsub>None\<^esub>. w_exec\<down>\<^sub>! = w \<and> (w_exec\<down>\<^sub>?)\<down>\<^sub>!\<^sub>? = (w\<down>\<^sub>!\<^sub>?)"
+  sorry (*by contradiction: assume there is some send from q that is not received by p, 
+but p must be able to receive it (no matter the prefix) by subset condition
+or induction?*)
+(*i.e., recvs must be equal, otherwise either a send of some parent is not received by the respective child,
+or there are receives with no matching send, contradicting that it is an execution*)
+
+
 (*this is the main chunk of the (<==,1.) direction of the current theorem, outside for better clarity*)
 lemma mbox_trace_with_matching_recvs_is_mbox_exec:
+  assumes "w \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!" and "tree_topology" and "(\<forall>p q. ((is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
+  shows "(add_matching_recvs w) \<in> \<T>\<^bsub>None\<^esub>"
+proof -
+  (*then by the subset condition, since w is a valid trace, there exists an mbox execution 
+  where all sends are received in the correct order (and after the respective send, otherwise execution invalid)*)
+  obtain w_exec where ex: "w_exec \<in> \<T>\<^bsub>None\<^esub>" and "w_exec\<down>\<^sub>! = w" and "(w_exec\<down>\<^sub>?)\<down>\<^sub>!\<^sub>? = (w\<down>\<^sub>!\<^sub>?)" using assms(1,2,3) subset_cond_implies_all_recvs_in_exec_ex by blast
+  (*by construction, this execution's sends and receives are the same as in the matched execution (but not necessarily the same executions)*)
+  have sends_eq: "(add_matching_recvs w)\<down>\<^sub>! = w_exec\<down>\<^sub>!" by (metis \<open>w_exec\<down>\<^sub>! = w\<close> adding_recvs_keeps_send_order filter_recursion)
+  have "w = w\<down>\<^sub>!"  using \<open>w_exec\<down>\<^sub>! = w\<close> by force
+  then have "((add_matching_recvs w)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>? = (w\<down>\<^sub>!\<^sub>?)" using matching_recvs_match_trace[of w] by simp
+  (*we can shuffle the existing execution into the matched one*)
+  have sh: "(add_matching_recvs w) \<squnion>\<squnion>\<^sub>? w_exec" sorry
+  (*since all shuffled words are also in the language for each peer, the shuffled execution is then also valid*)
+  from ex sh show ?thesis using shuffled_cond_for_traces[of w_exec "(add_matching_recvs w)"]  using assms(3) shuffled_lang_cond_for_node by fastforce
+qed
+
+
+section "approach2"
+(*this is the main chunk of the (<==,1.) direction of the current theorem, outside for better clarity*)
+lemma mbox_trace_with_matching_recvs_is_mbox_exec2:
   assumes "w \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!" and "tree_topology" and "(\<forall>p q. ((is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
   shows "(add_matching_recvs w) \<in> \<T>\<^bsub>None\<^esub>"
   using assms
@@ -4135,11 +4196,15 @@ next
   then have "\<G>\<langle>\<rightarrow>p\<rangle> = {q}" by (simp add: assms(2) local_parent_to_global)  
   then have "is_parent_of p q" using assms by (simp add: node_parent)
   have "(add_matching_recvs v)\<down>\<^sub>q \<in> \<L>\<^sup>* q" using mbox_exec_to_infl_peer_word v_IH by auto
-  have a_ok: "((add_matching_recvs v) \<cdot> (add_matching_recvs [a])) \<in> \<T>\<^bsub>None\<^esub>" sorry
+  have a_send_ok: "((add_matching_recvs v) \<cdot> [a]) \<in> \<T>\<^bsub>None\<^esub>" sorry
+  then have a_ok: "((add_matching_recvs v) \<cdot> (add_matching_recvs [a])) \<in> \<T>\<^bsub>None\<^esub>" sorry
       (*since the trace is valid, a can be sent after the sends in v. Obtain p and q of a, and then use subset condition
 because if a can't be received then p can't receive a send of its parent (contradiction)*)
   then show ?case by (simp add: add_matching_recvs_app w_def)
 qed
+
+
+
 
 lemma matched_mbox_run_to_sync_run :
   assumes "mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs w) xcm" and "w \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!"
