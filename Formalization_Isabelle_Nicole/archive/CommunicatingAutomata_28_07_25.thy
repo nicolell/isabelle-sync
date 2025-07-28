@@ -4249,12 +4249,10 @@ next
   then show ?thesis using t1 using \<open>\<forall>p. is_parent_of p q \<longrightarrow> w_acc\<down>\<^sub>p = \<epsilon>\<close> by blast
 qed
 
-(*
 lemma lem4_4_alt:
   assumes "\<exists> w'. (w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> ((is_parent_of p q) \<longrightarrow>  w'\<down>\<^sub>p = \<epsilon>)) \<and> (\<exists> xs. (xs @ w) \<in> \<T>\<^bsub>None\<^esub>)"
   shows "\<exists> w'. (w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> (\<forall>g. (is_parent_of g q) \<longrightarrow>  w'\<down>\<^sub>g = \<epsilon>)) \<and> (\<exists> xs. (xs @ w) \<in> \<T>\<^bsub>None\<^esub>)"
   sorry
-*)
 
 subsubsection "sync and infl lang relations"
 
@@ -4282,7 +4280,7 @@ lemma sync_word_to_sync_steps:
 the send sequence is in the lang of that peer*) *)
 *)
 
-(*this one might be unnecessary but the conclusion of the lemma under this is needed
+(*this one might be unnecessary but the conclusion of the lemma under this is needed*)
 lemma subword_of_sync_is_receivable:
   assumes "w'\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>" and "w'\<down>\<^sub>p = \<epsilon>" and "((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} \<in> ((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})" and "is_parent_of p q" and "is_synchronisable" and "tree_topology"
   shows "(((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? \<in> ((\<L>(p))\<downharpoonright>\<^sub>?)\<downharpoonright>\<^sub>!\<^sub>?"
@@ -4292,7 +4290,7 @@ lemma subword_of_sync_is_receivable2:
   assumes "w'\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>" and "w'\<down>\<^sub>p = \<epsilon>" and "((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} \<in> ((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})" and "is_parent_of p q" and "(((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? \<in> ((\<L>(p))\<downharpoonright>\<^sub>?)\<downharpoonright>\<^sub>!\<^sub>?"
   shows "(((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? \<in> (\<L>\<^sup>*(p))\<downharpoonright>\<^sub>!\<^sub>?"
   sorry
-*)
+
 
 section "new formalization"
 
@@ -4471,7 +4469,7 @@ and "is_parent_of q r" and  "((\<L>\<^sup>*(q)) = (\<L>\<^sup>*\<^sub>\<squnion>
 proof -
   have "\<exists>x. (wq \<cdot> x) \<in> \<L>\<^sup>* q \<and> (((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" using 
 subset_cond_from_child_prefix_and_parent assms by blast
-  then obtain x where wqx_def: "(wq \<cdot> x) \<in> \<L>\<^sup>* q" and wqx_match: "(((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" by auto
+      then obtain x where wqx_def: "(wq \<cdot> x) \<in> \<L>\<^sup>* q" and wqx_match: "(((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" by auto
     (*shuffle x s.t. only the missing receives are added to wq (no extra sends*)
     then obtain xs ys where x_shuf: "(xs \<cdot> ys) \<squnion>\<squnion>\<^sub>? x" and "xs\<down>\<^sub>? = xs" and "ys\<down>\<^sub>! = ys" using full_shuffle_of by blast (*fully shuffle x*)
     then have xsys_recvs: "(((wq \<cdot> (xs \<cdot> ys))\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)"
@@ -4830,7 +4828,7 @@ proof
           then have "(w' \<cdot> x') \<in> \<L> q" using w'x'_Lq w_in_infl_lang by auto
           (*then w’ x’ consists only of sends*)
           (*then w’ x’ is also a valid mbox execution*) 
-          then have "(w' \<cdot> x') \<in> \<T>\<^bsub>None\<^esub>" using root_lang_is_mbox True by blast (*since q is root and thus w' x' are only sends*)
+          then have "(w' \<cdot> x') \<in> \<T>\<^bsub>None\<^esub>" sorry (*since q is root and thus w' x' are only sends*)
           (*then have "(w' \<cdot> x')\<down>\<^sub>! = (w' \<cdot> x')" sorry *)
           have "w'\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}\<down>\<^sub>!\<^sub>? = w\<down>\<^sub>?\<down>\<^sub>!\<^sub>?" using w'_w_match by force
           (*then have "(w' \<cdot> x') \<cdot> w \<in> \<T>\<^bsub>None\<^esub>" sorry (*since w' x' is valid execution and provides all sends for w*)*)
@@ -4926,8 +4924,7 @@ proof
             then show ?case using assms swap vq_v_match vq_def lem4_4_prems
             proof (cases "is_root q")
               case True
-              have "vq \<in> \<L> q" using vq_def w_in_infl_lang by auto
-              then have "vq \<in> \<T>\<^bsub>None\<^esub>" using root_lang_is_mbox True by simp (*since q is root and thus vq are only sends*)
+              then have "vq \<in> \<T>\<^bsub>None\<^esub>" sorry (*since q is root and thus vq are only sends*)
               (*then mix vq with v (while considering v') as valid mbox execution (works since vq needs
              nothing from any other peer, and vq provides all necessary sends for v)*)
               let ?w' = "xs \<cdot> a # b # ys"
