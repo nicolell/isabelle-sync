@@ -1497,9 +1497,8 @@ next
     by simp
 qed
 
-(*TODO: fix this
 lemma sync_run_decompose: 
-  assumes "sync_run C0 (u@v) (xc@yc)" 
+  assumes "sync_run C0 (u@v) (xc@yc)"
   shows "sync_run C0 u xc \<and> sync_run (last (C0#xc)) v yc"
   using assms
 proof (induct C0 "u@v" "xc@yc" arbitrary: u v xc yc)
@@ -1509,7 +1508,7 @@ next
   case (SRComposed I0 w ws a Cn)
   then show ?case sorry
 qed
-*)
+
 \<comment> \<open>E(Nsync)\<close>
 inductive_set SyncTraces :: "('information, 'peer) action language"  ("\<T>\<^sub>\<zero>" 120) where
   STRun: "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> w xc \<Longrightarrow> w \<in> \<T>\<^sub>\<zero>"
@@ -1557,7 +1556,7 @@ lemma act_in_sync_word_to_matching_peer_steps:
 lemma sync_lang_app: 
   assumes "(u @ v) \<in> \<L>\<^sub>\<zero>"
   shows "u \<in> \<L>\<^sub>\<zero>"
-  sorry (*by (metis SyncTraces.simps append.right_neutral assms sync_run_decompose)*)
+  by (metis SyncTraces.simps append.right_neutral assms sync_run_decompose)
 
 lemma sync_lang_sends_app:
   assumes "(u@v)\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>"
@@ -3306,31 +3305,6 @@ next
 qed
 
 
-(*TODO das hier benutzen*)
-lemma path_to_root_exists3: 
-  assumes "tree_topology" and "p \<in> \<P>"
-  shows "\<exists>ps. path_to_root p ps" 
-using assms proof (induct )
-  case (ITRoot r)
-  hence "p = r"
-    by simp
-  hence "path_to_root p [p]" sorry
-  then show ?case by blast
-next
-  case (ITNode P E x q)
-  assume IH: "p \<in> P \<Longrightarrow> \<exists>a. path_to_root p a"
-  assume a: "p \<in> insert q P"
-  then show ?case 
-    proof (cases "p = q")
-      case True
-      then show ?thesis sorry
-    next
-      case False
-      with IH a  show ?thesis by blast
-    qed
-qed
-
-
 lemma edge_elem_to_edge:
   assumes "q \<in> \<G>\<langle>\<rightarrow>p\<rangle>"
   shows "(q, p) \<in> \<G>"
@@ -4103,25 +4077,8 @@ lemma concat_infl_word_exists:
 lemma concat_infl_mbox:
   assumes "concat_infl p w [q] w_acc"
   shows "w_acc \<in> \<T>\<^bsub>None\<^esub>"
-proof -
-  define xp where xp_def: "xp = [q]"
-  with assms  have "concat_infl p w xp w_acc"
-    by simp
-  from this xp_def show "w_acc \<in> \<T>\<^bsub>None\<^esub>"
-  proof (induct)
-    case (at_p ps)
-    then show ?case sorry
-  next
-    case (reach_root q qw x w_acc)
-    then show ?case sorry
-  next
-    case (node_step x q w_acc ps qw)
-    then show ?case sorry
-  qed
-qed
-(*
   using assms 
-proof(induct "[q]" w_acc arbitrary: q rule: concat_infl.induct)
+proof(induct "[q]" w_acc arbitrary: q p w rule: concat_infl.induct)
   case at_p
   then show ?case by (metis NetworkOfCA.path_to_root_first_elem_is_peer NetworkOfCA_axioms dual_order.eq_iff
         infl_lang_subset_of_lang lang_subset_infl_lang p_root root_lang_is_mbox)
@@ -4135,7 +4092,6 @@ next
   case (node_step x q qw w_acc)
   then show ?case sorry
 qed
-*)
 
 lemma concat_infl_children_not_included:
   assumes "concat_infl p w ps w_acc" and "is_parent_of q p"
@@ -4298,12 +4254,6 @@ next
   have "\<exists> es. w_acc = es @ w" using concat by (simp add: concat_infl_w_in_w_acc)
   then show ?thesis using t1 using \<open>\<forall>p. is_parent_of p q \<longrightarrow> w_acc\<down>\<^sub>p = \<epsilon>\<close> by blast
 qed
-
-lemma lem4_4_extra2:
-  assumes "tree_topology" and "w \<in> \<L>\<^sup>*(q)" and "q \<in> \<P>" and "w' \<in> \<T>\<^bsub>None\<^esub>" and "w'\<down>\<^sub>q = w"
-and "path_to_root q ps"
-shows "\<forall> x \<in> \<P>. x \<notin> (set ps) \<longrightarrow> w'\<down>\<^sub>x = \<epsilon>"
-  using assms sorry
 
 (*
 lemma lem4_4_alt:
@@ -6052,20 +6002,18 @@ lemma theorem_original_ver:
   assumes "tree_topology" 
   shows "(is_synchronisable \<longleftrightarrow> (\<forall>p \<in> \<P>. \<forall> q \<in> \<P>. ((is_parent_of p q) \<longrightarrow> ((((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<downharpoonright>\<^sub>!\<^sub>? \<subseteq> (\<L>\<^sup>*(p))\<downharpoonright>\<^sub>!\<^sub>?) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) )))"
   using CE1_tree_topology CE1_theorem_original_wrong sorry
-end
 
-context NetworkOfCA begin
 definition theorem_orig_rightside :: "bool"
   where "theorem_orig_rightside \<longleftrightarrow> (\<forall>p \<in> \<P>. \<forall> q \<in> \<P>. ((is_parent_of p q) \<longrightarrow> ((((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<downharpoonright>\<^sub>!\<^sub>? \<subseteq> (\<L>\<^sup>*(p))\<downharpoonright>\<^sub>!\<^sub>?) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
 
+
+
+
+
+
+
+
 end
-
-
-
-
-
-
-
 
 
 lemma theorem_original_ver: 
@@ -6080,4 +6028,3 @@ theorem synchronisability_for_trees:
   sorry
 
 end
-
