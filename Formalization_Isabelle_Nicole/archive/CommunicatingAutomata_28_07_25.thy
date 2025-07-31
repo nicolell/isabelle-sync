@@ -1497,9 +1497,8 @@ next
     by simp
 qed
 
-(*TODO: fix this
 lemma sync_run_decompose: 
-  assumes "sync_run C0 (u@v) (xc@yc)" 
+  assumes "sync_run C0 (u@v) (xc@yc)"
   shows "sync_run C0 u xc \<and> sync_run (last (C0#xc)) v yc"
   using assms
 proof (induct C0 "u@v" "xc@yc" arbitrary: u v xc yc)
@@ -1509,7 +1508,6 @@ next
   case (SRComposed I0 w ws a Cn)
   then show ?case sorry
 qed
-*)
 
 \<comment> \<open>E(Nsync)\<close>
 inductive_set SyncTraces :: "('information, 'peer) action language"  ("\<T>\<^sub>\<zero>" 120) where
@@ -1558,7 +1556,7 @@ lemma act_in_sync_word_to_matching_peer_steps:
 lemma sync_lang_app: 
   assumes "(u @ v) \<in> \<L>\<^sub>\<zero>"
   shows "u \<in> \<L>\<^sub>\<zero>"
-  sorry (*by (metis SyncTraces.simps append.right_neutral assms sync_run_decompose)*)
+  by (metis SyncTraces.simps append.right_neutral assms sync_run_decompose)
 
 lemma sync_lang_sends_app:
   assumes "(u@v)\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>"
@@ -2869,12 +2867,11 @@ lemma filter_ignore_false_prop:
   shows "filter (\<lambda>x. False \<or> B) w = filter (\<lambda>x. B) w" 
   by (metis assms filter_False filter_True)
   
-(* incorrect unless assumption is also that w contains only sens to p (and no other child)
+
 lemma pair_proj_send_for_unique_parent:
   assumes "is_parent_of p q" and "w \<in> \<L>(q)"
   shows "(w\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} = (w\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})"
   sorry
-*)
 
 lemma recv_lang_child_pair_proj_subset1: 
   assumes "is_parent_of p q"
@@ -3251,7 +3248,6 @@ lemma p2root_down_step:
   "(is_parent_of p q \<and> path_to_root q qs)  \<Longrightarrow> path_to_root p (p#qs)" 
   using path_to_root_downwards by auto
 
-(*
 lemma path_to_root_exists: 
   assumes "tree_topology" and "p \<in> \<P>"
   shows "\<exists>ps. path_to_root p ps" 
@@ -3305,31 +3301,6 @@ next
     then obtain x where "(x, l) \<in> \<G>" *)
     then show ?thesis sorry
   qed 
-qed
-*)
-
-(*TODO das hier benutzen*)
-lemma path_to_root_exists: 
-  assumes "tree_topology" and "p \<in> \<P>"
-  shows "\<exists>ps. path_to_root p ps" 
-using assms proof (induct )
-  case (ITRoot r)
-  hence "p = r"
-    by simp
-  hence "path_to_root p [p]" sorry
-  then show ?case by blast
-next
-  case (ITNode P E x q)
-  assume IH: "p \<in> P \<Longrightarrow> \<exists>a. path_to_root p a"
-  assume a: "p \<in> insert q P"
-  then show ?case 
-    proof (cases "p = q")
-      case True
-      then show ?thesis sorry
-    next
-      case False
-      with IH a  show ?thesis by blast
-    qed
 qed
 
 
@@ -4034,9 +4005,6 @@ lemma concat_infl_tree_rev :
   shows "tree_topology"
   using assms concat_infl.cases by blast
 
-(*since we remove elements from ps from the front, either we are at the initial concat_infl config where the
-path to root starts with p, or at least one step has already been taken
-and because ps is a (part of a) path to root, each node can at most appear once in ps!*)
 lemma concat_infl_p_first_or_not_exists:
   assumes "concat_infl p w ps w'"
   shows "(\<exists>qs. ps = p#qs) \<or> (\<forall>xs ys. ps \<noteq> xs @ [p] @ ys)"
@@ -4096,7 +4064,6 @@ next
   qed
 qed
 
-(*we can construct w' by starting at some p and following the path to root*)
 lemma concat_infl_word_exists:
   assumes "concat_infl p w ps w" and "is_root r"
   shows "\<exists>w'. concat_infl p w [r] w'"
@@ -4105,25 +4072,8 @@ lemma concat_infl_word_exists:
 lemma concat_infl_mbox:
   assumes "concat_infl p w [q] w_acc"
   shows "w_acc \<in> \<T>\<^bsub>None\<^esub>"
-proof -
-  define xp where xp_def: "xp = [q]"
-  with assms  have "concat_infl p w xp w_acc"
-    by simp
-  from this xp_def show "w_acc \<in> \<T>\<^bsub>None\<^esub>"
-  proof (induct)
-    case (at_p ps)
-    then show ?case sorry
-  next
-    case (reach_root q qw x w_acc)
-    then show ?case sorry
-  next
-    case (node_step x q w_acc ps qw)
-    then show ?case sorry
-  qed
-qed
-(*
   using assms 
-proof(induct "[q]" w_acc arbitrary: q rule: concat_infl.induct)
+proof(induct "[q]" w_acc arbitrary: q p w rule: concat_infl.induct)
   case at_p
   then show ?case by (metis NetworkOfCA.path_to_root_first_elem_is_peer NetworkOfCA_axioms dual_order.eq_iff
         infl_lang_subset_of_lang lang_subset_infl_lang p_root root_lang_is_mbox)
@@ -4137,13 +4087,11 @@ next
   case (node_step x q qw w_acc)
   then show ?case sorry
 qed
-*)
 
 lemma concat_infl_children_not_included:
   assumes "concat_infl p w ps w_acc" and "is_parent_of q p"
   shows "w_acc\<down>\<^sub>q = \<epsilon>"
-    (*to show, that p is child of q, so p is not on the path_to_root of p
-follows from def. of path to root*)
+    (*to show, simply that p is child of q, so p is not on the path_to_root of p*)
   using assms 
 proof (induct)
   case (at_p ps)
@@ -4301,23 +4249,10 @@ next
   then show ?thesis using t1 using \<open>\<forall>p. is_parent_of p q \<longrightarrow> w_acc\<down>\<^sub>p = \<epsilon>\<close> by blast
 qed
 
-(*all peers not on the path to root starting from q are NOT part of the execution constructed with lemma 4.4*)
-(*TODO: there can be an execution !a?a!b?b s.t. r sends a to p, and b to q, then the assumptions hold, but despite p not
-being on the path to root from q, it's present in the execution
-lemma lem4_4_extra2:
-  assumes "tree_topology" and "w \<in> \<L>\<^sup>*(q)" and "q \<in> \<P>" and "w' \<in> \<T>\<^bsub>None\<^esub>" and "w'\<down>\<^sub>q = w"
-and "path_to_root q ps"
-shows "\<forall> x \<in> \<P>. x \<notin> (set ps) \<longrightarrow> w'\<down>\<^sub>x = \<epsilon>"
-  using assms sorry
-*)
-
-
-(*
 lemma lem4_4_alt:
   assumes "\<exists> w'. (w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> ((is_parent_of p q) \<longrightarrow>  w'\<down>\<^sub>p = \<epsilon>)) \<and> (\<exists> xs. (xs @ w) \<in> \<T>\<^bsub>None\<^esub>)"
   shows "\<exists> w'. (w' \<in> \<T>\<^bsub>None\<^esub> \<and> w'\<down>\<^sub>q = w \<and> (\<forall>g. (is_parent_of g q) \<longrightarrow>  w'\<down>\<^sub>g = \<epsilon>)) \<and> (\<exists> xs. (xs @ w) \<in> \<T>\<^bsub>None\<^esub>)"
   sorry
-*)
 
 subsubsection "sync and infl lang relations"
 
@@ -4345,7 +4280,7 @@ lemma sync_word_to_sync_steps:
 the send sequence is in the lang of that peer*) *)
 *)
 
-(*this one might be unnecessary but the conclusion of the lemma under this is needed
+(*this one might be unnecessary but the conclusion of the lemma under this is needed*)
 lemma subword_of_sync_is_receivable:
   assumes "w'\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>" and "w'\<down>\<^sub>p = \<epsilon>" and "((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} \<in> ((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})" and "is_parent_of p q" and "is_synchronisable" and "tree_topology"
   shows "(((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? \<in> ((\<L>(p))\<downharpoonright>\<^sub>?)\<downharpoonright>\<^sub>!\<^sub>?"
@@ -4355,7 +4290,7 @@ lemma subword_of_sync_is_receivable2:
   assumes "w'\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>" and "w'\<down>\<^sub>p = \<epsilon>" and "((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} \<in> ((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})" and "is_parent_of p q" and "(((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? \<in> ((\<L>(p))\<downharpoonright>\<^sub>?)\<downharpoonright>\<^sub>!\<^sub>?"
   shows "(((w'\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? \<in> (\<L>\<^sup>*(p))\<downharpoonright>\<^sub>!\<^sub>?"
   sorry
-*)
+
 
 section "new formalization"
 
@@ -4383,7 +4318,7 @@ definition theorem_rightside :: "bool"
 lemma prefix_mbox_trace_valid:
   assumes "(w@v) \<in> \<L>\<^sub>\<infinity>"
   shows "w \<in> \<L>\<^sub>\<infinity>"
-  sorry (*induct over w OR v*)
+  sorry
 
 lemma mbox_exec_to_peer_act:
   assumes "w \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!" and "(!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>) \<in> set w" and "tree_topology" 
@@ -4405,6 +4340,11 @@ lemma peer_recvs_in_exec_is_prefix_of_parent_sends:
   shows "prefix (((e\<down>\<^sub>p)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) ((((e\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>?)"
   sorry
 
+lemma matching_recvs_word_matches_sends_explicit:
+  assumes "e \<in> \<T>\<^bsub>None\<^esub>" and "is_parent_of p q"
+  shows "(((e\<down>\<^sub>!)\<down>\<^sub>q)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? = (((add_matching_recvs (e\<down>\<^sub>!)\<down>\<^sub>?)\<down>\<^sub>p)\<down>\<^sub>!\<^sub>?)" 
+  sorry
+
 
 lemma root_infl_word_no_recvs:
   assumes "is_root p" and "w \<in> \<L>\<^sup>* p"
@@ -4413,15 +4353,8 @@ proof (rule ccontr)
   assume "w\<down>\<^sub>! \<noteq> w"
   then have "\<exists>x. x \<in> set w \<and> is_input x"  by (simp add: not_only_sends_impl_recv)
   then obtain x where "x \<in> set w" and "is_input x" by auto
-  with assms show "False" sorry
+  then show "False" sorry
 qed
-
-lemma matching_recvs_word_matches_sends_explicit:
-  assumes "e \<in> \<T>\<^bsub>None\<^esub>" and "is_parent_of p q"
-  shows "(((e\<down>\<^sub>!)\<down>\<^sub>q)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? = (((add_matching_recvs (e\<down>\<^sub>!)\<down>\<^sub>?)\<down>\<^sub>p)\<down>\<^sub>!\<^sub>?)" 
-  sorry
-
-
 
 
 
@@ -4440,11 +4373,7 @@ and "(((((w)\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^su
 lemma no_sign_recv_prefix_to_sign_inv:
   assumes "prefix (w\<down>\<^sub>!\<^sub>?) (w'\<down>\<^sub>!\<^sub>?)" and "w\<down>\<^sub>? = w" and "w'\<down>\<^sub>? = w'"
   shows "prefix w w'"
-  using assms 
-  apply (induct w)
-   apply auto
   sorry
-(*induction w*)
 
 
 (*given the matched execution (!a?a!b?b...) and an unrelated child word, 
@@ -4456,19 +4385,15 @@ lemma match_exec_and_child_prefix_to_parent_match:
 and "v' \<in> \<T>\<^bsub>None\<^esub>"
 shows "\<exists>wr'. prefix wr' ((v')\<down>\<^sub>r) \<and> (((wr'\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?) = (((wq)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) \<and> wr' \<in> \<L>\<^sup>* r"
   sorry
-(*induction (wq\<down>\<^sub>?)*)
+
 
 (*wq recvs match wr' sends exactly, and wr' can perform some suffix x' after wr'
 \<rightarrow> by subset condition, wq must also have some suffix x that can receive all sends to q in x'*)
 lemma subset_cond_from_child_prefix_and_parent:
   assumes "subset_condition q r" and "wq \<in> \<L>\<^sup>* q" and "wr' \<cdot> x' \<in> \<L>\<^sup>* r" and "(((wr'\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?) = (((wq)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?)"
   shows "\<exists>x. (wq \<cdot> x) \<in> \<L>\<^sup>* q \<and> (((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> x')\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)"
-  apply (rule ccontr)
-  sorry
-
- (*for wr', projection to r can be added but is not necessary since it's implicity there by wr' x' being
+  sorry (*for wr', projection to r can be added but is not necessary since it's implicity there by wr' x' being
 in r's language*)
-(*contr*)
 
 
 (*can append send to mbox exec if the peer sending it can perform the send
@@ -4500,7 +4425,7 @@ no action gets added or removed, so at least one pair must be swapped, then we c
 - all a,b in w and w' are always output a, input b \<rightarrow> but then w can shuffle into w'
 \<longrightarrow> at least one pair a,b where a is input and b is output must exist, which does the reverse of a regular shuffle
 from w to w' (i.e. the input moves right while the output moves left)*)
-(*contr*)
+
 
 (*missing receives of some peer word can be appended after the original execution
 this is doable, since all sends are already in the buffer of the peer (since the trace includes them and e has
@@ -4514,7 +4439,6 @@ and "(wq \<cdot> xs) \<in> \<L>\<^sup>* q" and "(v \<cdot> [a]) \<in> \<T>\<^bsu
 and "e\<down>\<^sub>! = (v \<cdot> [a])"
 shows "(e \<cdot> xs) \<in> \<T>\<^bsub>None\<^esub>"
   sorry
-
 
 (*for peer words wq and wq = (v'q !a), if (v'q !a) is NOT a shuffle of wq
 \<rightarrow> then either the shuffle is the other way round, or the words cannot be shuffled into each other*)
@@ -4545,7 +4469,7 @@ and "is_parent_of q r" and  "((\<L>\<^sup>*(q)) = (\<L>\<^sup>*\<^sub>\<squnion>
 proof -
   have "\<exists>x. (wq \<cdot> x) \<in> \<L>\<^sup>* q \<and> (((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" using 
 subset_cond_from_child_prefix_and_parent assms by blast
-  then obtain x where wqx_def: "(wq \<cdot> x) \<in> \<L>\<^sup>* q" and wqx_match: "(((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" by auto
+      then obtain x where wqx_def: "(wq \<cdot> x) \<in> \<L>\<^sup>* q" and wqx_match: "(((wq \<cdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" by auto
     (*shuffle x s.t. only the missing receives are added to wq (no extra sends*)
     then obtain xs ys where x_shuf: "(xs \<cdot> ys) \<squnion>\<squnion>\<^sub>? x" and "xs\<down>\<^sub>? = xs" and "ys\<down>\<^sub>! = ys" using full_shuffle_of by blast (*fully shuffle x*)
     then have xsys_recvs: "(((wq \<cdot> (xs \<cdot> ys))\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<cdot> [!\<langle>(i\<^bsup>r\<rightarrow>q\<^esup>)\<rangle>])\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)"
@@ -4627,7 +4551,7 @@ next
     have wq_to_v'a_trace: "wq\<down>\<^sub>! = ((?v')\<down>\<^sub>q)\<down>\<^sub>! \<cdot> [a]" using \<open>(a # \<epsilon>)\<down>\<^sub>q = a # \<epsilon>\<close> v'a3 v'a4 wq_v'_sends by argo
     (*obtain parent r and its word wr to match wq*)
     have "is_node q" by (metis False NetworkOfCA.root_or_node NetworkOfCA_axioms assms(2))
-    then obtain r where "is_parent_of q r" by (metis False UNIV_I path_to_root.cases path_to_root_exists)
+    then obtain r where "is_parent_of q r" by (metis False UNIV_I path_to_root.cases path_to_root_exists2)
     (*receives of wq are prefix of receives in v' (otherwise execs have different traces!)*)
     have v'_recvs_match: "(((?v'\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>? = (((add_matching_recvs ((?v'\<down>\<^sub>!))\<down>\<^sub>?)\<down>\<^sub>q)\<down>\<^sub>!\<^sub>?)" using matching_recvs_word_matches_sends_explicit[of "?v'" q r] using \<open>is_parent_of q r\<close> v_IH by simp
     then have "(((?v'\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>? = (((?v'\<down>\<^sub>?)\<down>\<^sub>q)\<down>\<^sub>!\<^sub>?)" using \<open>w = add_matching_recvs v\<down>\<^sub>! \<cdot> a # \<epsilon>\<close> w_def by fastforce
@@ -4904,7 +4828,7 @@ proof
           then have "(w' \<cdot> x') \<in> \<L> q" using w'x'_Lq w_in_infl_lang by auto
           (*then w’ x’ consists only of sends*)
           (*then w’ x’ is also a valid mbox execution*) 
-          then have "(w' \<cdot> x') \<in> \<T>\<^bsub>None\<^esub>" using root_lang_is_mbox True by blast (*since q is root and thus w' x' are only sends*)
+          then have "(w' \<cdot> x') \<in> \<T>\<^bsub>None\<^esub>" sorry (*since q is root and thus w' x' are only sends*)
           (*then have "(w' \<cdot> x')\<down>\<^sub>! = (w' \<cdot> x')" sorry *)
           have "w'\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}\<down>\<^sub>!\<^sub>? = w\<down>\<^sub>?\<down>\<^sub>!\<^sub>?" using w'_w_match by force
           (*then have "(w' \<cdot> x') \<cdot> w \<in> \<T>\<^bsub>None\<^esub>" sorry (*since w' x' is valid execution and provides all sends for w*)*)
@@ -4929,7 +4853,7 @@ proof
         next
           case False (*q is node with parent r*)
           then have "is_node q" by (metis NetworkOfCA.root_or_node NetworkOfCA_axioms assms)
-          then obtain r where qr: "is_parent_of q r" by (metis False UNIV_I path_from_root.simps path_to_root_exists paths_eq)
+          then obtain r where qr: "is_parent_of q r" by (metis False UNIV_I path_from_root.simps path_to_root_exists2 paths_eq)
           (*obtain w’’ s.t. w’’ provides matching sends for w’x’ (must exist since w’x’ in infl lang)*)
           have "(w' \<cdot> x') \<in> \<L>\<^sup>* q" by (simp add: w'x'_Lq)
           then have "\<exists>w''.  w'' \<in> \<L>\<^sup>*(r) \<and> (((w' \<cdot> x')\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((w''\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" 
@@ -5000,8 +4924,7 @@ proof
             then show ?case using assms swap vq_v_match vq_def lem4_4_prems
             proof (cases "is_root q")
               case True
-              have "vq \<in> \<L> q" using vq_def w_in_infl_lang by auto
-              then have "vq \<in> \<T>\<^bsub>None\<^esub>" using root_lang_is_mbox True by simp (*since q is root and thus vq are only sends*)
+              then have "vq \<in> \<T>\<^bsub>None\<^esub>" sorry (*since q is root and thus vq are only sends*)
               (*then mix vq with v (while considering v') as valid mbox execution (works since vq needs
              nothing from any other peer, and vq provides all necessary sends for v)*)
               let ?w' = "xs \<cdot> a # b # ys"
@@ -5025,7 +4948,7 @@ proof
             next
               case False (*q is node with parent r*)
               then have "is_node q" by (metis NetworkOfCA.root_or_node NetworkOfCA_axioms assms)
-              then obtain r where qr: "is_parent_of q r" by (metis False UNIV_I path_from_root.simps path_to_root_exists paths_eq)
+              then obtain r where qr: "is_parent_of q r" by (metis False UNIV_I path_from_root.simps path_to_root_exists2 paths_eq)
               then have "\<exists>vr.  vr \<in> \<L>\<^sup>*(r) \<and> ((vq\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((vr\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)"
                 using infl_parent_child_matching_ws[of vq q r] orig_in_L vq_def by blast
               (*now we have vr which matches vq which matches w*)
@@ -5776,7 +5699,7 @@ definition theorem_rightside2 :: "bool"
 lemma shuffled_lang_cond_for_node:
   assumes "(\<forall>p q. ((is_parent_of p q) \<longrightarrow> ((subset_condition1 p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
   shows "(\<forall>p \<in> \<P>. ((is_node p) \<longrightarrow> (((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
-  by (metis UNIV_I assms node_parent path_from_root.simps path_to_root_exists paths_eq root_defs_eq)
+  by (metis UNIV_I assms node_parent path_from_root.simps path_to_root_exists2 paths_eq root_defs_eq)
 
 
 subsection "counterexample to original theorem"
@@ -5863,7 +5786,8 @@ proof (rule ccontr)
   assume "\<not> !\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle> # !\<langle>(b\<^bsup>p\<rightarrow>x\<^esup>)\<rangle> # \<epsilon> \<notin> \<L>\<^sub>\<zero>" 
   then have "[(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>), (!\<langle>(b\<^bsup>p\<rightarrow>x\<^esup>)\<rangle>)] \<in> \<L>\<^sub>\<zero>" by simp
   then have "[(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)] \<in> \<L>\<^sub>\<zero>" by (metis append_Cons append_Nil sync_lang_app)
-  have "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> [(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)] [((\<C>\<^sub>\<I>\<^sub>\<zero>)(q:= q1))(p:= p1)]" sorry
+  have "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> [(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)] [((\<C>\<^sub>\<I>\<^sub>\<zero>)(q:= q1))(p:= p1)]" by (metis Nil_is_append_conv SyncTraces_rev \<open>!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle> # \<epsilon> \<in> \<L>\<^sub>\<zero>\<close> append.right_neutral not_Cons_self2
+        sync_run.cases sync_run_decompose)
   have s2_rule: "\<forall> s2. (\<C>\<^sub>\<I>\<^sub>\<zero> p) \<midarrow>(?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)\<rightarrow>p s2 \<longrightarrow> s2 = p1"
   proof (rule ccontr)
     assume "\<not> (\<forall>s2. \<C>\<^sub>\<I>\<^sub>\<zero> p \<midarrow>(?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)\<rightarrow>p s2 \<longrightarrow> s2 = p1)" 
@@ -5877,7 +5801,7 @@ proof (rule ccontr)
 
   obtain yc C where "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> [(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>), (!\<langle>(b\<^bsup>p\<rightarrow>x\<^esup>)\<rangle>)] (yc@[C])"  by (metis SyncTraces_rev \<open>!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle> # !\<langle>(b\<^bsup>p\<rightarrow>x\<^esup>)\<rangle> # \<epsilon> \<in> \<L>\<^sub>\<zero>\<close> list.discI sync_run.cases)
   then  have run_decomp: "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> [(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)] yc \<and> last (\<C>\<^sub>\<I>\<^sub>\<zero>#yc) \<midarrow>\<langle>(!\<langle>(b\<^bsup>p\<rightarrow>x\<^esup>)\<rangle>), \<zero>\<rangle>\<rightarrow> C" 
-    sorry
+    by (metis Nil_is_append_conv append.right_neutral not_Cons_self2 sync_run.simps sync_run_decompose)
   then have "length (yc) = 1" using sync_run_word_configs_len_eq[of "\<C>\<^sub>\<I>\<^sub>\<zero>" "[(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)]" yc] by simp
   then obtain C1 where "length (yc) = 1" and C1_prop: "yc = [C1]" by (metis One_nat_def Suc_length_conv length_0_conv)
   have "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> [(!\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>)] [C1]" using C1_prop run_decomp by auto 
@@ -6058,20 +5982,18 @@ lemma theorem_original_ver:
   assumes "tree_topology" 
   shows "(is_synchronisable \<longleftrightarrow> (\<forall>p \<in> \<P>. \<forall> q \<in> \<P>. ((is_parent_of p q) \<longrightarrow> ((((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<downharpoonright>\<^sub>!\<^sub>? \<subseteq> (\<L>\<^sup>*(p))\<downharpoonright>\<^sub>!\<^sub>?) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) )))"
   using CE1_tree_topology CE1_theorem_original_wrong sorry
-end
 
-context NetworkOfCA begin
 definition theorem_orig_rightside :: "bool"
   where "theorem_orig_rightside \<longleftrightarrow> (\<forall>p \<in> \<P>. \<forall> q \<in> \<P>. ((is_parent_of p q) \<longrightarrow> ((((\<L>\<^sub>!\<^sup>*(q))\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<downharpoonright>\<^sub>!\<^sub>? \<subseteq> (\<L>\<^sup>*(p))\<downharpoonright>\<^sub>!\<^sub>?) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
 
+
+
+
+
+
+
+
 end
-
-
-
-
-
-
-
 
 
 lemma theorem_original_ver: 
@@ -6086,4 +6008,3 @@ theorem synchronisability_for_trees:
   sorry
 
 end
-
