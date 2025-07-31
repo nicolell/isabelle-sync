@@ -1,0 +1,11 @@
+\begin{tikzpicture}[>=stealth,node distance=1.5cm,shorten >=1pt, every state/.style={text=black},semithick]
+	\node (ai) at (-2,0) {$\Automaton{I}$};
+	\node (aw) at (0,0.75) {$\Automaton{W}$};
+	\node (awp) at (0,-0.75) {$\Automaton{W'}$};
+	\node (al) at (2,0) {$\Automaton{L}$};
+	\draw[->] (ai) -- (aw);
+	\draw[->] (ai) -- (awp);
+	\draw[->] (aw) -- (al);
+	\draw[->] (awp) -- (al);
+	\draw[->] (al) -- (ai);
+\end{tikzpicture}

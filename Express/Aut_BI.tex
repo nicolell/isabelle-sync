@@ -1,0 +1,30 @@
+\begin{tikzpicture}[>=stealth,node distance=1.5cm,shorten >=1pt,
+    every state/.style={minimum size = 0pt},semithick]
+
+
+      \node[state,initial,initial text={}]   at (0,0) (q0)  {$0$};
+      \node[state] at (-1.5,1.7) (q1)  {$1$};
+      \node[state] at (-1.5,-1.7) (q2)  {$2$};
+      \node[state] at (1.5,-1.7) (q3)  {$3$};
+      \node[state] at (2, 0) (qd)  {$\$$};
+      \node[state, accepting] at (4, 0) (qd')  {$\$'$};
+      
+      
+      
+	\path (q0) edge[->, bend right = 10] node [sloped, above] {$\send{1}{I}{W}$} (q1);
+	\path (q1) edge[->, bend right = 10] node [sloped, below] {$\send{1}{I}{W'}$} (q0);    
+	
+	\path (q0) edge[->, bend left=10] node [sloped, below] {$\send{2}{I}{W}$} (q2);
+	\path (q2) edge[->, bend left=10] node [sloped, above] {$\send{2}{I}{W'}$} (q0);    
+	
+	\path (q0) edge[->, bend left=10] node [above,sloped] {$\send{3}{I}{W}$} (q3);
+	\path (q3) edge[->, bend left=10] node [below, sloped] {$\send{3}{I}{W'}$} (q0);    
+	
+	\path (q0) edge[->] node [above] {$\send{\$}{I}{W}$} (qd);
+	\path (qd) edge[->] node [above] {$\send{\$}{I}{W'}$} (qd');
+
+
+
+		
+
+\end{tikzpicture} 

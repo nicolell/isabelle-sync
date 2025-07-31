@@ -1,0 +1,65 @@
+\begin{tikzpicture}[>=stealth,node distance=1.5cm,shorten >=1pt,
+    every state/.style={minimum size = 0pt}, semithick]
+
+
+      \node[state,initial,initial text={}]   at (0,0) (q0)  {$0$};
+      \node[state] at (2.5,1.5) (qa)  {$a$};
+      \node[state] at (2.5,-1.5) (qb)  {$b$};
+      \node[state] at (7,0) (q*)  {$*$};
+      \node[state] at (3.5, 3.5) (qe)  {$e$};
+      \node[state] at (6, 4) (qe')  {$e'$};
+      \node[state, accepting] at (8, 4) (qok)  {$ok$};
+      %\node[state, scale=0.8] at (12.8,4) (qokb) {};
+      
+	\path (q0) edge[->, bend left=10] node [above, sloped] {$\rec{a}{W}{L}$} (qa);
+	\path (qa) edge[->, bend left=10] node [below, sloped] {$\rec{a}{W'}{L}$} (q0);    
+	
+	\path (q0) edge[->, bend left=10] node [above, sloped, pos = .6] {$\rec{b}{W}{L}$} (qb);
+	\path (qb) edge[->, bend left=10] node [below, sloped] {$\rec{b}{W'}{L}$} (q0);    
+	
+	\path (q0) edge[->, bend left=40] node [left] {$\rec{end}{W}{L}$} (qe);
+	\path (qe) edge[->] node [above] {$\rec{end}{W'}{L}$} (qe');
+	\path (qe') edge[->] node [above] {$\send{ok}{L}{I}$} (qok);
+	
+	\path (q0) edge[->, bend right =90] node [below, scale = 0.9] 
+		{\begin{tabular}{l l } 			
+				$\rec{a}{W'}{L}$ & \\ 
+				$\rec{b}{W'}{L}$ & $\rec{end}{W'}{L}$ \\ 
+		\end{tabular}}	
+	(q*); 
+	
+	\path (qb) edge[->, bend right =20] node [above, scale = 0.9, pos = .4] 
+		{\begin{tabular}{l l} 
+				$\rec{a}{W}{L}$ & $\rec{a}{W'}{L}$ \\ 
+				$\rec{b}{W}{L}$  & $\rec{end}{W'}{L}$\\ 
+				$\rec{end}{W}{L}$  \\ 
+		\end{tabular}}	
+	(q*); 
+	
+	\path (qa) edge[->, bend left =20] node [above, scale = 0.9] 
+		{\begin{tabular}{l l} 
+				$\rec{a}{W}{L}$ &   \\ 
+				$\rec{b}{W}{L}$ &  $\rec{b}{W'}{L}$ \\ 
+				$\rec{end}{W}{L}$ & $\rec{end}{W'}{L}$\\	
+		\end{tabular}}	
+	(q*); 
+	
+	\path (qe) edge[->, bend left =40] node [right, scale = 0.9] 
+		{\begin{tabular}{l} 
+				$\rec{a}{W'}{L}$  \\
+				$\rec{b}{W'}{L}$  \\
+				 \\
+		\end{tabular}}	
+	(q*); 
+	
+	\path (q*) edge[->, loop right ] node [right, scale = 0.9] {$*$}
+		% {\begin{tabular}{l l} 
+		% 		$\rec{a}{W}{L}$  & $\rec{a'}{W'}{L}$  \\
+		% 		$\rec{b}{W}{L}$ & $\rec{b'}{W'}{L}$  \\
+		% 		$\rec{end}{W}{L}$ & $\rec{end'}{W'}{L}$  \\
+		% \end{tabular}}	
+	(); 
+	
+		
+
+\end{tikzpicture} 

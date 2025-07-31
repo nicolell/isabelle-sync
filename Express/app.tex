@@ -1,0 +1,435 @@
+% !TEX root = express.tex
+
+\section{Post}
+
+\begin{proof}
+%\Note{A mettre en annexe}
+
+$\Rightarrow$\\
+Let Sol$_{\text{(W,W')}}$ = $(i_1, i_2, \dots ,  i_m)$ be a solution of (W,W'). 
+For each index $k \in$ Sol$_{\text{(W,W')}}$, corresponding words in W and W' are $w_k~=~w_{k,1}w_{k,2}~\dots~w_{k,|w_k|}$ and $w'_k~=~w'_{k,1}w'_{k,2}~\dots~w'_{k,|w'_k|}$ respectively.  
+
+Take a send trace $t^s$ of the following form: 
+
+\begin{align*}
+			t^s = 
+			&\ \Action{!}{\Message{i_1}{I}{W}}\concat
+			 	\Action{!}{\Message{i_1'}{I}{W'}}\concat
+			 	\Action{!}{\Message{i_2}{I}{W}}\concat
+			 	\Action{!}{\Message{i_2'}{I}{W'}}\concat
+			 	\dots \concat \\
+			 &\	\Action{!}{\Message{i_m}{I}{W}}\concat
+			 	\Action{!}{\Message{i_m'}{I}{W'}}\concat
+				\Action{!}{\Message{\$}{I}{W}}\concat 
+				\Action{!}{\Message{\$'}{I}{W'}}\concat \\
+			&\ 	\Action{!}{\Message{x_1}{W}{L}}\concat
+				\Action{!}{\Message{x_1'}{W'}{L}}\concat
+				\Action{!}{\Message{x_2}{W}{L}}\concat
+				\Action{!}{\Message{x_2'}{W'}{L}}\concat
+				\dots \concat \\
+			&\ \Action{!}{\Message{x_y}{W}{L}}\concat
+				\Action{!}{\Message{x_y'}{W'}{L}}\concat
+				\Action{!}{\Message{end}{W}{L}}\concat
+				\Action{!}{\Message{end'}{W'}{L}}\concat
+				\Action{!}{\Message{ok}{L}{I}} \\		
+\end{align*}
+with 
+\begin{align*}
+		t^w  = 
+			&\ (\Message{x_1}{W}{L},\Message{x_2}{W}{L}, \dots, \Message{x_y}{W}{L}, \Message{end}{W}{L})  \\
+			 =
+			&\ (\Message{w_{i_1,1}}{W}{L}, \Message{w_{i_1,2}}{W}{L}, \dots, \Message{w_{i_1,|w_{i_1}|}}{W}{L},\Message{w_{i_2,1}}{W}{L}, \Message{w_{i_2, 2}}{W}{L}, \dots, \Message{w_{i_2, |w{i_2}|}}{W}{L}, \\ 
+			&\ \dots \\ 
+			&\ \Message{w_{i_m, 1}}{W}{L}, \Message{w_{i_m, 2}}{W}{L}, \dots, \Message{w_{i_m, |w{i_m}|}}{W}{L} )						
+	\intertext{and}
+		t^{w'}=
+			&\ (\Message{x_1'}{W'}{L}, \Message{x_2'}{W'}{L}, \dots, \Message{x_y'}{W'}{L}, \Message{end'}{W'}{L}) \\
+			  =
+			&\ (\Message{w_{i_1,1}'}{W'}{L} , \Message{w_{i_1,2}'}{W'}{L}, \dots, \Message{w_{i_1,|w_{i_1}|'}'}{W'}{L}, \Message{w_{i_2,1}'}{W'}{L}, \Message{w_{i_2, 2}'}{W'}{L}, \dots, \Message{w_{i_2, |w{i_2}'|}'}{W'}{L}, \\ 
+			  		 &\ \dots  \\ 
+			  		 &\ \Message{w_{i_m, 1}'}{W'}{L}, \Message{w_{i_m, 2}'}{W'}{L}, \dots, \Message{w_{i_m, |w{i_m}'|}'}{W'}{L} )\notag 
+\end{align*}
+			
+				
+We show that $t \in \Language{\System{N}{*-1}{\infty}}$. Trace $t$ corresponds to the following run: 
+%\Note{TODO : harmonisation des transitions et explications entre sections + precises (comme dans partie précédente) ++ texte} 
+First, $\Automaton{B}{I}$ sends indices to $\Automaton{B}{W}$ and $\Automaton{B}{W'}$. 
+\\$
+\TransitionAsync
+	{((\Etat{q}{0}{I},\Etat{q}{0}{W},\Etat{q}{0}{W'},\Etat{q}{0}{L}), B^\emptyset)}
+	{\Action{!}{\Message{i_1}{I}{W}}}
+	{((\Etat{q}{i_1}{I},\Etat{q}{0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_1 = B^\emptyset\{b_{W}/b_{W}.i_1\})}
+	{*-1}{\infty}
+$ 
+\begin{align*} 
+&\ \TransitionAsync
+	{}
+	{\Action{!}{\Message{i_1'}{I}{W'}}}
+	{((\Etat{q}{0}{I},\Etat{q}{0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_1\{b_{W'}/b_{W'}.i_1'\})}
+	{*-1}{\infty} \\
+&\ \dots 
+\end{align*}
+$\TransitionAsync
+	{((\Etat{q}{0}{I},\Etat{q}{0}{W},\Etat{q}{0}{W'},\Etat{q}{0}{L}), B_{1'})}
+	{\Action{!}{\Message{i_m}{I}{W}}}
+	{((\Etat{q}{i_m}{I},\Etat{q}{0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_{1''} =B_{1'}\{b_{W}/b_{W}.i_m\})}
+	{*-1}{\infty} \\
+$
+\begin{align*}
+&\ \TransitionAsync
+	{}
+	{\Action{!}{\Message{i_m'}{I}{W'}}}
+	{((\Etat{q}{0}{I},\Etat{q}{0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_2=B_{1''}\{b_{W'}/b_{W'}.i_m'\})}
+	{*-1}{\infty} \\ 
+\intertext{\indent At this state, $\Automaton{B}{I}$ sent all indices to $\Automaton{B}{W}$ and $\Automaton{B}{W'}$. He has left messages $\$$ and $\$'$ to send. }
+&\ \TransitionAsync
+	{
+	%((\Etat{q}{0}{I},\Etat{q}{0}{W},\Etat{q}{0}{W'},\Etat{q}{0}{L}),B_2
+	}
+	{\Action{!}{\Message{\$}{I}{W}}}
+	{((\Etat{q}{\$}{I},\Etat{q}{0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_{2'}= B_2\{b_{W}/b_{W}.\$\})}
+	{*-1}{\infty} \\
+&\ \TransitionAsync
+	{}
+	{\Action{!}{\Message{\$'}{I}{W'}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_{3}=B_{2'}\{b_{W'}/b_{W'}.\$'\})}
+	{*-1}{\infty} 
+\end{align*}
+
+At this state, buffers $b_{W}$ and $b_{W'}$ are filled with indices sent by $\Automaton{B}{I}$ and $\Automaton{B}{I}$ is in its final state. Now, $\Automaton{B}{W}$ and $\Automaton{B}{W'}$ will read indices and send corresponding words to $\Automaton{B}{L}$. 
+
+\noindent
+$ \TransitionAsync
+		{((\Etat{q}{\$'}{I},\Etat{q}{0}{W},\Etat{q}{0}{W'},\Etat{q}{0}{L}),B_3)}
+		{\Action{?}{\Message{i_1}{I}{W}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{i_1,0}{W}, \Etat{q}{0}{W'},\Etat{q}{0}{L}), B_{3'} = B_3\{i_1.b_{W}/b_{W}\})}
+		{*-1}{\infty}\ \\ 
+$
+\begin{align*}
+&\ \TransitionAsync
+		{}
+		{\Action{?}{\Message{i_1'}{I}{W'}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{i_1,0}{W}, \Etat{q}{i_1,0}{W'},\Etat{q}{0}{L}), B_{3''} = B_{3'}\{i_1'.b_{W'}/b_{W'}\})}
+		{*-1}{\infty}\ \\ 
+&\ \TransitionAsync
+		{}
+		{\Action{!}{\Message{x_1}{W}{L}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{i_1,1}{W}, \Etat{q}{i_1,0}{W'},\Etat{q}{0}{L}), B_{3'''} = B_{3''}\{b_{L}/b_{L}.w_{i_1,1}\})}
+		{*-1}{\infty}\ \\ 
+&\ \TransitionAsync
+		{}
+		{\Action{!}{\Message{x_1'}{W'}{L}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{i_1,1}{W}, \Etat{q}{i_1,1}{W'},\Etat{q}{0}{L}), B_{3'''}\{b_{L}/b_{L}.w'_{i_1,1}\})}
+		{*-1}{\infty}\\ 
+&\ \dots 
+\end{align*}
+$ \TransitionAsync
+		{((\Etat{q}{\$'}{I},\Etat{q}{f}{W},\Etat{q}{f}{W'},\Etat{q}{0}{L}),B_4)}
+		{\Action{?}{\Message{\$}{I}{W}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{\$}{W}, \Etat{q}{f}{W'},\Etat{q}{0}{L}), B_{4'} = B_4\{\$\cdot b_{W}/b_{W}\})}
+		{*-1}{\infty}\ \\ 
+$
+\begin{align*}
+&\ \TransitionAsync
+		{}
+		{\Action{?}{\Message{\$'}{I}{W'}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{\$}{W}, \Etat{q}{\$}{W'},\Etat{q}{0}{L}), B_{4''} = B_{4'}\{\$' \cdot b_{W'}/b_{W'}\})}
+		{*-1}{\infty}\ \\ 
+&\ \TransitionAsync
+		{}
+		{\Action{!}{\Message{end}{W}{L}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{e}{W}, \Etat{q}{\$}{W'},\Etat{q}{0}{L}), B_{4'''} = B_{4''}\{b_{L}/b_{L}.end\})}
+		{*-1}{\infty}\ \\ 
+&\ \TransitionAsync
+		{}
+		{\Action{!}{\Message{end'}{W'}{L}}}
+		{((\Etat{q}{\$'}{I},\Etat{q}{e}{W}, \Etat{q}{e}{W'},\Etat{q}{0}{L}), B_5 = B_{4'''}\{b_{L}/b_{L}.end'\})}
+		{*-1}{\infty}\ \\
+\end{align*}
+
+\vspace{-0.5cm}
+
+At this state, $\Automaton{B}{W}$ and $\Automaton{B}{W'}$ have sent all letters to $\Automaton{B}{L}$ and their buffers are empty. Now, $\Automaton{B}{L}$ will compare these letters. 
+
+\noindent$
+\TransitionAsync
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{0}{L}),B_5)}
+	{\Action{?}{\Message{x_1}{W}{L}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W}, \Etat{q}{e}{W'},\Etat{q}{x_1}{L}), B_{5'} = B_5\{x_1.b_{L}/b_{L}\})}
+	{*-1}{\infty} 
+$
+\begin{align*}
+&\ \TransitionAsync
+	{}
+	{\Action{?}{\Message{x_1'}{W'}{L}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{0}{L}),B_{5''} = B_{5'}\{x_1\cdot b_L / b_L\})}
+	{*-1}{\infty} \\ 
+&\ \dots \\
+\end{align*}
+$ \TransitionAsync
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{0}{L}),B_6)}
+	{\Action{?}{\Message{x_y}{W}{L}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{x_y}{L}),B_{6'} = B_{6}\{x_y\cdot b_L / b_L\})}
+	{*-1}{\infty}
+$
+\begin{align*}
+&\ \TransitionAsync
+	{}
+	{\Action{?}{\Message{x_y'}{W'}{L}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{0}{L}),B_{6''} = B_{6'}\{x_y'\cdot b_L / b_L\})}
+	{*-1}{\infty} \\
+&\ \TransitionAsync
+	{}
+	{\Action{?}{\Message{end}{W}{L}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{e}{L}),B_{6'''} = B_{6''}\{end\cdot b_L / b_L\})}
+	{*-1}{\infty}\\
+&\ \TransitionAsync
+	{}
+	{\Action{?}{\Message{end'}{W'}{L}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{e'}{L}),B_{7} = B_{6'''}\{end'\cdot b_L / b_L\})}
+	{*-1}{\infty} 
+\end{align*}
+
+\vspace{0.3cm}
+
+At this state, buffers $b_{L}$ is empty and comparisons of letters have succeeded, as witnessed by its state $\Etat{q}{e'}{L}$. If it was not the case, it would be in state $\Etat{q}{*}{L}$. So, it can send message $ok$. 
+\\ \\
+%\Note{TODO}
+$
+\TransitionAsync
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W},\Etat{q}{e}{W'},\Etat{q}{e'}{L}),B_7)}
+	{\Action{!}{\Message{ok}{L}{I}}}
+	{((\Etat{q}{\$'}{I},\Etat{q}{e}{W}, \Etat{q}{e}{W'},\Etat{q}{ok}{L}), B_7\{b_{I}/b_{I}.ok\})}
+	{*-1}{\infty}
+$
+\vspace{0.3cm} \\
+
+Global state $(\Etat{q}{\$'}{I}, \Etat{q}{e}{W}, \Etat{q}{e}{W'},\Etat{q}{ok}{L})$ reached with this run is the final global state of the network and $t\in \Language{\System{N}{*-1}{\infty}}$. Thus $\Language{\System{N}{*-1}{\infty}} \neq \emptyset$, concluding this side of the proof.
+\\
+
+$\Leftarrow$
+
+If $\Language{\System{\Network{N}}{*-1}{\infty}} \neq \emptyset$ then $\exists$ $t$ $\in \Language{\System{\Network{N}}{*-1}{\infty}}$. 
+As $( \Etat{q}{\$'}{I}, \Etat{q}{e}{W}, \Etat{q}{e}{W'}, \Etat{q}{ok}{L})$ is the unique final global state and by definition of language, $t$ is a final send trace and we have: 
+$t = act_1act_2\dots act_e$ such that 
+$$
+	\TransitionSend{((\Etat{q}{0}{I}, \Etat{q}{0}{W}, \Etat{q}{0}{W'}, \Etat{q}{0}{L}), 
+		B^\emptyset)}{\Action{}{act_1}}{C_1}{0}	
+	\TransitionSend{}{\Action{}{act_2}}{}{0} \dots  
+	\TransitionSend{}{\Action{}{act_e}}{((\Etat{q}{\$'}{I}, \Etat{q}{e}{W}, \Etat{q}{e}{W'}, \Etat{q}{ok}{L}), B_e)}{0}
+$$
+
+
+Notice that in order to reach $\Etat{q}{\$}{I}$:
+\begin{myitemize}
+\item $\exists k \in \mathbb{N}^+$ such that $t$ contains $\Message{m_1}{I}{W},~\Message{m_2}{I}{W},\dots,~\Message{m_k}{I}{W}$ in this order and $\Message{m_{1'}}{I}{W'},~\Message{m_{2'}}{I}{W'},\dots,~\Message{m_{k'}}{I}{W'}$ in this order,
+\item $\forall i, i' \in [1,k]$, $\Message{m_i}{W}{I} = \Message{j}{W}{I}$ and $\Message{m_{i'}}{W'}{I} = \Message{j'}{W'}{I}$, with $j \in [1,n]$, i.e., sequences of indices sent by $\Automaton{B}{I}$ to $\Automaton{B}{W}$ and $\Automaton{B}{W'}$ are equal.
+\end{myitemize}
+
+
+Moreover, to reach $\Etat{q}{e}{W}$ and $\Etat{q}{e}{W'}$, we have that: 
+\begin{myitemize}
+\item $\exists\ m_i, m_{i'} \in t $, $i, i' \in [1,e]$, where $m_i = \Action{?}{\Message{j}{I}{W}}$ and $m_{i'} = \Action{?}{\Message{j'}{I}{W'}}$, $j \in [1,n] $, i.e., $\Automaton{B}{W}$ and $\Automaton{B}{W'}$ receive at least one index (and send the associated word),
+\item $\exists$ $m_f, m_{f'} \in t$, $f, f' \in [1,e]$, $ i < f $, $i' < f' , f < f'$, where $m_f = \Action{!}{\Message{end}{W}{L}}, m_{f'} = \Action{!}{\Message{end'}{W'}{L}}$, i.e., $\Automaton{B}{W}$ and $\Automaton{B}{W'}$ send messages of $end$ of sequence of letters to $\Automaton{B}{L}$, after receiving at least one index. 
+\end{myitemize}  
+
+Finally, to reach $\Etat{q}{ok}{L}$, we deduce that: 
+\begin{myitemize}
+\item $\exists l \in \mathbb{N}^+$ such that $t$ contains $\Message{m_1}{W}{L},~\Message{m_2}{W}{L},\dots,~\Message{m_l}{W}{L}$ in this order and $\Message{m_1'}{W'}{L},~\Message{m_2'}{W'}{L},\dots,~\Message{m_l'}{W'}{L}$ in this order,
+\item $\forall i \in [1,l]$, $\Message{m_i}{W}{I} = \Message{\alpha}{W}{I}$ and $\Message{m_i'}{W'}{L} = \Message{\alpha'}{W'}{L}$, with $\alpha \in \Sigma$, i.e., sequences of letters sent by $\Automaton{A}{W}$ and $\Automaton{A}{W'}$ to $\Automaton{A}{L}$ must be equal. 
+\item $\exists act_z \in t$ such that $act_z = \Message{ok}{L}{I}$ and $\Automaton{A}{L}$ can reach $\Etat{q}{ok}{L}$. 
+\end{myitemize}
+
+Then, if the network is in a final global state, sequences of letters sent by $\Automaton{A}{W}$ and $\Automaton{A}{W'}$ are equal. So trace $t$ contains a solution of instance (W,W') that can be found by extracting the messages sent by $\Automaton{B}{I}$ to $\Automaton{B}{W}$: 
+$$Sol_{\text{(W,W')}}  = (\Message{m_1}{I}{W}, \Message{m_2}{I}{W}, \dots, \Message{m_k}{I}{W}) $$
+\end{proof}
+
+\begin{lem}%\label{lem:diffMail}
+For all instance (W,W') of PCP where $\Encode{W,W'}{mail}= \Network{N}$, (W,W') has a solution if and only if $\Language{\System{N}{0}{}} \neq \Language{\System{N}{*-1}{\infty}}$. 
+\end{lem}
+
+\begin{proof}
+Let (W,W') be an instance of PCP. \\
+$\Rightarrow$ 
+
+By Lemma~\ref{lem:noEmptyMail}, if (W,W') has a solution, then 
+$\Language{\System{N}{*-1}{\infty}} \neq \emptyset$.  
+By Lemma~\ref{lem:emptyMail}, we know 
+$\Language{\System{N}{0}{}} = \emptyset$. Thus, if (W,W') has a solution, then \\
+%$\Language{\System{\Encode{(W,W')}}{1-1}{0}} = \emptyset$ and 
+%$\Language{\System{\Encode{(W,W')}}{1-1}{\infty}} \neq \emptyset$, so \\
+$\Language{\System{N}{0}{}} \neq \Language{\System{N}{*-1}{\infty}}$. \\
+$\Leftarrow$ 
+
+By Lemma~\ref{lem:emptyMail}, 
+$\Language{\System{N}{0}{}} = \emptyset$. 
+ If  
+$\Language{\System{N}{0}{}} \neq \Language{\System{N}{*-1}{\infty}}$
+ then 
+$\Language{\System{N}{*-1}{\infty}} \neq \emptyset$. So, by Lemma~\ref{lem:noEmptyMail}, (W,W') has a solution.  
+\end{proof}
+
+
+
+%
+%
+%
+%
+%
+%
+%\section{Definitions of Systems}
+%\label{app:def}
+%
+%\begin{definition}[Synchronous System]\label{def:synchronousSystem}
+% Let $\Network = ((\Automaton{p})_{p\in \Part}, \messageSet)$ be a network. The synchronous system $\System{\Network}{\synch}{}$ associated with $\Network$ is the smallest binary relation $\xrightarrow[\synch]{}$ over \synch-configurations such that
+%\begin{prooftree}\label{rule:0-send}
+%\AxiomC{$\Transition{\state{s}{}{p}}{\send{a}{p}{q}}{\state{s'}{}{p}}{p}$}
+%\AxiomC{$\Transition{\state{s}{}{q}}{\rec{a}{p}{q}}{\state{s'}{}{q}}{q}$}
+%\LeftLabel{(\synch-SEND)}
+%\BinaryInfC{$\TransitionSync{( (\state{s}{}{1}, \dots , \state{s}{}{p}, \dots , \state{s}{}{q}, \dots , \state{s}{}{n}), B^\emptyset)}{\msg{a}{p}{q}}{( (\state{s}{}{1}, \dots , \state{s'}{}{p}, \dots , \state{s'}{}{q}, \dots , \state{s}{}{n}), B^\emptyset)}$}
+%\end{prooftree}
+%
+%\end{definition}
+%
+%In order to simplify the definitions of traces and language (given in what follows), and without loss of generality, we choose to label the transition with the sending message $\send{a}{p}{q}$. 
+%
+%
+%
+%\begin{definition}[Peer-to-peer System]\label{def:peerToPeerSystem}
+% Let $\Network = ((\Automaton{p})_{p\in \Part}, \messageSet)$ be a network, and let $k\in\mathbb{N}^+\cup\{\infty\}$ be a fixed buffer bound.
+%The peer-to-peer system $\System{\Network}{\pp}{k}$ associated with $\Network$ and $k$ is the least binary relation
+%  $\TransitionAsync{}{}{}{\pp}{k}$ over $\pp$ configurations
+%  such that:
+%
+%\begin{itemize}
+%\item for each configuration $C = ( (\state{s}{}{p})_{p \in \Part}, \bufferSet)$,
+% $\bufferSet = (b_{pq})_{p, q \in \Part}$
+%  where
+%  $b_{pq}\in~\messageSet^*$
+%  is of length $|b_{pq}|\leq k$.
+%  
+%\item $\TransitionAsync{}{}{}{\pp}{k}$ is the least transition induced by: 
+%%$\forall\ p,q \in P,$ $\forall\ s_p, s_{p'} \in S_p$, $\forall \msg{a}{p}{q} \in M$, 
+%\end{itemize}
+%
+%\begin{prooftree}
+%\AxiomC{$\Transition{\state{s}{}{p}}{\send{a}{p}{q}}{\state{s'}{}{p}}{p}$}
+%\AxiomC{$|b_{pq}| < k$ }
+%\LeftLabel{(\pp-SEND)}
+%\BinaryInfC{$\TransitionAsync{((\state{s}{}{1}, \dots , \state{s}{}{p}, \dots , \state{s}{}{n}), \bufferSet)}{\send{a}{p}{q}}{((\state{s}{}{1}, \dots , \state{s'}{}{p}, \dots , \state{s}{}{n}), \bufferSet\{b_{pq} / b_{pq}\cdot a\})}{\pp}{k}$}
+%\end{prooftree}
+%
+%\begin{prooftree}
+%\AxiomC{$\Transition{\state{s}{}{q}}{\rec{a}{p}{q}}{\state{s'}{}{q}}{q}$}
+%\AxiomC{$b_{pq} = a\cdot b_{pq}'$ }
+%\LeftLabel{(\pp - REC)}
+%\BinaryInfC{
+%$\TransitionAsync{(( \state{s}{}{1}, \dots , \state{s}{}{q}, \dots , \state{s}{}{n}), \bufferSet)}{\rec{a}{p}{q}}{((\state{s}{}{1}, \dots , \state{s'}{}{q}, \dots ,\state{s}{}{n}), \bufferSet\{b_{pq} / b_{pq}'\})}{\pp}{k}$}
+%\end{prooftree}
+%\end{definition}
+%
+%\begin{definition}[Mailbox System]\label{def:mailboxSystem}
+%Let $\Network = ((\Automaton{p})_{p\in \Part}, \messageSet)$ be a network and let $k\in\mathbb{N}^+\cup\{\infty\}$ be a fixed buffer bound.
+%The mailbox system $\System{N}{\mailbox}{k}$ associated with $\Network$ and $k$ is the smallest binary relation
+%  $\TransitionAsync{}{}{}{\mailbox}{k}$ over $\mailbox$-configurations such that:
+%\begin{itemize}
+%\item for each configuration $C = ( (\state{s}{}{p})_{p \in \Part}, \bufferSet)$, 
+% $\bufferSet= (b_{p})_{p \in \Part}$ where $b_{p}$  is of length $|b_{p}|\leq k$.
+%\item $\TransitionAsync{}{}{}{\mailbox}{k}$ is the smallest transition such that : 
+%\end{itemize}
+%\begin{prooftree}
+%\AxiomC{$\Transition{\state{s}{}{p}}{\send{a}{p}{q}}{\state{s'}{}{p}}{p}$}
+%\AxiomC{$|b_{q}| < k$}
+%\LeftLabel{(\mailbox-SEND)}
+%\BinaryInfC{
+%$\TransitionAsync
+%	{((\state{s}{}{1}, \dots ,\state{s}{}{p}, \dots ,\state{s}{}{n}), \bufferSet)}
+%	{\send{a}{p}{q}}
+%	{((\state{s}{}{1}, \dots ,\state{s'}{}{p}, \dots , \state{s}{}{n}), \bufferSet\{b_{q} / b_{q}\cdot a\})}{\mailbox}{k}$}
+%\end{prooftree}
+%
+%\begin{prooftree}
+%\AxiomC{$\Transition{\state{s}{}{q}}{\rec{a}{p}{q}}{\state{s'}{}{q}}{q}$}\AxiomC{$b_{q} = a\cdot b_{q}'$ }
+%\LeftLabel{(\mailbox-REC)}
+%\BinaryInfC{$\TransitionAsync{((\state{s}{}{1}, \dots ,\state{s}{}{q}, \dots ,\state{s}{}{n}), \bufferSet)}{\rec{a}{p}{q}}{((\state{s}{}{1}, \dots , \state{s'}{}{q}, \dots , \state{s}{}{n}), \bufferSet \{b_{q} / b_{q}'\})}{\mailbox}{k}$}
+%\end{prooftree}
+%\end{definition}
+%
+%\section{Proving the Decidability of Synchronisability in Trees}
+%\label{app:synchronisabilityTree}
+%
+%We prove first that words in $ \LangTree{\Automaton{q}} $ belong to executions of the \Mailbox system with unbounded buffers that do not require any interaction with a child of $ q $.
+%
+%\begin{lemma}
+%	Let $ \Network $ be a network such that $ \topo{\Network} $ is a tree, $ q \in \Part $, and $ w \in \LangTree{\Automaton{q}} $.
+%	Then there is an execution $ w' \in \execSet{\System{\Network}{\mailbox}{\infty}} $ such that $ w'\projPeer{q} = w $ and $ w'\projPeer{p} = \varepsilon $ for all $ p \in \Part $ with $ \senders{p} = \Set{q} $.
+%	\label{lem:wordsoftreelanguage}
+%\end{lemma}
+%
+%\begin{proof}
+%	We construct $ w' $ by induction on the length of the unique path from $ q $ to the root.
+%	\begin{compactdesc}
+%		\item[Base Case:] If $ q = \rootP $, then $ w \in \LangTree{\Automaton{q}} $ is a sequence of outputs.
+%			Then we can choose $ w' = w $ such that $ w \in \execSet{\System{\Network}{\mailbox}{\infty}} $, $ w\projPeer{q} = w $, and $ w\projPeer{p} = \varepsilon $ for all $ p \in \Part $ with $ \senders{p} = \Set{q} $.
+%		\item[Induction Step:] Assume $ \senders{p} = \Set{q} $ and $ v \in \execSet{\System{\Network}{\mailbox}{\infty}} $ is the execution constructed so far from the root $ \rootP $ to $ q $.
+%			\kir{ToDo}
+%			\qedhere
+%	\end{compactdesc}
+%\end{proof}
+%
+%Theorem~\ref{thm:synchronisabilityTree} states that $ \traceSet{\System{\Network}{\mailbox}{\infty}} = \traceSet{\System{\Network}{\synch}{}} $ iff for all neighbouring peers $ p, q \in \Part $ with $ \senders{p} = \Set{q} $ we have $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $ and $ \LangTree{\Automaton{p}} = \LangCausal{p} $.
+%
+%\begin{proof}[Proof of Theorem~\ref{thm:synchronisabilityTree}]
+%	We prove both directions of the iff.
+%	\begin{compactdesc}
+%		\item[$ \Rightarrow $:] Let $ \traceSet{\System{\Network}{\mailbox}{\infty}} = \traceSet{\System{\Network}{\synch}{}} $.
+%			We have to show that $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $ and $ \LangTree{\Automaton{p}} = \LangCausal{p} $ for all $ p, q \in \Part $ with $ \senders{p} = \Set{q} $.
+%			\begin{compactenum}
+%				\item Assume $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \not\subseteq \LangTree{\Automaton{p}}\projMess $ for some $ p, q \in \Part $ with $ \senders{p} = \Set{q} $.
+%					Then there is some sequence of outputs $ v \in \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}} $ for that there is no matching sequence of inputs in $ \LangTree{\Automaton{p}} $, \ie $ v\projMess \notin \LangTree{\Automaton{p}}\projMess $.
+%					By Lemma~\ref{lem:wordsoftreelanguage}, then there is an execution $ v' \in \execSet{\System{\Network}{\mailbox}{\infty}} $ such that $ v'\projOut\projPeer{q} = v $ and $ v'\projPeer{p} = \varepsilon $.
+%					Hence, $ v'\projOut \in \traceSet{\System{\Network}{\mailbox}{\infty}} = \traceSet{\System{\Network}{\synch}{}} = \execSet{\System{\Network}{\synch}{}} $.
+%					Because of $ v'\projOut \in \execSet{\System{\Network}{\synch}{}} $ and $ v'\projPeer{p} = \varepsilon $, $ \Automaton{p} $ has to be able to receive the sequence of outputs of $ v $ without performing any outputs itself, \ie $ v\projMess \in \languageof{\Automaton{p}}\projIn\projMess $ and $ v\projMess \in \LangTreeIn{\Automaton{p}}\projMess $.
+%					But then $ v\projMess \in \LangTree{\Automaton{p}}\projMess $.
+%					This is a contradiction.
+%					We conclude that $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $ for all $ p, q \in \Part $ with $ \senders{p} = \Set{q} $.
+%				\item Assume $ \LangTree{\Automaton{p}} \neq \LangCausal{p} $ for some $ p \in \Part $.
+%					\kir{ToDo}
+%			\end{compactenum}
+%		\item[$ \Leftarrow $:] Assume that $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $ and $ \LangTree{\Automaton{p}} = \LangCausal{p} $ for all $ p, q \in \Part $ with $ \senders{p} = \Set{q} $.
+%			We have to show that $ \traceSet{\System{\Network}{\mailbox}{\infty}} = \traceSet{\System{\Network}{\synch}{}} $.
+%			\begin{compactdesc}
+%				\item[$ w \in \traceSet{\System{\Network}{\mailbox}{\infty}} $:] Let $ w' $ be the word obtained from $ w $ by adding the matching receive action directly after every send action.
+%					We show that $ w' \in \execSet{\System{\Network}{\mailbox}{\infty}} $, by an induction on the length of $ w $.
+%					\begin{compactdesc}
+%						\item[Base Case:] If $ w = \send{a}{q}{p} $, then $ w' = \send{a}{q}{p} \rec{a}{q}{p} $.
+%							Since $ w \in \traceSet{\System{\Network}{\mailbox}{\infty}} $, $ \Automaton{q} $ is able to send $ \send{a}{q}{p} $ in its initial state within the system $ \System{\Network}{\mailbox}{\infty} $.
+%							Then $ \send{a}{q}{p} \in \LangTreeOut{\Automaton{q}} $.
+%							Because of $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $, then $ \rec{a}{q}{p} \in \LangTree{\Automaton{p}} $, \ie $ \Automaton{q} $ can receive $ \rec{a}{q}{p} $ in its initial state.
+%							Then $ w' \in \execSet{\System{\Network}{\mailbox}{\infty}} $.
+%						\item[Induction Step:] If $ w = v \send{a}{q}{p} $ with $ v \send{a}{q}{p} \in \traceSet{\System{\Network}{\mailbox}{\infty}} $, then $ w' = v' \send{a}{q}{p} \rec{a}{q}{p} $.
+%							By the induction hypothesis $ v' \in \execSet{\System{\Network}{\mailbox}{\infty}} $.
+%							Since $ w = v \send{a}{q}{p} \in \traceSet{\System{\Network}{\mailbox}{\infty}} $, $ \Automaton{q} $ is able to perform $ \send{a}{q}{p} $ in some state after performing all the outputs in $ v $ of $ q $, \ie output dependencies $ !x <_q \send{a}{q}{p} $ cannot prevent $ \send{a}{q}{p} $ in $ \Automaton{q} $ after execution $ v' $.
+%							Also dependencies of the form $ ?y <_q \send{a}{q}{p} $ have to be already satisfied in $ \Automaton{q} $ after execution $ v' $, because:
+%							\begin{itemize}
+%								\item For all such inputs $ ?y $ there has to be $ !y $ occurring before the input.
+%								\item Then $ !y $ is among the outputs of $ v $, because $ \Automaton{q} $ is able to perform $ \send{a}{q}{p} $ in some state after performing all the outputs in $ v $ of $ q $.
+%								\item Then also $ ?y $ is already contained in $ v' $, by the construction of $ v' $.
+%							\end{itemize}
+%							Because of the condition $ \LangTree{\Automaton{p}} = \LangCausal{p} $, then $ \Automaton{q} $ can send $ \send{a}{q}{p} $ after execution $ v' $ such that $ v' \send{a}{q}{p} \in \execSet{\System{\Network}{\mailbox}{\infty}} $.
+%							Then $ v' \send{a}{q}{p} \projPeers{\Set{p, q}} \projOut = w \projPeers{\Set{p, q}} \projOut \in \LangTreeOut{\Automaton{q}} \projPeers{\Set{p, q}} $ and after $ v' \send{a}{q}{p} $ all buffers are empty except for the buffer of $ \Automaton{p} $ that contains only $ \msg{a}{q}{p} $.
+%							By $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $, then $ v' \rec{a}{q}{p} \projPeers{\Set{p, q}} \projIn \in \LangTree{\Automaton{p}} $, \ie $ \Automaton{p} $ is able to receive $ \rec{a}{q}{p} $ in some state after receiving all the inputs in $ v' $.
+%							Accordingly, all input dependencies $ ?x <_p \rec{a}{q}{p} $ are already satisfied after the execution $ v' \send{a}{q}{p} $.
+%							Moreover, $ \LangTreeOut{\Automaton{q}}\projPeers{\Set{p, q}}\projMess \subseteq \LangTree{\Automaton{p}}\projMess $ ensures that there are no dependencies of the form $ !x <_p \rec{a}{q}{p} $.
+%							By $ \LangTree{\Automaton{p}} = \LangCausal{p} $ and since $ \msg{a}{q}{p} $ is in its buffer, then $ \Automaton{p} $ can receive $ \rec{a}{q}{p} $ after execution $ v' \send{a}{q}{p} $ such that $ w' = v' \send{a}{q}{p} \rec{a}{q}{p} \in \execSet{\System{N}{\mailbox}{\infty}} $.
+%					\end{compactdesc}
+%					Then $ w' \in \execSet{\System{\Network}{\mailbox}{\infty}} $.
+%					Then the \Synchronous system can simulate the run of $ w' $ in $ \System{\Network}{\mailbox}{\infty} $ by combining a send action with its direct following matching receive action into a synchronous communication.
+%					Since $ w'\projOut = w $, then $ w \in \execSet{\System{\Network}{\synch}{}} = \traceSet{\System{\Network}{\synch}{}} $.
+%				\item[$ w \in \traceSet{\System{\Network}{\synch}{}} $:] For every output in $ w $, $ \System{N}{\synch}{} $ was able to send the respective message and directly receive it.
+%					Let $ w' $ be the word obtained from $ w $ by adding the matching receive action directly after every send action.
+%					Then $ \System{\Network}{\mailbox}{\infty} $ can simulate the run of $ w $ in $ \System{\Network}{\synch}{} $ by sending every message first to the \Mailbox of the receiver and then receiving this message.
+%					Then $ w' \in \execSet{\System{\Network}{\mailbox}{\infty}} $ and, thus, $ w = w'\projOut \in \traceSet{\System{\Network}{\mailbox}{\infty}} $. \qedhere
+%			\end{compactdesc}
+%	\end{compactdesc}
+%\end{proof}

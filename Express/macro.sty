@@ -1,0 +1,252 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  comments <-- remove before submission  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% TEXT
+\newcommand{\cin}[1]{\textcolor{red}{Cinzia: #1}}
+\newcommand{\kir}[1]{\textcolor{red}{Kirstin: #1}}
+\newcommand{\lae}[1]{\textcolor{red}{Laetitia: #1}}
+\newcommand{\reviewer}[1]{\textcolor{red}{Reviewer: #1}}
+
+%%%%%%%%%%%%%%%%%%
+%  environments  %
+%%%%%%%%%%%%%%%%%%
+
+% theorem style
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\newtheorem{definition}[theorem]{Definition}
+
+%%%%%%%%%%%%%%%%%%%
+%  abbreviations  %
+%%%%%%%%%%%%%%%%%%%
+
+% makros for text
+\newcommand{\ie}{i.e.,\ }
+\newcommand{\eg}{e.g.,\ }
+\newcommand{\wrt}{w.r.t.\ }
+\newcommand{\cf}{cf.\ }
+\newcommand{\resp}{resp.\ }
+
+% keywords
+\newcommand{\Mailbox}{mailbox\xspace}
+\newcommand{\MAILBOX}{Mailbox\xspace}
+\newcommand{\Ptp}{P2P\xspace}
+\newcommand{\Synchronous}{synchronous\xspace}
+
+%%%%%%%%%%%%%%%%
+%  projection  %
+%%%%%%%%%%%%%%%%
+
+\newcommand{\projOut}{{\downarrow_{!}}\xspace}
+\newcommand{\projIn}{{\downarrow_{?}}\xspace}
+\newcommand{\projMess}{{\downarrow_{\cancel{!?}}}\xspace}
+%\newcommand{\projMess}{{\downarrow_{\neg !?}}\xspace}
+\newcommand{\projPeer}[1]{{\downarrow_{#1}}\xspace}
+\newcommand{\projPeers}[1]{{\downarrow_{#1}}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  auxiliary notions for trees  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\rootP}{r}
+\newcommand{\LangTreeOut}[1]{\mathcal{L}_{!}^{\between}{\left( #1 \right)}}
+\newcommand{\LangTreeIn}[1]{\mathcal{L}_{?}^{\between}{\left( #1 \right)}}
+\newcommand{\LangTree}[1]{\mathcal{L}^{\between}{\left( #1 \right)}}
+\newcommand{\LangCausal}[1]{\mathcal{L}^{\between}_{<_{#1}}}
+\newcommand{\LangShuffle}[1]{\mathcal{L}^{\between}_{\shuffle}{\left( #1 \right)}}
+
+%%%%%%%%%%%%%%%%%%
+%  general math  %
+%%%%%%%%%%%%%%%%%%
+
+% math
+\newcommand{\Set}[1]{{\left\lbrace #1 \right\rbrace}}
+\newcommand{\Prefixes}[1]{\mathsf{Prefixes}{\left( #1 \right)}}
+
+%%%%% General
+\newcommand{\alphabet}{\Sigma}
+\newcommand{\wordSet}{\Sigma^*}
+\newcommand{\word}{w}
+\newcommand{\concat}{\cdot}
+\newcommand{\length}[1]{|#1|}
+\newcommand{\emptyword}{\varepsilon}
+\newcommand{\config}{C}
+\newcommand{\buffersInit}{\bufferSet^{\emptyset}}
+\newcommand{\configInit}{\config_0}
+\newcommand{\configFinal}{\mathbb{C}_F}
+\newcommand{\configSet}{\mathbb{C}}
+\newcommand{\exec}{e}
+\newcommand{\trace}{t}
+
+\newcommand{\execSet}[1]{\mathsf{E}(#1)}
+\newcommand{\traceSet}[1]{\mathsf{T}(#1)}
+\newcommand{\accexecSet}[1]{\mathsf{AccE}(#1)}
+\newcommand{\acctraceSet}[1]{\mathsf{AccT}(#1)}
+
+\newcommand{\vertexSet}{V}
+\newcommand{\edgeSet}{E}
+
+%%%%% AUTOMATA
+\newcommand{\Automaton}[1]{\ensuremath{A_{#1}}\xspace}
+\newcommand{\Network}{N}
+\newcommand{\bufferNum}{I}
+\newcommand{\bufferWord}{\vect{b}}
+\newcommand{\buffer}[1]{b_{#1}}
+\newcommand{\actionSet}[1]{Act_{#1}}
+\newcommand{\action}{a}
+
+\newcommand{\Part}{\ensuremath{\mathbb{P}}\xspace}
+\newcommand{\messageSet}{\ensuremath{\mathbb{M}}\xspace}
+\newcommand{\msg}[3]{#1^{#2 \rightarrow #3}}
+\newcommand{\send}[3]{!\msg{#1}{#2}{#3}}
+\newcommand{\rec}[3]{?\msg{#1}{#2}{#3}}
+\newcommand{\stateSet}[1]{S_{#1}}
+\newcommand{\state}[3]{{#1}_{#2}^{#3}}
+\newcommand{\finalGlobalStates}{F}
+\newcommand{\finalStates}[1]{F_{#1}}
+
+\newcommand{\sendact}[1]{SAct_{#1}}
+
+\newcommand{\emptybuffers}{\vect{b}^{\emptyset}}
+\newcommand{\bufferSet}{\ensuremath{\mathbb{B}}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\newcommand{\System}[3]{#1_{{#2}^{#3}}}
+\newcommand{\Transition}[4]{#1 \xrightarrow{#2}_{#4} #3}
+\newcommand{\TransitionAsync}[5]{#1\ { \xrightarrow[{#4}^{#5}]{#2}}\ #3}
+\newcommand{\TransitionSync}[3]{#1 \xrightarrow[\synch]{!#2} #3}
+\newcommand{\TransitionSend}[4]{ #1 \underset{#4}{\overset{#2}{\Longrightarrow}} #3}
+
+\newcommand{\autTransition}[1]{\rightarrow_{#1}}
+
+
+%%%%%%%%%LANGUAGE
+
+\newcommand{\languageof}[1]{\mathcal{L}{\left(#1\right)}\xspace}
+
+\newcommand{\synch}{\ensuremath{\mathtt{sync}}\xspace}
+\newcommand{\pp}{\ensuremath{\mathtt{p2p}}\xspace}
+\newcommand{\mailbox}{\ensuremath{\mathtt{mbox}}\xspace}
+\newcommand{\com}{\ensuremath{\mathtt{com}}\xspace}
+\newcommand{\traces}[1]{\mathsf{T}{\left( #1 \right)}}
+
+\newcommand{\EffRecLang}[1]{\mathcal{L}^*_{rec}\left({\Automaton{#1}}\right)}
+\newcommand{\EffSendLang}[1]{\mathcal{L}^*_{send}\left({\Automaton{#1}}\right)}
+
+
+%%%%%%%%POST
+\newcommand{\Encode}[2]{\llbracket \mathcal{#1} \rrbracket ^{#2}}
+\newcommand{\Word}{\text{W}}
+\newcommand{\Sol}{Sol}
+\newcommand{\pcpinstance}{\ensuremath{(\Word, \Word')}}
+
+%%%%%%%%TOPOLOGIES
+\newcommand{\topo}[1]{\ensuremath{G(#1)}}
+\newcommand{\senders}[1]{\Part_{send}^{#1}}
+\newcommand{\receivers}[1]{\Part_{rec}^{#1}}
+\newcommand{\proj}[1]{\downharpoonright_{#1}}
+\newcommand{\languagerec}[1]{\mathcal{L}_{rec}\left({\Automaton{#1}}\right)}
+\newcommand{\languagesend}[1]{\mathcal{L}_{send}\left({\Automaton{#1}}\right)}
+
+
+
+%
+%
+%\def\etal.{\emph{et\penalty50\ al.}}
+%
+%\newcommand{\new}[1]{#1}
+%
+%\newcommand{\halfduplex}{half-duplex\xspace}
+%\newcommand{\Halfduplex}{Half-duplex\xspace}
+%\newcommand{\labelSet}{label\xspace}
+%
+%\newcommand{\enc}[1]{\llbracket #1 \rrbracket}
+%\newcommand{\lock}{\mathit{lock}}
+%\newcommand{\transus}[4]{\mathtt{us}^{#1}_{#2}({#4}) }
+%\newcommand{\transusfull}[4]{\mathtt{usf}^{#1}_{#2}({#4}) }
+%\newcommand{\transms}[4]{\mathtt{ms}^{#1}_{#2}({#4}) }
+%
+%\newcommand{\preSet}[1]{{}^\bullet\! #1}
+%\newcommand{\postSet}[1]{#1^\bullet}
+%
+%\newcommand{\sync}{\ensuremath{sync}}
+%
+%\newcommand{\ELNOTE}[1]{\textcolor{red}{#1}}
+%\newcommand{\cin}[1]{\textcolor{red}{Cinzia: #1}}
+%
+%\newcommand{\inbuf}[1]{\vect{b}^{#1-}}
+%\newcommand{\outbuf}[1]{\vect{b}^{#1+}}
+%
+%\newcommand{\A}{\mathcal{A}}
+%\newcommand{\vect}[1]{\mathbf{#1}}
+%\newcommand{\aconf}{\gamma}
+%\newcommand{\emptybuffers}{\vect{b}^{\emptyset}}
+%\newcommand{\emptybufferat}[1]{b^{\emptyset}_{#1}}
+%\newcommand{\executionsof}[1]{\mathsf{executions(#1)}}
+%\newcommand{\POST}{\mathsf{POST}}
+%\newcommand{\postset}[2]{\POST_{#1}(#2)}
+%\newcommand{\reachablesetof}[1]{RS(#1)}
+%\newcommand{\productof}[1]{\mathsf{product}(#1)}
+%\newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
+%\newcommand{\hdset}[2]{\mathsf{HD}_{#1}(#2)}
+%\newcommand{\boundedreachableset}[2]{\POST_{\leq #1}(#2)}
+%\newcommand{\khdex}{k\mathsf{HD}}
+%\newcommand{\kbdex}[1]{#1\mathsf{BD}}
+%\newcommand{\actionSet}{\mathsf{Act}}
+%\newcommand{\processof}[1]{\mathsf{process}(#1)}
+%\newcommand{\causalequiv}[1]{\sim}
+%\newcommand{\initconf}{\aconf_0}
+%\newcommand{\conflictedge}[1]{\rightarrow_{#1}}
+%\newcommand{\lconflictedge}[1]{\xrightarrow{#1}}
+%\newcommand{\communicationsof}[1]{\mathsf{com}(#1)}
+%
+%\newcommand{\actiongraphof}[1]{\mathsf{agraph}(#1)}
+%\newcommand{\conflictgraph}[1]{\mathsf{cgraph}(#1)}
+%\newcommand{\acom}{c}
+%
+%\newcommand{\apostinstance}{\mathcal{P}}
+%\newcommand{\apostsolution}{s}
+%\newcommand{\postalphabet}[1]{A}
+%\newcommand{\postnumberwords}{N}
+%\newcommand{\postwordsA}{\alpha}
+%\newcommand{\postwordsB}{\beta}
+%\newcommand{\wordpostA}{\alpha}
+%\newcommand{\wordpostB}{\beta}
+%\newcommand{\wordpostIA}[1]{\wordpostA_{#1}}
+%\newcommand{\wordpostIB}[1]{\wordpostB_{#1}}
+%\newcommand{\sizeofwordA}[1]{|\wordpostIA{#1}|}
+%\newcommand{\sizeofwordB}[1]{|\wordpostIB{#1}|}
+%\newcommand{\wordpostletterA}[2]{\wordpostIA{#1,#2}}
+%\newcommand{\wordpostletterB}[2]{\wordpostIB{#1,#2}}
+%
+%\newcommand{\postsolword}{\sigma}
+%
+%\newcommand{\decpostinstance}{\apostinstance = (\postalphabet{\apostinstance}, \postnumberwords, \postwordsA, \postwordsB)}
+%
+%\newcommand{\apostletter}{a}
+%\newcommand{\postautomata}[1]{\system_#1}
+%
+%\newcommand{\autopid}{\text{g}}
+%\newcommand{\autoqid}{\text{c}}
+%\newcommand{\autorid}{\text{f}}
+%\newcommand{\postAutomatonP}{\A_{\autopid}}
+%\newcommand{\postAutomatonQ}{\A_{\autoqid}}
+%\newcommand{\postAutomatonR}{\A_{\autorid}}
+%
+%\newcommand{\channelPQ}{\autopid \xrightarrow{} \autoqid}
+%\newcommand{\channelPR}{\autopid \xrightarrow{} \autorid}
+%\newcommand{\channelRQ}{\autorid \xrightarrow{} \autoqid}
+%
+%\newcommand{\postendchar}{\#}
+%
+%\newcommand{\topologyof}[1]{\mathsf{topo}(#1)}
+%\newcommand{\indegree}[1]{\mathsf{d}^{-}(#1)}
+%\newcommand{\outdegree}[1]{\mathsf{d}^{+}(#1)}
+%
+%\newcommand{\conflictlabel}{\mu}

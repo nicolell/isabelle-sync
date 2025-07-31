@@ -1,0 +1,38 @@
+\begin{tikzpicture}[>=stealth,node distance=1.5cm,shorten >=1pt,
+  every state/.style={minimum size = 0pt},semithick]
+
+
+      \node[state,initial,initial text={}]   at (0.2,0) (q0)  {$0$};
+      \node[state] at (2,2) (q10)  {$1,0$};
+      \node[state] at (2,0) (q20)  {$2,0$};
+      \node[state] at (2,-2) (q30)  {$3,0$};
+      \node[state] at (4,-2) (q31)  {$3,1$};
+      \node[state] at (6,-2) (q32)  {$3,2$};
+      \node[state] at (8,-2) (q33)  {$3,3$};
+      \node[state] at (6,0) (qf)  {$f$};
+      \node[state] at (6,2) (qd)  {$\$$};
+      \node[state, accepting] at (8,2) (qe)  {$e$};
+      %\node[state, scale=0.8] at (15.2,0) (qeb) {};
+      
+    
+    \path (q0) edge[->, bend left] node [left] {$\rec{1}{I}{W}$} (q10);
+    \path (q0) edge[->] node [above] {$\rec{2}{I}{W}$} (q20);
+    \path (q0) edge[->, bend right] node [left] {$\rec{3}{I}{W}$} (q30);
+
+    \path (q10) edge[->, bend left=25] node [sloped, above] {$\send{a}{W}{L}$} (qf);
+    \path (qf) edge[->] node [sloped, above] {$\rec{1}{I}{W}$} (q10);
+
+    \path (q20) edge[->, bend left=10] node [sloped, above] {$\send{b}{W}{L}$} (qf);
+    \path (qf) edge[->, bend left=10] node [sloped, below] {$\rec{2}{I}{W}$} (q20);
+    
+    \path (q30) edge[->] node [below] {$\send{a}{W}{L}$} (q31);
+    \path (q31) edge[->] node [below] {$\send{b}{W}{L}$} (q32);
+    \path (q32) edge[->] node [below] {$\send{a}{W}{L}$} (q33);
+    \path (q33) edge[->, bend right] node [sloped, above] {$\send{b}{W}{L}$} (qf);
+    \path (qf) edge[->, bend right=5] node [pos = .3, sloped, below] {$\rec{3}{I}{W}$} (q30);
+    
+    \path (qf) edge[->] node [right] {$\rec{\$}{I}{W}$} (qd);
+    \path (qd) edge[->] node [above] {$\send{end}{W}{L}$} (qe);
+
+
+\end{tikzpicture} 
