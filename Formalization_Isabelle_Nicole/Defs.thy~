@@ -171,9 +171,9 @@ inductive_set ReceivingFromPeers :: "'peer set" where
   RPRecv: "\<lbrakk>(s1, a, s2) \<in> Transitions; is_input a\<rbrakk> \<Longrightarrow> get_object a \<in> ReceivingFromPeers"
 
 abbreviation step
-  :: "'state \<Rightarrow> ('information, 'peer) action \<Rightarrow> 'state \<Rightarrow> bool"  ("_ \<midarrow>_\<rightarrow>\<^sub>\<C> _" [90, 90, 90] 110)
+  :: "'state \<Rightarrow> ('information, 'peer) action \<Rightarrow> 'state \<Rightarrow> bool"  ("_ \<midarrow>_\<rightarrow> _" [90, 90, 90] 110)
   where
-    "s1 \<midarrow>a\<rightarrow>\<^sub>\<C> s2 \<equiv> (s1, a, s2) \<in> Transitions"
+    "s1 \<midarrow>a\<rightarrow> s2 \<equiv> (s1, a, s2) \<in> Transitions"
 
 (*
 \<comment> \<open>this is the original run def, i swapped it to (a#w) (see below)\<close>
@@ -184,7 +184,7 @@ RComposed: "\<lbrakk>run s0 w xs; last (s0#xs) \<midarrow>a\<rightarrow> s\<rbra
 
 inductive run :: "'state \<Rightarrow> ('information, 'peer) action word \<Rightarrow> 'state list \<Rightarrow> bool" where
   REmpty2:    "run s \<epsilon> ([])" |
-  RComposed2: "\<lbrakk>run s1 w xs; s0 \<midarrow>a\<rightarrow>\<^sub>\<C> s1\<rbrakk> \<Longrightarrow> run s0 (a # w) (s1 # xs)"
+  RComposed2: "\<lbrakk>run s1 w xs; s0 \<midarrow>a\<rightarrow> s1\<rbrakk> \<Longrightarrow> run s0 (a # w) (s1 # xs)"
 
 inductive_set Traces :: "('information, 'peer) action word set" where
   STRun: "run initial w xs \<Longrightarrow> w \<in> Traces"
@@ -245,8 +245,8 @@ abbreviation Peers_of :: "'peer \<Rightarrow> 'peer set" where
 
 abbreviation step_of_peer
   :: "'state \<Rightarrow> ('information, 'peer) action \<Rightarrow> 'peer \<Rightarrow> 'state \<Rightarrow> bool"
-  ("_ \<midarrow>_\<rightarrow>\<^sub>\<C>_ _" [90, 90, 90, 90] 110) where
-  "s1 \<midarrow>a\<rightarrow>\<^sub>\<C>p s2 \<equiv> (s1, a, s2) \<in> snd (snd (\<A> p))"
+  ("_ \<midarrow>_\<rightarrow>_ _" [90, 90, 90, 90] 110) where
+  "s1 \<midarrow>a\<rightarrow>p s2 \<equiv> (s1, a, s2) \<in> snd (snd (\<A> p))"
 
 abbreviation language_of_peer
   :: "'peer \<Rightarrow> ('information, 'peer) action language"  ("\<L> _" [90] 110) where
@@ -291,8 +291,8 @@ abbreviation initial_sync_config :: "'peer \<Rightarrow> 'state"  ("\<C>\<^sub>\
 inductive sync_step
   :: "('peer \<Rightarrow> 'state) \<Rightarrow> ('information, 'peer) action \<Rightarrow> ('peer \<Rightarrow> 'state) \<Rightarrow> bool"
   ("_ \<midarrow>\<langle>_, \<zero>\<rangle>\<rightarrow> _" [90, 90, 90] 110) where
-  SynchStep: "\<lbrakk>is_sync_config C1; a = !\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>; C1 p \<midarrow>!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>\<^sub>\<C>p (C2 p);
-             C1 q \<midarrow>?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>\<^sub>\<C>q (C2 q); \<forall>x. x \<notin> {p, q} \<longrightarrow> C1(x) = C2(x)\<rbrakk> \<Longrightarrow> C1 \<midarrow>\<langle>a, \<zero>\<rangle>\<rightarrow> C2"
+  SynchStep: "\<lbrakk>is_sync_config C1; a = !\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>; C1 p \<midarrow>!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>p (C2 p);
+             C1 q \<midarrow>?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>q (C2 q); \<forall>x. x \<notin> {p, q} \<longrightarrow> C1(x) = C2(x)\<rbrakk> \<Longrightarrow> C1 \<midarrow>\<langle>a, \<zero>\<rangle>\<rightarrow> C2"
 
 inductive sync_run
   :: "('peer \<Rightarrow> 'state) \<Rightarrow> ('information, 'peer) action word \<Rightarrow> ('peer \<Rightarrow> 'state) list \<Rightarrow> bool"
@@ -345,11 +345,11 @@ primrec is_bounded :: "nat \<Rightarrow> bound \<Rightarrow> bool"  ("_ <\<^sub>
 inductive mbox_step
   :: "('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) \<Rightarrow> ('information, 'peer) action \<Rightarrow>
       bound \<Rightarrow> ('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) \<Rightarrow> bool" where
-  MboxSend: "\<lbrakk>is_mbox_config C1; a = !\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>; fst (C1 p) \<midarrow>!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>\<^sub>\<C>p (fst (C2 p));
+  MboxSend: "\<lbrakk>is_mbox_config C1; a = !\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>; fst (C1 p) \<midarrow>!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>p (fst (C2 p));
             snd (C1 p) = snd (C2 p); ( | (snd (C1 q)) | ) <\<^sub>\<B> k;
             C2 q = (fst (C1 q), (snd (C1 q)) \<sqdot> [(i\<^bsup>p\<rightarrow>q\<^esup>)]); \<forall>x. x \<notin> {p, q} \<longrightarrow> C1(x) = C2(x)\<rbrakk> \<Longrightarrow>
             mbox_step C1 a k C2" |
-  MboxRecv: "\<lbrakk>is_mbox_config C1; a = ?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>; fst (C1 q) \<midarrow>?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>\<^sub>\<C>q (fst (C2 q));
+  MboxRecv: "\<lbrakk>is_mbox_config C1; a = ?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>; fst (C1 q) \<midarrow>?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>\<rightarrow>q (fst (C2 q));
             (snd (C1 q)) = [(i\<^bsup>p\<rightarrow>q\<^esup>)] \<sqdot> snd (C2 q); \<forall>x. x \<noteq> q \<longrightarrow> C1(x) = C2(x)\<rbrakk> \<Longrightarrow>
             mbox_step C1 a k C2"
 
