@@ -5,6 +5,8 @@ theory CommunicatingAutomaton
 
 begin
 
+declare [[quick_and_dirty=true]]
+
 section \<open>Communicating Automata\<close>
 
 

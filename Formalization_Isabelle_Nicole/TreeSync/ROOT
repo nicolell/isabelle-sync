@@ -1,0 +1,12 @@
+session TreeSync = HOL +
+  options [document = pdf, document_output = "output"]
+  sessions
+    "HOL-Library"
+  theories
+    "FormalLanguages"
+    "Defs"
+    "CommunicatingAutomaton"
+    "Express"
+    (*"CounterExamples"*)
+  document_files
+    "root.tex"

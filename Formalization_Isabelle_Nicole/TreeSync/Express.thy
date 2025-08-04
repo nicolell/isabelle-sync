@@ -1,13 +1,14 @@
 (* Author: Kirstin Peters, Augsburg University, 2024 *)
 
 theory Express
-  imports CommunicatingAutomaton
+  imports Defs CommunicatingAutomaton
 
 begin
 
 context NetworkOfCA
 begin
 
+section "Synchronizability of Trees"
 
 (*TODO: w projected to x is empty for all x that are children/grandchildren, etc. of q, not just the direct children
 and empty for all nodes not on the path to root from q. \<rightarrow> each node not on the path to root starting at q, performs
@@ -181,11 +182,11 @@ next
   then have "[a]\<down>\<^sub>q = [a]" by simp
   have "[a]\<down>\<^sub>? = \<epsilon>" using a_def a_facts by simp
   have v'_q_recvs_inv_to_a: "(?v'\<down>\<^sub>q)\<down>\<^sub>? = ((?v' \<sqdot> [a])\<down>\<^sub>q)\<down>\<^sub>?" using \<open>(a # \<epsilon>)\<down>\<^sub>? = \<epsilon>\<close> by auto
-  (*p q theorem conditions:*)
+      (*p q theorem conditions:*)
   have "p \<in> \<P> \<and> q \<in> \<P>" by simp 
   then have "(is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p))))" using assms(3) theorem_rightside_def by blast
   then have theorem_right_pq:  "((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p))))"  using pq by auto
-  (*then show that q can send !a after performing actions in v'. producing the execution v' !a*)
+      (*then show that q can send !a after performing actions in v'. producing the execution v' !a*)
   then have a_send_ok: "(?v' \<sqdot> [a]) \<in> \<T>\<^bsub>None\<^esub>" using a_def Suc assms
   proof (cases "is_root q")
     case True
@@ -197,10 +198,10 @@ next
     show ?thesis using mbox_exec_app_send[of q "?v'" a] using \<open>add_matching_recvs v\<down>\<^sub>q \<sqdot> a # \<epsilon> \<in> \<L>\<^sup>* q\<close> a_facts v_IH by linarith
   next
     case False (*q is node *)
-    (*obtain separate execution for trace w and wq of that execution *)
+      (*obtain separate execution for trace w and wq of that execution *)
     obtain e where e_def: "e \<in> \<T>\<^bsub>None\<^esub>" and e_trace: "e\<down>\<^sub>! = w" using Suc.prems(1) by blast
     then obtain wq where wq_def: "wq = e\<down>\<^sub>q" and wq_in_q: "wq \<in> \<L>\<^sup>* q" using mbox_exec_to_infl_peer_word by presburger  
-    (*sends in wq and sends of q in v' with !a after, are equal:*)
+        (*sends in wq and sends of q in v' with !a after, are equal:*)
     have v'a0: "((?v')\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>! = ((?v')\<down>\<^sub>q)\<down>\<^sub>! \<sqdot> [a]\<down>\<^sub>!" by simp
     have v'a1: "((?v')\<down>\<^sub>q)\<down>\<^sub>! \<sqdot> [a]\<down>\<^sub>! = ((?v')\<down>\<^sub>q)\<down>\<^sub>! \<sqdot> [a]" using a_facts by simp
     then have v'a2: "((?v')\<down>\<^sub>q)\<down>\<^sub>! \<sqdot> [a] = v\<down>\<^sub>q \<sqdot> [a]" by (smt (verit, ccfv_threshold)  \<open>v \<sqdot> a # \<epsilon> = (v \<sqdot> a # \<epsilon>)\<down>\<^sub>!\<close> adding_recvs_keeps_send_order append1_eq_conv filter_append filter_pair_commutative same_append_eq)
@@ -210,10 +211,10 @@ next
     have v'a4: "((?v')\<down>\<^sub>!)\<down>\<^sub>q \<sqdot> [a]\<down>\<^sub>q = ((?v')\<down>\<^sub>q)\<down>\<^sub>! \<sqdot> [a]\<down>\<^sub>q" using filter_pair_commutative by blast
     have "[a]\<down>\<^sub>q = [a]" using a_def by simp
     have wq_to_v'a_trace: "wq\<down>\<^sub>! = ((?v')\<down>\<^sub>q)\<down>\<^sub>! \<sqdot> [a]" using \<open>(a # \<epsilon>)\<down>\<^sub>q = a # \<epsilon>\<close> v'a3 v'a4 wq_v'_sends by argo
-    (*obtain parent r and its word wr to match wq*)
+        (*obtain parent r and its word wr to match wq*)
     have "is_node q" by (metis False NetworkOfCA.root_or_node NetworkOfCA_axioms assms(2))
     then obtain r where "is_parent_of q r" by (metis False UNIV_I path_to_root.cases path_to_root_exists)
-    (*receives of wq are prefix of receives in v' (otherwise execs have different traces!)*)
+        (*receives of wq are prefix of receives in v' (otherwise execs have different traces!)*)
     have v'_recvs_match: "(((?v'\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>? = (((add_matching_recvs ((?v'\<down>\<^sub>!))\<down>\<^sub>?)\<down>\<^sub>q)\<down>\<^sub>!\<^sub>?)" using matching_recvs_word_matches_sends_explicit[of "?v'" q r] using \<open>is_parent_of q r\<close> v_IH by simp
     then have "(((?v'\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>? = (((?v'\<down>\<^sub>?)\<down>\<^sub>q)\<down>\<^sub>!\<^sub>?)" using \<open>w = add_matching_recvs v\<down>\<^sub>! \<sqdot> a # \<epsilon>\<close> w_def by fastforce
     then have wr_0: "(((?v'\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>? = (((?v'\<down>\<^sub>q)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?)" by (metis filter_pair_commutative)
@@ -268,7 +269,7 @@ next
           of q r wq wr' x'] using \<open>wr' \<sqdot> x' \<in> \<L>\<^sup>* r\<close> theorem_right_qr wq_in_q wr'_match by fastforce
     then obtain x where wqx_def: "(wq \<sqdot> x) \<in> \<L>\<^sup>* q" and wqx_match: "(((wq \<sqdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<sqdot> x')\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" by auto
     then have wqx_match_v': "(((wq \<sqdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((((?v' \<sqdot> [a])\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)" using e_trace2 e_v'_match v'_match_alt v'_proj_inv v'r_def by argo
-    (*shuffle x s.t. only the missing receives are added to wq (no extra sends*)
+        (*shuffle x s.t. only the missing receives are added to wq (no extra sends*)
     then obtain xs ys where x_shuf: "(xs \<sqdot> ys) \<squnion>\<squnion>\<^sub>? x" and "xs\<down>\<^sub>? = xs" and "ys\<down>\<^sub>! = ys" using full_shuffle_of by blast (*fully shuffle x*)
     then have xsys_recvs: "(((wq \<sqdot> (xs \<sqdot> ys))\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((((?v' \<sqdot> [a])\<down>\<^sub>!)\<down>\<^sub>r)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)"  by (metis (mono_tags, lifting) filter_append shuffled_keeps_recv_order wqx_match_v') (*xs ys have the same receives as the x we obtained*) 
     have "(wq \<sqdot> xs \<sqdot> ys) \<squnion>\<squnion>\<^sub>? (wq \<sqdot> x)" using x_shuf shuffle_prepend by auto (*shuffle prepend lemma*)
@@ -298,19 +299,19 @@ next
     next
       case False
       then have "(?v'\<down>\<^sub>q \<sqdot> [a]) \<noteq> (?wq)" by (metis shuffled.refl)
-(*either wq is shuffle of (v'q a), or wq and (v'q a) can't be shuffled into each other
+          (*either wq is shuffle of (v'q a), or wq and (v'q a) can't be shuffled into each other
 it remains to be shown that this can't occur*)
       then have "\<not> ((?v'\<down>\<^sub>q \<sqdot> [a]) \<squnion>\<squnion>\<^sub>? (?wq))" using False by blast
       then have "\<not> ((?v'\<down>\<^sub>q \<sqdot> [a]) \<squnion>\<squnion>\<^sub>? (?wq)) \<and> (wq \<sqdot> xs)\<down>\<^sub>? = (((?v' \<sqdot> [a])\<down>\<^sub>q)\<down>\<^sub>?) \<and> (wq \<sqdot> xs)\<down>\<^sub>! = ((?v' \<sqdot> [a])\<down>\<^sub>q)\<down>\<^sub>!" 
         using wqxs_order by blast
-(*then wq must have some ?y < !x but in v'q !a it's !x < ?y*)
+          (*then wq must have some ?y < !x but in v'q !a it's !x < ?y*)
       then have "\<exists> xs' a' ys' b' zs' xs'' ys'' zs''. is_input a' \<and> is_output b' \<and> (?wq) = (xs' @ [a'] @ ys' @ [b'] @ zs') \<and>
 (?v'\<down>\<^sub>q \<sqdot> [a]) = (xs'' @ [b'] @ ys'' @ [a'] @ zs'')"  using no_shuffle_implies_output_input_exists[of 
-"?wq" "(?v'\<down>\<^sub>q \<sqdot> [a])"]  by (metis \<open>(a # \<epsilon>)\<down>\<^sub>q = a # \<epsilon>\<close> filter_append)
-(*by construction of v', !x < !y must be in the trace*)
-(*but there is no execution with wq that can produce this trace, since ?y < !x and thus the trace must be
+        "?wq" "(?v'\<down>\<^sub>q \<sqdot> [a])"]  by (metis \<open>(a # \<epsilon>)\<down>\<^sub>q = a # \<epsilon>\<close> filter_append)
+          (*by construction of v', !x < !y must be in the trace*)
+          (*but there is no execution with wq that can produce this trace, since ?y < !x and thus the trace must be
 !y < !x*)
-      (*we can infer the trace by construction of v', but since some ?y is received earlier in wq
+          (*we can infer the trace by construction of v', but since some ?y is received earlier in wq
 than in v', it must also be sent earlier in e, contradicting that they have the same trace.*)
       have diff_trace_prems: "?wq\<down>\<^sub>? = (?v'\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>? \<and> ?wq\<down>\<^sub>! = (?v'\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>! \<and> 
 \<not>((?v'\<down>\<^sub>q \<sqdot> [a]) \<squnion>\<squnion>\<^sub>? ?wq) \<and> ?wq \<noteq> (?v'\<down>\<^sub>q \<sqdot> [a])
@@ -321,17 +322,17 @@ than in v', it must also be sent earlier in e, contradicting that they have the 
             \<open>add_matching_recvs v\<down>\<^sub>q \<in> \<L>\<^sup>* q\<close> e_def filter_append v'a1 v_IH w_def wq_to_v'a_trace wqxs_L)
 
       have "(e \<sqdot> xs) \<in> \<T>\<^bsub>None\<^esub>" using exec_append_missing_recvs[of wq xs r q v a e]  using diff_trace_prems wq_def wqxs_trace_match 
-         e_trace w_def by blast
+          e_trace w_def by blast
       have "(e \<sqdot> xs)\<down>\<^sub>q = e\<down>\<^sub>q \<sqdot> xs\<down>\<^sub>q" by simp
       have "xs\<down>\<^sub>q = xs" using infl_word_actor_app  by (meson wqxs_L) (*since wq xs is in L*(Aq), xs must consist of q's actions only*)
       then have "(e \<sqdot> xs)\<down>\<^sub>q = ?wq" using \<open>(e \<sqdot> xs)\<down>\<^sub>q = e\<down>\<^sub>q \<sqdot> xs\<down>\<^sub>q\<close> wq_def by presburger
       have "(e \<sqdot> xs)\<down>\<^sub>! = e\<down>\<^sub>!" by (simp add: \<open>xs\<down>\<^sub>? = xs\<close> input_proj_output_yields_eps)
-have diff_trace_prems2: "?wq\<down>\<^sub>? = (?v'\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>? \<and> ?wq\<down>\<^sub>! = (?v'\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>! \<and> 
+      have diff_trace_prems2: "?wq\<down>\<^sub>? = (?v'\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>? \<and> ?wq\<down>\<^sub>! = (?v'\<down>\<^sub>q \<sqdot> [a])\<down>\<^sub>! \<and> 
 \<not>((?v'\<down>\<^sub>q \<sqdot> [a]) \<squnion>\<squnion>\<^sub>? ?wq) \<and> ?wq \<noteq> (?v'\<down>\<^sub>q \<sqdot> [a])
 \<and> (e \<sqdot> xs) \<in> \<T>\<^bsub>None\<^esub> \<and> (e \<sqdot> xs)\<down>\<^sub>q = ?wq \<and> ?v' \<in> \<T>\<^bsub>None\<^esub> \<and> (v \<sqdot> [a]) \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>! \<and> ?v' = (add_matching_recvs v) \<and> ?v'\<down>\<^sub>q \<in> \<L>\<^sup>* q
 \<and> ?wq \<in> \<L>\<^sup>* q"  using \<open>(e \<sqdot> xs)\<down>\<^sub>q = wq \<sqdot> xs\<close> \<open>e \<sqdot> xs \<in> \<T>\<^bsub>None\<^esub>\<close> diff_trace_prems by blast
-  then have "(e \<sqdot> xs)\<down>\<^sub>! \<noteq> (?v' \<sqdot> [a])\<down>\<^sub>!" using diff_peer_word_impl_diff_trace
-[of "?wq" q "?v'" a "(e \<sqdot> xs)" v] by simp
+      then have "(e \<sqdot> xs)\<down>\<^sub>! \<noteq> (?v' \<sqdot> [a])\<down>\<^sub>!" using diff_peer_word_impl_diff_trace
+          [of "?wq" q "?v'" a "(e \<sqdot> xs)" v] by simp
       then show ?thesis using \<open>(e \<sqdot> xs)\<down>\<^sub>! = e\<down>\<^sub>!\<close> e_trace2 by argo
     qed
   qed
@@ -340,13 +341,13 @@ have diff_trace_prems2: "?wq\<down>\<^sub>? = (?v'\<down>\<^sub>q \<sqdot> [a])\
   then have "((add_matching_recvs v)\<down>\<^sub>q @ [a]\<down>\<^sub>q ) \<in> \<L>\<^sup>* q"  using mbox_exec_to_infl_peer_word by fastforce
   then have q_full: "((add_matching_recvs v)\<down>\<^sub>q @ [!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>]) \<in> \<L>\<^sup>* q" using a_def by simp
   have v'p_in_L: "(add_matching_recvs v)\<down>\<^sub>p \<in> \<L>\<^sup>* p" using mbox_exec_to_infl_peer_word v_IH by blast
-  (*all of q's sends to p must be received by p in v'*)
+      (*all of q's sends to p must be received by p in v'*)
   have v'_recvs_match_pq: "(((?v'\<down>\<^sub>!)\<down>\<^sub>q)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? = (((add_matching_recvs ((?v'\<down>\<^sub>!))\<down>\<^sub>?)\<down>\<^sub>p)\<down>\<^sub>!\<^sub>?)" 
     using matching_recvs_word_matches_sends_explicit[of "?v'" p q] using \<open>is_parent_of p q\<close> v_IH by simp
   then have v'_recvs_match_pq2: "(((?v'\<down>\<^sub>!)\<down>\<^sub>q)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? = (((?v'\<down>\<^sub>?)\<down>\<^sub>p)\<down>\<^sub>!\<^sub>?)" using \<open>w = add_matching_recvs v\<down>\<^sub>! \<sqdot> a # \<epsilon>\<close> w_def by fastforce
   let ?wp = "(?v'\<down>\<^sub>p)"
   let ?wq_full = "((add_matching_recvs v)\<down>\<^sub>q @ [!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>])"
-(*p has not received a in v' yet, but q can send it, so by the subset cond. p must be able to receive it still*)
+    (*p has not received a in v' yet, but q can send it, so by the subset cond. p must be able to receive it still*)
   have "(?wp \<sqdot> [?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>]) \<in> \<L>\<^sup>* p \<and> (((?wp \<sqdot> [?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>])\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((?wq_full)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>?)"
     using subset_cond_from_child_prefix_and_parent_act[of p q "?wp" "(?v'\<down>\<^sub>q)" i] by (smt (verit, ccfv_SIG) filter_pair_commutative pq q_full theorem_right_pq v'_recvs_match_pq2
         v'p_in_L)
@@ -372,7 +373,7 @@ qed
 theorem synchronisability_for_trees:
   assumes "tree_topology" 
   shows "is_synchronisable \<longleftrightarrow> ((\<forall>p \<in> \<P>. \<forall>q \<in> \<P>. ((is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) )))" (is "?L \<longleftrightarrow> ?R")
-  (*using assms unfolding theorem_rightside_def subset_condition_def prefix_def NetworkOfCA_def *)
+    (*using assms unfolding theorem_rightside_def subset_condition_def prefix_def NetworkOfCA_def *)
 proof 
   (* \<Longrightarrow>: is_synchronisable \<Longrightarrow> language conditions *)
   assume "?L"
@@ -390,33 +391,33 @@ proof
         and fix some arbitrary suffix x' s.t. w' x' is a word in L*(Aq) *)
         fix w w' x'
         assume w_Lp: "is_in_infl_lang p w"
-               and w'_Lq: "is_in_infl_lang q w'"
-               and w'_w_match: "filter (\<lambda>x. is_output x \<and> (get_object x = q \<and> get_actor x = p 
+          and w'_Lq: "is_in_infl_lang q w'"
+          and w'_w_match: "filter (\<lambda>x. is_output x \<and> (get_object x = q \<and> get_actor x = p 
                    \<or> get_object x = p \<and> get_actor x = q)) w'\<down>\<^sub>!\<^sub>? = w\<down>\<^sub>?\<down>\<^sub>!\<^sub>?"
-               and w'x'_Lq: "is_in_infl_lang q (w' \<sqdot> x')"
+          and w'x'_Lq: "is_in_infl_lang q (w' \<sqdot> x')"
         then show "\<exists>wa. filter (\<lambda>x. is_output x \<and> (get_object x = q \<and> get_actor x = p \<or> get_object x = p \<and>
                    get_actor x = q)) x'\<down>\<^sub>!\<^sub>? =  wa\<down>\<^sub>!\<^sub>? \<and>  (\<exists>x. wa = x\<down>\<^sub>? \<and> is_in_infl_lang p (w \<sqdot> x))" 
           using w_Lp  w'_Lq w'_w_match w'x'_Lq
         proof (cases "is_root q")
           case True
           then have "(w' \<sqdot> x') \<in> \<L> q" using w'x'_Lq w_in_infl_lang by auto
-          (*then w’ x’ consists only of sends*)
-          (*then w’ x’ is also a valid mbox execution*) 
+              (*then w’ x’ consists only of sends*)
+              (*then w’ x’ is also a valid mbox execution*) 
           then have "(w' \<sqdot> x') \<in> \<T>\<^bsub>None\<^esub>" using root_lang_is_mbox True by blast (*since q is root and thus w' x' are only sends*)
-          (*then have "(w' \<sqdot> x')\<down>\<^sub>! = (w' \<sqdot> x')" sorry *)
+              (*then have "(w' \<sqdot> x')\<down>\<^sub>! = (w' \<sqdot> x')" sorry *)
           have "w'\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}\<down>\<^sub>!\<^sub>? = w\<down>\<^sub>?\<down>\<^sub>!\<^sub>?" using w'_w_match by force
-          (*then have "(w' \<sqdot> x') \<sqdot> w \<in> \<T>\<^bsub>None\<^esub>" sorry (*since w' x' is valid execution and provides all sends for w*)*)
-          (*then mix w’ with w and append x’ as valid mbox execution 
+              (*then have "(w' \<sqdot> x') \<sqdot> w \<in> \<T>\<^bsub>None\<^esub>" sorry (*since w' x' is valid execution and provides all sends for w*)*)
+              (*then mix w’ with w and append x’ as valid mbox execution 
           (works since both w’ and x’ need nothing from any other peer, and w’ provides all necessary sends for w)*)
           let ?mix = "(mix_pair w' w [])"
           have "?mix \<sqdot> x' \<in> \<T>\<^bsub>None\<^esub>" sorry
           then obtain t where "t \<in> \<L>\<^sub>\<zero> \<and> t \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>! \<and> t = (?mix \<sqdot> x')\<down>\<^sub>!" using sync_def by fastforce
           then obtain xc where t_sync_run : "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> t xc" using SyncTraces.simps by auto
-          (*find the sync execution (here as mbox run) where each send is directly followed by recv*)
+              (*find the sync execution (here as mbox run) where each send is directly followed by recv*)
           then have "\<exists>xcm. mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs t) xcm" using empty_sync_run_to_mbox_run sync_run_to_mbox_run by blast
-          (*then obtain the sync execution for the trace of the constructed execution*)
+              (*then obtain the sync execution for the trace of the constructed execution*)
           then have sync_exec: "(add_matching_recvs t) \<in> \<T>\<^bsub>None\<^esub>" using MboxTraces.intros by auto
-          (*then the sync execution has exactly w and some x as peer word of p
+              (*then the sync execution has exactly w and some x as peer word of p
           , which receives w’ x’ exactly (subset condition proven!)*)
           then have "\<exists>x. (add_matching_recvs t)\<down>\<^sub>p = w \<sqdot> x" sorry
           then obtain x where x_def: "(add_matching_recvs t)\<down>\<^sub>p = w \<sqdot> x" by blast
@@ -428,42 +429,42 @@ proof
           case False (*q is node with parent r*)
           then have "is_node q" by (metis NetworkOfCA.root_or_node NetworkOfCA_axioms assms)
           then obtain r where qr: "is_parent_of q r" by (metis False UNIV_I path_from_root.simps path_to_root_exists paths_eq)
-          (*obtain w’’ s.t. w’’ provides matching sends for w’x’ (must exist since w’x’ in infl lang)*)
+              (*obtain w’’ s.t. w’’ provides matching sends for w’x’ (must exist since w’x’ in infl lang)*)
           have "(w' \<sqdot> x') \<in> \<L>\<^sup>* q" by (simp add: w'x'_Lq)
           then have "\<exists>w''.  w'' \<in> \<L>\<^sup>*(r) \<and> (((w' \<sqdot> x')\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((w''\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" 
             using infl_parent_child_matching_ws[of "(w' \<sqdot> x')" q r] using qr by blast
           then obtain w'' where w''_w'_match: "w''\<down>\<^sub>!\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>}\<down>\<^sub>!\<^sub>? = (w' \<sqdot> x')\<down>\<^sub>?\<down>\<^sub>!\<^sub>?" and w''_def: "w'' \<in> \<L>\<^sup>* r" by (metis (no_types, lifting) filter_pair_commutative)
-          (*then use lemma 4.4 to obtain execution e for w’’ (by construction, 
+              (*then use lemma 4.4 to obtain execution e for w’’ (by construction, 
           p and q perform no actions here and q gets sent the necessary sends to perform w’, 
           while p gets sent nothing, p and q send and receive nothing in w’’)*)
           have "\<exists> e. (e \<in> \<T>\<^bsub>None\<^esub> \<and> e\<down>\<^sub>r = w'' \<and> ((is_parent_of q r) \<longrightarrow>  e\<down>\<^sub>q = \<epsilon>))"  using lemma4_4[of
-              w'' r q] using \<open>w'' \<in> \<L>\<^sup>* r\<close> assms by blast 
+                w'' r q] using \<open>w'' \<in> \<L>\<^sup>* r\<close> assms by blast 
           then obtain e where e_def: "e \<in> \<T>\<^bsub>None\<^esub>" and e_proj_r: "e\<down>\<^sub>r = w''" 
             and e_proj_q: "e\<down>\<^sub>q = \<epsilon>" using qr by blast
-          (*e provides all sends for w'x' and w' provides all sends for w
+              (*e provides all sends for w'x' and w' provides all sends for w
           \<rightarrow> mix w' and w s.t. each send of w' to p is directly followed by the matching send in w*)
           let ?mix = "(mix_pair w' w [])"
-          (*then append w_mix to e and append x’ to that. This is an execution, since x’ also gets all 
+            (*then append w_mix to e and append x’ to that. This is an execution, since x’ also gets all 
           necessary sends from e, w_mix doesn’t send anything to q and thus q is still in the position 
           to perform x’ (whether w is performed inbetween e and x’ or not doesn’t hinder q)*)
           have "e \<sqdot> ?mix \<sqdot> x' \<in> \<T>\<^bsub>None\<^esub>" sorry
-          (*since the network is synchronisable, obtain the sync execution e’ with the same trace as e.
+              (*since the network is synchronisable, obtain the sync execution e’ with the same trace as e.
            By construction of e, e’ and e projected to only actions between p and q, before x’
           (i.e. sends from q to p and receives of these sends) are equal. Since mix peforms each 
           send of q directly before the receive of p (i.e. simulating the sync execution between these
          two peers), e’ must have the same w in its execution, otherwise a different trace is performed.*)
           then obtain t where "t \<in> \<L>\<^sub>\<zero> \<and> t \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>! \<and> t = (e \<sqdot> ?mix \<sqdot> x')\<down>\<^sub>!" using sync_def by fastforce
           then obtain xc where t_sync_run : "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> t xc" using SyncTraces.simps by auto
-          (*find the sync execution (here as mbox run) where each send is directly followed by recv*)
+              (*find the sync execution (here as mbox run) where each send is directly followed by recv*)
           then have "\<exists>xcm. mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs t) xcm" using empty_sync_run_to_mbox_run sync_run_to_mbox_run by blast
-          (*then obtain the sync execution for the trace of the constructed execution*)
+              (*then obtain the sync execution for the trace of the constructed execution*)
           then have sync_exec: "(add_matching_recvs t) \<in> \<T>\<^bsub>None\<^esub>" using MboxTraces.intros by auto
-          (*then the sync execution has exactly w and some x as peer word of p
+              (*then the sync execution has exactly w and some x as peer word of p
           , which receives w’ x’ exactly (subset condition proven!)*)
           then have "\<exists>x. (add_matching_recvs t)\<down>\<^sub>p = w \<sqdot> x" sorry
           then obtain x where x_def: "(add_matching_recvs t)\<down>\<^sub>p = w \<sqdot> x" by blast
           then have w'x'_wx_match: "(w' \<sqdot> x')\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}\<down>\<^sub>!\<^sub>? = (w \<sqdot> x)\<down>\<^sub>?\<down>\<^sub>!\<^sub>?" sorry
-          (*since e’ is an execution, and by construction, the word of p in this execution is exactly 
+              (*since e’ is an execution, and by construction, the word of p in this execution is exactly 
           w x, and by being in an execution, this w x must also be part of the influenced language of p
           \<Rightarrow> we have found a matching x for our arbitrary x’ and thus shown the subset condition.*)
           have "(w \<sqdot> x) \<in> \<L>\<^sup>* p" using sync_exec x_def by (metis mbox_exec_to_infl_peer_word)
@@ -490,7 +491,7 @@ proof
             then show ?case by simp
           next
             case (swap b a w xs ys) (*exactly one swap occurred*)
-            (*obtain vq, matching word of q to v (which provides the exact sends to p needed for v)*)
+              (*obtain vq, matching word of q to v (which provides the exact sends to p needed for v)*)
             then have "\<exists>vq.  vq \<in> \<L>\<^sup>*(q) \<and> ((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((vq\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" 
               using infl_parent_child_matching_ws[of w p q] orig_in_L q_parent by blast
             then obtain vq where vq_v_match: "((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((vq\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" and vq_def: "vq \<in> \<L>\<^sup>* q" by auto 
@@ -500,7 +501,7 @@ proof
               case True
               have "vq \<in> \<L> q" using vq_def w_in_infl_lang by auto
               then have "vq \<in> \<T>\<^bsub>None\<^esub>" using root_lang_is_mbox True by simp (*since q is root and thus vq are only sends*)
-              (*then mix vq with v (while considering v') as valid mbox execution (works since vq needs
+                  (*then mix vq with v (while considering v') as valid mbox execution (works since vq needs
              nothing from any other peer, and vq provides all necessary sends for v)*)
               let ?w' = "xs \<sqdot> a # b # ys"
               have "\<exists> acc. mix_shuf vq v v' acc" sorry
@@ -509,13 +510,13 @@ proof
               have "?mix \<in> \<T>\<^bsub>None\<^esub>" sorry
               then obtain t where "t \<in> \<L>\<^sub>\<zero> \<and> t \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>! \<and> t = (?mix)\<down>\<^sub>!" using sync_def by fastforce
               then obtain xc where t_sync_run : "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> t xc" using SyncTraces.simps by auto
-              (*find the sync execution (here as mbox run) where each send is directly followed by recv
+                  (*find the sync execution (here as mbox run) where each send is directly followed by recv
               \<rightarrow> by constr. of the mix, this means each send is exactly in front of where a receive would
               be in v' (in v there may not be) \<rightarrow> the sync execution yields v' when projected on p*)
               then have "\<exists>xcm. mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs t) xcm" using empty_sync_run_to_mbox_run sync_run_to_mbox_run by blast
-              (*then obtain the sync execution for the trace of the constructed execution*)
+                  (*then obtain the sync execution for the trace of the constructed execution*)
               then have sync_exec: "(add_matching_recvs t) \<in> \<T>\<^bsub>None\<^esub>" using MboxTraces.intros by auto
-              (*then the sync execution has exactly v' as peer word of p, which then must be in the 
+                  (*then the sync execution has exactly v' as peer word of p, which then must be in the 
               infl. language of p since it is in an execution (shuffled lang. condition proven!)*)
               then have "(add_matching_recvs t)\<down>\<^sub>p = ?w'" sorry
               then have "?w' \<in> \<L>\<^sup>* p" using sync_exec mbox_exec_to_infl_peer_word by metis
@@ -526,40 +527,40 @@ proof
               then obtain r where qr: "is_parent_of q r" by (metis False UNIV_I path_from_root.simps path_to_root_exists paths_eq)
               then have "\<exists>vr.  vr \<in> \<L>\<^sup>*(r) \<and> ((vq\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((vr\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)"
                 using infl_parent_child_matching_ws[of vq q r] orig_in_L vq_def by blast
-              (*now we have vr which matches vq which matches w*)
+                  (*now we have vr which matches vq which matches w*)
               then obtain vr where vr_def: "vr \<in> \<L>\<^sup>*(r)" and vr_vq_match: "((vq\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((vr\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" by blast
-          (*then use lemma 4.4 to obtain execution e for vr (by construction,
+                  (*then use lemma 4.4 to obtain execution e for vr (by construction,
           p and q perform no actions here and q gets sent the necessary sends to perform vq, 
           while p gets sent nothing, p and q send and receive nothing in vr)*)
-          have "\<exists> e. (e \<in> \<T>\<^bsub>None\<^esub> \<and> e\<down>\<^sub>r = vr \<and> ((is_parent_of q r) \<longrightarrow>  e\<down>\<^sub>q = \<epsilon>))"  using lemma4_4[of
-              vr r q] using \<open>vr \<in> \<L>\<^sup>* r\<close> assms by blast 
-          then obtain e where e_def: "e \<in> \<T>\<^bsub>None\<^esub>" and e_proj_r: "e\<down>\<^sub>r = vr" 
-            and e_proj_q: "e\<down>\<^sub>q = \<epsilon>" using qr by blast
-          (*e provides all sends for w'x' and w' provides all sends for w
+              have "\<exists> e. (e \<in> \<T>\<^bsub>None\<^esub> \<and> e\<down>\<^sub>r = vr \<and> ((is_parent_of q r) \<longrightarrow>  e\<down>\<^sub>q = \<epsilon>))"  using lemma4_4[of
+                    vr r q] using \<open>vr \<in> \<L>\<^sup>* r\<close> assms by blast 
+              then obtain e where e_def: "e \<in> \<T>\<^bsub>None\<^esub>" and e_proj_r: "e\<down>\<^sub>r = vr" 
+                and e_proj_q: "e\<down>\<^sub>q = \<epsilon>" using qr by blast
+                  (*e provides all sends for w'x' and w' provides all sends for w
           \<rightarrow> mix w' and w s.t. each send of w' to p is directly followed by the matching send in w*)
-          let ?w' = "xs \<sqdot> a # b # ys"
-          have "\<exists> acc. mix_shuf vq v v' acc" sorry
-          then obtain mix where "mix_shuf vq v v' mix" by blast
-          let ?mix = "mix"
-          (*then append w_mix to e. This is an execution, since vq gets all 
+              let ?w' = "xs \<sqdot> a # b # ys"
+              have "\<exists> acc. mix_shuf vq v v' acc" sorry
+              then obtain mix where "mix_shuf vq v v' mix" by blast
+              let ?mix = "mix"
+                (*then append w_mix to e. This is an execution, since vq gets all 
           necessary sends from e and in turn vq provides all necessary sends to w*)
-          have "e \<sqdot> ?mix \<in> \<T>\<^bsub>None\<^esub>" sorry
-          (*since the network is synchronisable, obtain the sync execution e’ with the same trace as e.
+              have "e \<sqdot> ?mix \<in> \<T>\<^bsub>None\<^esub>" sorry
+                  (*since the network is synchronisable, obtain the sync execution e’ with the same trace as e.
            By construction of e, e’ and e projected to only actions between p and q, before x’
           (i.e. sends from q to p and receives of these sends) are equal. Since mix peforms each 
           send of q directly before the receive of p except for the swapped pair (i.e. simulating the sync execution between these
          two peers), e’ has w' as result of the projection on only p*)
-          then obtain t where "t \<in> \<L>\<^sub>\<zero> \<and> t \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>! \<and> t = (e \<sqdot> ?mix)\<down>\<^sub>!" using sync_def by fastforce
-          then obtain xc where t_sync_run : "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> t xc" using SyncTraces.simps by auto
-          (*find the sync execution (here as mbox run) where each send is directly followed by recv*)
-          then have "\<exists>xcm. mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs t) xcm" using empty_sync_run_to_mbox_run sync_run_to_mbox_run by blast
-          (*then obtain the sync execution for the trace of the constructed execution*)
-          then have sync_exec: "(add_matching_recvs t) \<in> \<T>\<^bsub>None\<^esub>" using MboxTraces.intros by auto
-          (*then the sync execution has exactly v' as peer word of p, which then must be in the 
+              then obtain t where "t \<in> \<L>\<^sub>\<zero> \<and> t \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>! \<and> t = (e \<sqdot> ?mix)\<down>\<^sub>!" using sync_def by fastforce
+              then obtain xc where t_sync_run : "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> t xc" using SyncTraces.simps by auto
+                  (*find the sync execution (here as mbox run) where each send is directly followed by recv*)
+              then have "\<exists>xcm. mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs t) xcm" using empty_sync_run_to_mbox_run sync_run_to_mbox_run by blast
+                  (*then obtain the sync execution for the trace of the constructed execution*)
+              then have sync_exec: "(add_matching_recvs t) \<in> \<T>\<^bsub>None\<^esub>" using MboxTraces.intros by auto
+                  (*then the sync execution has exactly v' as peer word of p, which then must be in the 
               infl. language of p since it is in an execution (shuffled lang. condition proven!)*)
-          then have "(add_matching_recvs t)\<down>\<^sub>p = ?w'" sorry
-          then have "?w' \<in> \<L>\<^sup>* p" using sync_exec mbox_exec_to_infl_peer_word by metis
-          then show ?thesis by simp
+              then have "(add_matching_recvs t)\<down>\<^sub>p = ?w'" sorry
+              then have "?w' \<in> \<L>\<^sup>* p" using sync_exec mbox_exec_to_infl_peer_word by metis
+              then show ?thesis by simp
             qed
           next
             case (trans w w' w'')
@@ -582,7 +583,7 @@ since in w' each send immediately is received and it is a valid execution, it's 
 and thus we have found the matching sync trace to the arbitrary mbox trace.*)
       assume "w \<in> \<T>\<^bsub>None\<^esub>" 
       then have "(w\<down>\<^sub>!) \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!" by blast
-      (*the next line uses the conclusion of the large induction part of the paper proof (for clarity the induction is proven outside)*)
+          (*the next line uses the conclusion of the large induction part of the paper proof (for clarity the induction is proven outside)*)
       then have match_exec: "add_matching_recvs (w\<down>\<^sub>!) \<in> \<T>\<^bsub>None\<^esub>"
         using mbox_trace_with_matching_recvs_is_mbox_exec \<open>\<forall>p\<in>\<P>. \<forall>q\<in>\<P>. is_parent_of p q \<longrightarrow> subset_condition p q \<and> \<L>\<^sup>* p = \<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion> p\<close> assms theorem_rightside_def
         by blast
@@ -621,8 +622,8 @@ and thus we have found the matching sync trace to the arbitrary mbox trace.*)
 qed
 
 
-
-subsubsection ‹Topology is a Forest›
+(*
+section "Topology is a Forest"
 
 inductive is_forest :: "'peer set ⇒ 'peer topology ⇒ bool" where
   IFSingle:  "is_tree P E ⟹ is_forest P E" |
@@ -630,7 +631,7 @@ inductive is_forest :: "'peer set ⇒ 'peer topology ⇒ bool" where
 
 abbreviation forest_topology :: "bool" where
   "forest_topology ≡ is_forest (UNIV :: 'peer set) (𝒢)"
-
+*)
 
 
 

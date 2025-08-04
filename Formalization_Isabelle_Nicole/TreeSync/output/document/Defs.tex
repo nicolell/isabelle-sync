@@ -1,0 +1,1608 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{Defs}%
+%
+\isadelimtheory
+\isanewline
+%
+\endisadelimtheory
+%
+\isatagtheory
+\isakeywordONE{theory}\isamarkupfalse%
+\ Defs\isanewline
+\ \ \ \ \isakeywordTWO{imports}\ {\isachardoublequoteopen}HOL{\isacharminus}{\kern0pt}Library{\isachardot}{\kern0pt}Sublist{\isachardoublequoteclose}\ FormalLanguages\isanewline
+\isanewline
+\isakeywordTWO{begin}%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsection{Communicating Automata%
+}
+\isamarkuptrue%
+%
+\isamarkupsubsection{Messages and Actions%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{datatype}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ {\isacharequal}{\kern0pt}\isanewline
+\ \ Message\ {\isacharprime}{\kern0pt}information\ {\isacharprime}{\kern0pt}peer\ {\isacharprime}{\kern0pt}peer\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\isactrlbsup {\isacharunderscore}{\kern0pt}{\isasymrightarrow}{\isacharunderscore}{\kern0pt}\isactrlesup {\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}information\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}information{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}information\ {\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ i{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}sender\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}sender\ {\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ p{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}receiver\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}receiver\ {\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ q{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{datatype}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isacharequal}{\kern0pt}\isanewline
+\ \ Output\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharbang}{\kern0pt}{\isasymlangle}{\isacharunderscore}{\kern0pt}{\isasymrangle}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ Input\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharquery}{\kern0pt}{\isasymlangle}{\isacharunderscore}{\kern0pt}{\isasymrangle}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}output\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}output\ {\isacharparenleft}{\kern0pt}{\isacharbang}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ True{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}output\ {\isacharparenleft}{\kern0pt}{\isacharquery}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ False{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}input\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}input\ a\ {\isasymequiv}\ {\isasymnot}{\isacharparenleft}{\kern0pt}is{\isacharunderscore}{\kern0pt}output\ a{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}message\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}message\ {\isacharparenleft}{\kern0pt}{\isacharbang}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ m{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}message\ {\isacharparenleft}{\kern0pt}{\isacharquery}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ m{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}actor\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}actor\ {\isacharparenleft}{\kern0pt}{\isacharbang}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}sender\ m{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}actor\ {\isacharparenleft}{\kern0pt}{\isacharquery}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}receiver\ m{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}object\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}object\ {\isacharparenleft}{\kern0pt}{\isacharbang}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}receiver\ m{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}object\ {\isacharparenleft}{\kern0pt}{\isacharquery}{\kern0pt}{\isasymlangle}m{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}sender\ m{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}info\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}information{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}info\ a\ {\isasymequiv}\ get{\isacharunderscore}{\kern0pt}information\ {\isacharparenleft}{\kern0pt}get{\isacharunderscore}{\kern0pt}message\ a{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Projections & Languages%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}outputs\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}w{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\ {\isasymequiv}\ filter\ is{\isacharunderscore}{\kern0pt}output\ w{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}outputs{\isacharunderscore}{\kern0pt}language\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}L{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\ {\isacharbar}{\kern0pt}\ w{\isachardot}{\kern0pt}\ w\ {\isasymin}\ L{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}inputs\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}w{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}\ {\isasymequiv}\ filter\ is{\isacharunderscore}{\kern0pt}input\ w{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}inputs{\isacharunderscore}{\kern0pt}language\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}L{\isasymdownharpoonright}\isactrlsub {\isacharquery}{\kern0pt}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharbar}{\kern0pt}\ w{\isachardot}{\kern0pt}\ w\ {\isasymin}\ L{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ ignore{\isacharunderscore}{\kern0pt}signs\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}w{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isasymequiv}\ map\ get{\isacharunderscore}{\kern0pt}message\ w{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ ignore{\isacharunderscore}{\kern0pt}signs{\isacharunderscore}{\kern0pt}in{\isacharunderscore}{\kern0pt}language\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ language{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}L{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharbar}{\kern0pt}\ w{\isachardot}{\kern0pt}\ w\ {\isasymin}\ L{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{projection on receives towards p and sends from p%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}single{\isacharunderscore}{\kern0pt}peer\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ \ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdown}\isactrlsub {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}w{\isasymdown}\isactrlsub p\ \ {\isasymequiv}\ filter\ {\isacharparenleft}{\kern0pt}{\isasymlambda}x{\isachardot}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}actor\ x\ {\isacharequal}{\kern0pt}\ p{\isacharparenright}{\kern0pt}\ w{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}single{\isacharunderscore}{\kern0pt}peer{\isacharunderscore}{\kern0pt}language\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}L{\isasymdownharpoonright}\isactrlsub p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isasymdown}\isactrlsub p{\isacharparenright}{\kern0pt}\ {\isacharbar}{\kern0pt}\ w{\isachardot}{\kern0pt}\ w\ {\isasymin}\ L{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}peer{\isacharunderscore}{\kern0pt}pair\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub {\isacharunderscore}{\kern0pt}\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub {\isacharunderscore}{\kern0pt}\isactrlsub {\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}w{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}\ \ {\isasymequiv}\ filter\ {\isacharparenleft}{\kern0pt}{\isasymlambda}x{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}get{\isacharunderscore}{\kern0pt}object\ x\ {\isacharequal}{\kern0pt}\ q\ {\isasymand}\ get{\isacharunderscore}{\kern0pt}actor\ x\ {\isacharequal}{\kern0pt}\ p{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}get{\isacharunderscore}{\kern0pt}object\ x\ {\isacharequal}{\kern0pt}\ p\ {\isasymand}\ get{\isacharunderscore}{\kern0pt}actor\ x\ {\isacharequal}{\kern0pt}\ q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ w{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ projection{\isacharunderscore}{\kern0pt}on{\isacharunderscore}{\kern0pt}peer{\isacharunderscore}{\kern0pt}pair{\isacharunderscore}{\kern0pt}language\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub {\isacharunderscore}{\kern0pt}\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub {\isacharunderscore}{\kern0pt}\isactrlsub {\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}L{\isasymdownharpoonright}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharbar}{\kern0pt}\ w{\isachardot}{\kern0pt}\ w\ {\isasymin}\ L{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Shuffled Language%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ shuffled\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}{\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ \isanewline
+\ \ refl{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}shuffled\ w\ w{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ \isanewline
+\ \ swap{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}\ is{\isacharunderscore}{\kern0pt}output\ a{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}input\ b\ {\isacharsemicolon}{\kern0pt}\ w\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ a\ {\isacharhash}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}\ {\isasymrbrakk}\ \isanewline
+\ \ \ \ \ \ \ \ \ {\isasymLongrightarrow}\ shuffled\ w\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ a\ {\isacharhash}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ \isanewline
+\ \ trans{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}\ shuffled\ w\ w{\isacharprime}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ shuffled\ w{\isacharprime}{\kern0pt}\ w{\isacharprime}{\kern0pt}{\isacharprime}{\kern0pt}\ {\isasymrbrakk}\ {\isasymLongrightarrow}\ shuffled\ w\ w{\isacharprime}{\kern0pt}{\isacharprime}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ valid{\isacharunderscore}{\kern0pt}input{\isacharunderscore}{\kern0pt}shuffles{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}w\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}valid{\isacharunderscore}{\kern0pt}input{\isacharunderscore}{\kern0pt}shuffles{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}w\ w\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}w{\isacharprime}{\kern0pt}{\isachardot}{\kern0pt}\ shuffled\ w\ w{\isacharprime}{\kern0pt}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ valid{\isacharunderscore}{\kern0pt}input{\isacharunderscore}{\kern0pt}shuffle\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ \isanewline
+\ \ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ {\isacharparenleft}{\kern0pt}\isakeywordTWO{infixl}\ {\isachardoublequoteopen}{\isasymsqunion}{\isasymsqunion}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}\ {\isadigit{6}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}w{\isacharprime}{\kern0pt}\ {\isasymsqunion}{\isasymsqunion}\isactrlsub {\isacharquery}{\kern0pt}\ w\ {\isasymequiv}\ shuffled\ w\ w{\isacharprime}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{definition}\isamarkupfalse%
+\ all{\isacharunderscore}{\kern0pt}shuffles\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}all{\isacharunderscore}{\kern0pt}shuffles\ w\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}w{\isacharprime}{\kern0pt}{\isachardot}{\kern0pt}\ shuffled\ w\ w{\isacharprime}{\kern0pt}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{definition}\isamarkupfalse%
+\ shuffled{\isacharunderscore}{\kern0pt}lang\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ \ language\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}shuffled{\isacharunderscore}{\kern0pt}lang\ L\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymUnion}w{\isasymin}L{\isachardot}{\kern0pt}\ all{\isacharunderscore}{\kern0pt}shuffles\ w{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ shuffling{\isacharunderscore}{\kern0pt}possible\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}shuffling{\isacharunderscore}{\kern0pt}possible\ w\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ xs\ a\ b\ ys{\isachardot}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}output\ a\ {\isasymand}\ is{\isacharunderscore}{\kern0pt}input\ b\ {\isasymand}\ w\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ a\ {\isacharhash}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ shuffling{\isacharunderscore}{\kern0pt}occurred\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}shuffling{\isacharunderscore}{\kern0pt}occurred\ w\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ xs\ a\ b\ ys{\isachardot}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}output\ a\ {\isasymand}\ is{\isacharunderscore}{\kern0pt}input\ b\ {\isasymand}\ w\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ a\ {\isacharhash}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\ \isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ rightmost{\isacharunderscore}{\kern0pt}shuffle\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}rightmost{\isacharunderscore}{\kern0pt}shuffle\ w\ w{\isacharprime}{\kern0pt}\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ xs\ a\ b\ ys{\isachardot}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}output\ a\ {\isasymand}\ is{\isacharunderscore}{\kern0pt}input\ b\ {\isasymand}\ w\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ a\ {\isacharhash}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ shuffling{\isacharunderscore}{\kern0pt}possible\ ys{\isacharparenright}{\kern0pt}\ {\isasymand}\ w{\isacharprime}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ a\ {\isacharhash}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{locale}\isamarkupfalse%
+\ CommunicatingAutomaton\ {\isacharequal}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{fixes}\ peer\ \ \ \ \ \ \ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ States\ \ \ \ \ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state\ set{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ initial\ \ \ \ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ Messages\ \ \ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ set{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ Transitions\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymtimes}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ set{\isachardoublequoteclose}\isanewline
+\ \ \isakeywordTWO{assumes}\ finite{\isacharunderscore}{\kern0pt}states{\isacharcolon}{\kern0pt}\ \ \ \ \ \ \ \ \ \ {\isachardoublequoteopen}finite\ States{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ initial{\isacharunderscore}{\kern0pt}state{\isacharcolon}{\kern0pt}\ \ \ \ \ \ \ \ \ \ {\isachardoublequoteopen}initial\ {\isasymin}\ States{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ message{\isacharunderscore}{\kern0pt}alphabet{\isacharcolon}{\kern0pt}\ \ \ \ \ \ \ {\isachardoublequoteopen}Alphabet\ Messages{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ well{\isacharunderscore}{\kern0pt}formed{\isacharunderscore}{\kern0pt}transition{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymAnd}s{\isadigit{1}}\ a\ s{\isadigit{2}}{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ Transitions\ {\isasymLongrightarrow}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ s{\isadigit{1}}\ {\isasymin}\ States\ {\isasymand}\ get{\isacharunderscore}{\kern0pt}message\ a\ {\isasymin}\ Messages\ {\isasymand}\ get{\isacharunderscore}{\kern0pt}actor\ a\ {\isacharequal}{\kern0pt}\ peer\ {\isasymand}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ get{\isacharunderscore}{\kern0pt}object\ a\ {\isasymnoteq}\ peer\ {\isasymand}\ s{\isadigit{2}}\ {\isasymin}\ States{\isachardoublequoteclose}\isanewline
+\isakeywordTWO{begin}\isanewline
+\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ ActionsOverMessages\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ AOMOutput{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}m\ {\isasymin}\ Messages\ {\isasymLongrightarrow}\ {\isacharbang}{\kern0pt}{\isasymlangle}m{\isasymrangle}\ {\isasymin}\ ActionsOverMessages{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ AOMInput{\isacharcolon}{\kern0pt}\ \ {\isachardoublequoteopen}m\ {\isasymin}\ Messages\ {\isasymLongrightarrow}\ {\isacharquery}{\kern0pt}{\isasymlangle}m{\isasymrangle}\ {\isasymin}\ ActionsOverMessages{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ Actions\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}Act{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ ActOfTrans{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ Transitions\ {\isasymLongrightarrow}\ a\ {\isasymin}\ Act{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ CommunicationPartners\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ CPAction{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ Transitions\ {\isasymLongrightarrow}\ get{\isacharunderscore}{\kern0pt}object\ a\ {\isasymin}\ CommunicationPartners{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ SendingToPeers\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ SPSend{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}{\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ Transitions{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}output\ a{\isasymrbrakk}\ {\isasymLongrightarrow}\ get{\isacharunderscore}{\kern0pt}object\ a\ {\isasymin}\ SendingToPeers{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ ReceivingFromPeers\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ RPRecv{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}{\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ Transitions{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}input\ a{\isasymrbrakk}\ {\isasymLongrightarrow}\ get{\isacharunderscore}{\kern0pt}object\ a\ {\isasymin}\ ReceivingFromPeers{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ step\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isasymmidarrow}{\isacharunderscore}{\kern0pt}{\isasymrightarrow}\isactrlsub {\isasymC}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}s{\isadigit{1}}\ {\isasymmidarrow}a{\isasymrightarrow}\isactrlsub {\isasymC}\ s{\isadigit{2}}\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ Transitions{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ run\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ REmpty{\isadigit{2}}{\isacharcolon}{\kern0pt}\ \ \ \ {\isachardoublequoteopen}run\ s\ {\isasymepsilon}\ {\isacharparenleft}{\kern0pt}{\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ RComposed{\isadigit{2}}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}run\ s{\isadigit{1}}\ w\ xs{\isacharsemicolon}{\kern0pt}\ s{\isadigit{0}}\ {\isasymmidarrow}a{\isasymrightarrow}\isactrlsub {\isasymC}\ s{\isadigit{1}}{\isasymrbrakk}\ {\isasymLongrightarrow}\ run\ s{\isadigit{0}}\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ w{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ Traces\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ STRun{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}run\ initial\ w\ xs\ {\isasymLongrightarrow}\ w\ {\isasymin}\ Traces{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ Lang\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}Lang\ {\isasymequiv}\ Traces{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ LangSend\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}LangSend\ {\isasymequiv}\ Lang{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ LangRecv\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}LangRecv\ {\isasymequiv}\ Lang{\isasymdownharpoonright}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordTWO{end}\isamarkupfalse%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Network of Communicating Automata%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{locale}\isamarkupfalse%
+\ NetworkOfCA\ {\isacharequal}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{fixes}\ automata\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ set\ {\isasymtimes}\ {\isacharprime}{\kern0pt}state\ {\isasymtimes}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymtimes}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ set{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymA}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ messages\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ set{\isachardoublequoteclose}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymM}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{assumes}\ finite{\isacharunderscore}{\kern0pt}peers{\isacharcolon}{\kern0pt}\ \ \ \ \ \ {\isachardoublequoteopen}finite\ {\isacharparenleft}{\kern0pt}UNIV\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}peer\ set{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ automaton{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymAnd}p{\isachardot}{\kern0pt}\ CommunicatingAutomaton\ p\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymM}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ message{\isacharunderscore}{\kern0pt}alphabet{\isacharcolon}{\kern0pt}\ \ {\isachardoublequoteopen}Alphabet\ {\isasymM}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ peers{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}message{\isacharcolon}{\kern0pt}\ \ {\isachardoublequoteopen}{\isasymAnd}m{\isachardot}{\kern0pt}\ m\ {\isasymin}\ {\isasymM}\ {\isasymLongrightarrow}\ get{\isacharunderscore}{\kern0pt}sender\ m\ {\isasymnoteq}\ get{\isacharunderscore}{\kern0pt}receiver\ m{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeywordTWO{and}\ messages{\isacharunderscore}{\kern0pt}used{\isacharcolon}{\kern0pt}\ \ \ \ \ {\isachardoublequoteopen}{\isasymforall}m\ {\isasymin}\ {\isasymM}{\isachardot}{\kern0pt}\ {\isasymexists}s{\isadigit{1}}\ a\ s{\isadigit{2}}\ p{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\ {\isacharequal}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}message\ a{\isachardoublequoteclose}\isanewline
+\isakeywordTWO{begin}\isanewline
+\isanewline
+%
+\isamarkupcmt{all peers in network%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}peers\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymP}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymP}\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}UNIV\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}peer\ set{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}states\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymS}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymS}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ fst\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}initial{\isacharunderscore}{\kern0pt}state\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymI}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymI}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ fst\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}transitions\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymtimes}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymR}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymR}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ WordsOverMessages\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymM}\isactrlsup {\isacharasterisk}{\kern0pt}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymM}\isactrlsup {\isacharasterisk}{\kern0pt}\ {\isasymequiv}\ Alphabet{\isachardot}{\kern0pt}WordsOverAlphabet\ {\isasymM}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{all q that p sends to in Ap (for which there is a transition !p->q in Ap)%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ sendingToPeers{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymP}\isactrlsub {\isacharbang}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymP}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ CommunicatingAutomaton{\isachardot}{\kern0pt}SendingToPeers\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{all q that p receives from in Ap (for which there is a transition ?q->p in Ap)%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ receivingFromPeers{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymP}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymP}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ CommunicatingAutomaton{\isachardot}{\kern0pt}ReceivingFromPeers\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ Peers{\isacharunderscore}{\kern0pt}of\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}Peers{\isacharunderscore}{\kern0pt}of\ p\ {\isasymequiv}\ CommunicatingAutomaton{\isachardot}{\kern0pt}CommunicationPartners\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ step{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isasymmidarrow}{\isacharunderscore}{\kern0pt}{\isasymrightarrow}\isactrlsub {\isasymC}{\isacharunderscore}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}s{\isadigit{1}}\ {\isasymmidarrow}a{\isasymrightarrow}\isactrlsub {\isasymC}p\ s{\isadigit{2}}\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isasymin}\ snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ language{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ CommunicatingAutomaton{\isachardot}{\kern0pt}Lang\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ output{\isacharunderscore}{\kern0pt}language{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharbang}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ CommunicatingAutomaton{\isachardot}{\kern0pt}LangSend\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ input{\isacharunderscore}{\kern0pt}language{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymequiv}\ CommunicatingAutomaton{\isachardot}{\kern0pt}LangRecv\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}{\isasymA}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\ \ %
+\isamarkupcmt{start in s1, read w (in 0 or more steps) and end in s2%
+}\ \ \isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ path{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isasymmidarrow}{\isacharunderscore}{\kern0pt}{\isasymrightarrow}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharunderscore}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}s{\isadigit{1}}\ {\isasymmidarrow}w{\isasymrightarrow}\isactrlsup {\isacharasterisk}{\kern0pt}p\ s{\isadigit{2}}\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}{\isacharequal}{\kern0pt}s{\isadigit{2}}\ {\isasymand}\ w\ {\isacharequal}{\kern0pt}\ {\isasymepsilon}\ {\isasymand}\ s{\isadigit{1}}\ {\isasymin}\ {\isasymS}\ p{\isacharparenright}{\kern0pt}\ \ {\isasymor}\ {\isacharparenleft}{\kern0pt}{\isasymexists}xs{\isachardot}{\kern0pt}\ CommunicatingAutomaton{\isachardot}{\kern0pt}run\ {\isacharparenleft}{\kern0pt}{\isasymR}\ p{\isacharparenright}{\kern0pt}\ s{\isadigit{1}}\ w\ xs\ {\isasymand}\ last\ xs\ {\isacharequal}{\kern0pt}\ s{\isadigit{2}}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ run{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ \ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}run{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer\ p\ w\ xs\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}CommunicatingAutomaton{\isachardot}{\kern0pt}run\ {\isacharparenleft}{\kern0pt}{\isasymR}\ p{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymI}\ p{\isacharparenright}{\kern0pt}\ w\ xs{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ run{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}state\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ \ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}run{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}peer{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}state\ p\ s\ w\ xs\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}CommunicatingAutomaton{\isachardot}{\kern0pt}run\ {\isacharparenleft}{\kern0pt}{\isasymR}\ p{\isacharparenright}{\kern0pt}\ s\ w\ xs{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{fun}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}trans{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}run\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}state\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ list\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymtimes}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ list{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}trans{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}run\ s{\isadigit{0}}\ {\isasymepsilon}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}trans{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}run\ s{\isadigit{0}}\ {\isacharbrackleft}{\kern0pt}a{\isacharbrackright}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}s{\isadigit{1}}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharparenleft}{\kern0pt}s{\isadigit{0}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{1}}{\isacharparenright}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}trans{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}run\ s{\isadigit{0}}\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ as{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}s{\isadigit{1}}\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}s{\isadigit{0}}{\isacharcomma}{\kern0pt}\ a{\isacharcomma}{\kern0pt}\ s{\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharhash}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}trans{\isacharunderscore}{\kern0pt}of{\isacharunderscore}{\kern0pt}run\ s{\isadigit{1}}\ as\ xs{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Synchronous System%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{definition}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}sync{\isacharunderscore}{\kern0pt}config\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}sync{\isacharunderscore}{\kern0pt}config\ C\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymforall}p{\isachardot}{\kern0pt}\ C\ p\ {\isasymin}\ {\isasymS}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ initial{\isacharunderscore}{\kern0pt}sync{\isacharunderscore}{\kern0pt}config\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymC}\isactrlsub {\isasymI}\isactrlsub {\isasymzero}{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymC}\isactrlsub {\isasymI}\isactrlsub {\isasymzero}\ {\isasymequiv}\ {\isasymlambda}p{\isachardot}{\kern0pt}\ {\isasymI}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ sync{\isacharunderscore}{\kern0pt}step\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isasymmidarrow}{\isasymlangle}{\isacharunderscore}{\kern0pt}{\isacharcomma}{\kern0pt}\ {\isasymzero}{\isasymrangle}{\isasymrightarrow}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ SynchStep{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}sync{\isacharunderscore}{\kern0pt}config\ C{\isadigit{1}}{\isacharsemicolon}{\kern0pt}\ a\ {\isacharequal}{\kern0pt}\ {\isacharbang}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isacharsemicolon}{\kern0pt}\ C{\isadigit{1}}\ p\ {\isasymmidarrow}{\isacharbang}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isasymrightarrow}\isactrlsub {\isasymC}p\ {\isacharparenleft}{\kern0pt}C{\isadigit{2}}\ p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ C{\isadigit{1}}\ q\ {\isasymmidarrow}{\isacharquery}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isasymrightarrow}\isactrlsub {\isasymC}q\ {\isacharparenleft}{\kern0pt}C{\isadigit{2}}\ q{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isasymforall}x{\isachardot}{\kern0pt}\ x\ {\isasymnotin}\ {\isacharbraceleft}{\kern0pt}p{\isacharcomma}{\kern0pt}\ q{\isacharbraceright}{\kern0pt}\ {\isasymlongrightarrow}\ C{\isadigit{1}}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ C{\isadigit{2}}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ C{\isadigit{1}}\ {\isasymmidarrow}{\isasymlangle}a{\isacharcomma}{\kern0pt}\ {\isasymzero}{\isasymrangle}{\isasymrightarrow}\ C{\isadigit{2}}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ sync{\isacharunderscore}{\kern0pt}run\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state{\isacharparenright}{\kern0pt}\ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ SREmpty{\isacharcolon}{\kern0pt}\ \ \ \ {\isachardoublequoteopen}sync{\isacharunderscore}{\kern0pt}run\ C\ {\isasymepsilon}\ {\isacharparenleft}{\kern0pt}{\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ \ \ SRComposed{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}sync{\isacharunderscore}{\kern0pt}run\ C{\isadigit{0}}\ w\ xc{\isacharsemicolon}{\kern0pt}\ last\ {\isacharparenleft}{\kern0pt}C{\isadigit{0}}{\isacharhash}{\kern0pt}xc{\isacharparenright}{\kern0pt}\ {\isasymmidarrow}{\isasymlangle}a{\isacharcomma}{\kern0pt}\ {\isasymzero}{\isasymrangle}{\isasymrightarrow}\ C{\isasymrbrakk}\ {\isasymLongrightarrow}\ sync{\isacharunderscore}{\kern0pt}run\ C{\isadigit{0}}\ {\isacharparenleft}{\kern0pt}w{\isasymsqdot}{\isacharbrackleft}{\kern0pt}a{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xc{\isacharat}{\kern0pt}{\isacharbrackleft}{\kern0pt}C{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{E(Nsync)%
+}\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ SyncTraces\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymT}\isactrlsub {\isasymzero}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ STRun{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}sync{\isacharunderscore}{\kern0pt}run\ {\isasymC}\isactrlsub {\isasymI}\isactrlsub {\isasymzero}\ w\ xc\ {\isasymLongrightarrow}\ w\ {\isasymin}\ {\isasymT}\isactrlsub {\isasymzero}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{T(Nsync)%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ SyncLang\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isasymzero}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isasymzero}\ {\isasymequiv}\ {\isasymT}\isactrlsub {\isasymzero}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Mailbox System%
+}
+\isamarkuptrue%
+%
+\isamarkupsubsubsection{Semantics and Language%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{definition}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\ C\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymforall}p{\isachardot}{\kern0pt}\ fst\ {\isacharparenleft}{\kern0pt}C\ p{\isacharparenright}{\kern0pt}\ {\isasymin}\ {\isasymS}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isasymand}\ snd\ {\isacharparenleft}{\kern0pt}C\ p{\isacharparenright}{\kern0pt}\ {\isasymin}\ {\isasymM}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{all mbox configurations of system%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ mbox{\isacharunderscore}{\kern0pt}configs\ \isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ list{\isacharparenright}{\kern0pt}\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymC}\isactrlsub {\isasymmm}{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymC}\isactrlsub {\isasymmm}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}C\ {\isacharbar}{\kern0pt}\ C{\isachardot}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\ C{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ initial{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymC}\isactrlsub {\isasymI}\isactrlsub {\isasymmm}{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymC}\isactrlsub {\isasymI}\isactrlsub {\isasymmm}\ {\isasymequiv}\ {\isasymlambda}p{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymI}\ p{\isacharcomma}{\kern0pt}\ {\isasymepsilon}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{definition}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}stable\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}stable\ C\ {\isasymequiv}\ is{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\ C\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymforall}p{\isachardot}{\kern0pt}\ snd\ {\isacharparenleft}{\kern0pt}C\ p{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isasymepsilon}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{type{\isacharunderscore}{\kern0pt}synonym}\isamarkupfalse%
+\ bound\ {\isacharequal}{\kern0pt}\ {\isachardoublequoteopen}nat\ option{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ nat{\isacharunderscore}{\kern0pt}bound\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ bound{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymB}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymB}\ k\ {\isasymequiv}\ Some\ k{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ unbounded\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bound{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasyminfinity}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasyminfinity}\ {\isasymequiv}\ None{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{primrec}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}bounded\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ bound\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isacharless}{\kern0pt}\isactrlsub {\isasymB}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}n\ {\isacharless}{\kern0pt}\isactrlsub {\isasymB}\ {\isasyminfinity}\ {\isacharequal}{\kern0pt}\ True{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}n\ {\isacharless}{\kern0pt}\isactrlsub {\isasymB}\ {\isasymB}\ k\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}n\ {\isacharless}{\kern0pt}\ k{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ mbox{\isacharunderscore}{\kern0pt}step\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\isanewline
+\ \ \ \ \ \ bound\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ MboxSend{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\ C{\isadigit{1}}{\isacharsemicolon}{\kern0pt}\ a\ {\isacharequal}{\kern0pt}\ {\isacharbang}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isacharsemicolon}{\kern0pt}\ fst\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ p{\isacharparenright}{\kern0pt}\ {\isasymmidarrow}{\isacharbang}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isasymrightarrow}\isactrlsub {\isasymC}p\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}C{\isadigit{2}}\ p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ snd\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ p{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ snd\ {\isacharparenleft}{\kern0pt}C{\isadigit{2}}\ p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}\ {\isacharbar}{\kern0pt}\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharbar}{\kern0pt}\ {\isacharparenright}{\kern0pt}\ {\isacharless}{\kern0pt}\isactrlsub {\isasymB}\ k{\isacharsemicolon}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ C{\isadigit{2}}\ q\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ q{\isacharparenright}{\kern0pt}{\isacharcomma}{\kern0pt}\ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymsqdot}\ {\isacharbrackleft}{\kern0pt}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isasymforall}x{\isachardot}{\kern0pt}\ x\ {\isasymnotin}\ {\isacharbraceleft}{\kern0pt}p{\isacharcomma}{\kern0pt}\ q{\isacharbraceright}{\kern0pt}\ {\isasymlongrightarrow}\ C{\isadigit{1}}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ C{\isadigit{2}}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ mbox{\isacharunderscore}{\kern0pt}step\ C{\isadigit{1}}\ a\ k\ C{\isadigit{2}}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ MboxRecv{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}mbox{\isacharunderscore}{\kern0pt}config\ C{\isadigit{1}}{\isacharsemicolon}{\kern0pt}\ a\ {\isacharequal}{\kern0pt}\ {\isacharquery}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isacharsemicolon}{\kern0pt}\ fst\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ q{\isacharparenright}{\kern0pt}\ {\isasymmidarrow}{\isacharquery}{\kern0pt}{\isasymlangle}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isasymrangle}{\isasymrightarrow}\isactrlsub {\isasymC}q\ {\isacharparenleft}{\kern0pt}fst\ {\isacharparenleft}{\kern0pt}C{\isadigit{2}}\ q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ {\isacharparenleft}{\kern0pt}snd\ {\isacharparenleft}{\kern0pt}C{\isadigit{1}}\ q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharparenleft}{\kern0pt}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup {\isacharparenright}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isasymsqdot}\ snd\ {\isacharparenleft}{\kern0pt}C{\isadigit{2}}\ q{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isasymforall}x{\isachardot}{\kern0pt}\ x\ {\isasymnoteq}\ q\ {\isasymlongrightarrow}\ C{\isadigit{1}}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ C{\isadigit{2}}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ mbox{\isacharunderscore}{\kern0pt}step\ C{\isadigit{1}}\ a\ k\ C{\isadigit{2}}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ mbox{\isacharunderscore}{\kern0pt}step{\isacharunderscore}{\kern0pt}bounded\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\isanewline
+\ \ \ \ \ \ nat\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isasymmidarrow}{\isasymlangle}{\isacharunderscore}{\kern0pt}{\isacharcomma}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isasymrangle}{\isasymrightarrow}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}C{\isadigit{1}}\ {\isasymmidarrow}{\isasymlangle}a{\isacharcomma}{\kern0pt}\ n{\isasymrangle}{\isasymrightarrow}\ C{\isadigit{2}}\ {\isasymequiv}\ mbox{\isacharunderscore}{\kern0pt}step\ C{\isadigit{1}}\ a\ {\isacharparenleft}{\kern0pt}Some\ n{\isacharparenright}{\kern0pt}\ C{\isadigit{2}}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ mbox{\isacharunderscore}{\kern0pt}step{\isacharunderscore}{\kern0pt}unbounded\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ {\isasymRightarrow}\isanewline
+\ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}\ {\isasymmidarrow}{\isasymlangle}{\isacharunderscore}{\kern0pt}{\isacharcomma}{\kern0pt}\ {\isasyminfinity}{\isasymrangle}{\isasymrightarrow}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}C{\isadigit{1}}\ {\isasymmidarrow}{\isasymlangle}a{\isacharcomma}{\kern0pt}\ {\isasyminfinity}{\isasymrangle}{\isasymrightarrow}\ C{\isadigit{2}}\ {\isasymequiv}\ mbox{\isacharunderscore}{\kern0pt}step\ C{\isadigit{1}}\ a\ None\ C{\isadigit{2}}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsubsection{mbox run%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ mbox{\isacharunderscore}{\kern0pt}run\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ bound\ {\isasymRightarrow}\isanewline
+\ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\isanewline
+\ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}state\ {\isasymtimes}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ message\ word{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ MREmpty{\isacharcolon}{\kern0pt}\ \ \ \ \ \ \ {\isachardoublequoteopen}mbox{\isacharunderscore}{\kern0pt}run\ C\ k\ {\isasymepsilon}\ {\isacharparenleft}{\kern0pt}{\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ MRComposedNat{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}mbox{\isacharunderscore}{\kern0pt}run\ C{\isadigit{0}}\ {\isacharparenleft}{\kern0pt}Some\ k{\isacharparenright}{\kern0pt}\ w\ xc{\isacharsemicolon}{\kern0pt}\ last\ {\isacharparenleft}{\kern0pt}C{\isadigit{0}}{\isacharhash}{\kern0pt}xc{\isacharparenright}{\kern0pt}\ {\isasymmidarrow}{\isasymlangle}a{\isacharcomma}{\kern0pt}\ k{\isasymrangle}{\isasymrightarrow}\ C{\isasymrbrakk}\ {\isasymLongrightarrow}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mbox{\isacharunderscore}{\kern0pt}run\ C{\isadigit{0}}\ {\isacharparenleft}{\kern0pt}Some\ k{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}w{\isasymsqdot}{\isacharbrackleft}{\kern0pt}a{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xc{\isacharat}{\kern0pt}{\isacharbrackleft}{\kern0pt}C{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ MRComposedInf{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}mbox{\isacharunderscore}{\kern0pt}run\ C{\isadigit{0}}\ None\ w\ xc{\isacharsemicolon}{\kern0pt}\ last\ {\isacharparenleft}{\kern0pt}C{\isadigit{0}}{\isacharhash}{\kern0pt}xc{\isacharparenright}{\kern0pt}\ {\isasymmidarrow}{\isasymlangle}a{\isacharcomma}{\kern0pt}\ {\isasyminfinity}{\isasymrangle}{\isasymrightarrow}\ C{\isasymrbrakk}\ {\isasymLongrightarrow}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mbox{\isacharunderscore}{\kern0pt}run\ C{\isadigit{0}}\ None\ {\isacharparenleft}{\kern0pt}w{\isasymsqdot}{\isacharbrackleft}{\kern0pt}a{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}xc{\isacharat}{\kern0pt}{\isacharbrackleft}{\kern0pt}C{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsubsection{mbox traces%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ MboxTraces\isanewline
+\ \ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ option\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymT}\isactrlbsub {\isacharunderscore}{\kern0pt}\isactrlesub {\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{for}\ k\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ option{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ \ \ MTRun{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}mbox{\isacharunderscore}{\kern0pt}run\ {\isasymC}\isactrlsub {\isasymI}\isactrlsub {\isasymmm}\ k\ w\ xc\ {\isasymLongrightarrow}\ w\ {\isasymin}\ {\isasymT}\isactrlbsub k\isactrlesub {\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{T(mbox)%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ MboxLang\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bound\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlbsub {\isacharunderscore}{\kern0pt}\isactrlesub {\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}{\isasymL}\isactrlbsub k\isactrlesub \ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}\ w{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\ {\isacharbar}{\kern0pt}\ w{\isachardot}{\kern0pt}\ w\ {\isasymin}\ {\isasymT}\isactrlbsub k\isactrlesub \ {\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ MboxLang{\isacharunderscore}{\kern0pt}bounded{\isacharunderscore}{\kern0pt}by{\isacharunderscore}{\kern0pt}one\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isasymone}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isasymone}\ {\isasymequiv}\ {\isasymL}\isactrlbsub {\isasymB}\ {\isadigit{1}}\isactrlesub {\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ MboxLang{\isacharunderscore}{\kern0pt}unbounded\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isasyminfinity}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isasyminfinity}\ {\isasymequiv}\ {\isasymL}\isactrlbsub {\isasyminfinity}\isactrlesub {\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ MboxLangSend\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bound\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharbang}{\kern0pt}\isactrlbsub {\isacharunderscore}{\kern0pt}\isactrlesub {\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharbang}{\kern0pt}\isactrlbsub k\isactrlesub \ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymL}\isactrlbsub k\isactrlesub {\isacharparenright}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ MboxLangRecv\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bound\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharquery}{\kern0pt}\isactrlbsub {\isacharunderscore}{\kern0pt}\isactrlesub {\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{2}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isakeywordTWO{where}\isanewline
+\ \ \ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharquery}{\kern0pt}\isactrlbsub k\isactrlesub \ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymL}\isactrlbsub k\isactrlesub {\isacharparenright}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharquery}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsection{Synchronisability%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}synchronisable\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}synchronisable\ {\isasymequiv}\ {\isasymL}\isactrlsub {\isasyminfinity}\ {\isacharequal}{\kern0pt}\ {\isasymL}\isactrlsub {\isasymzero}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{type{\isacharunderscore}{\kern0pt}synonym}\isamarkupfalse%
+\ {\isacharprime}{\kern0pt}a\ topology\ {\isacharequal}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a\ {\isasymtimes}\ {\isacharprime}{\kern0pt}a{\isacharparenright}{\kern0pt}\ set{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{the topology graph of all peers%
+}\isanewline
+\isakeywordONE{inductive{\isacharunderscore}{\kern0pt}set}\isamarkupfalse%
+\ Edges\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ topology{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymG}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ TEdge{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}i\isactrlbsup p{\isasymrightarrow}q\isactrlesup \ {\isasymin}\ {\isasymM}\ {\isasymLongrightarrow}\ {\isacharparenleft}{\kern0pt}p{\isacharcomma}{\kern0pt}\ q{\isacharparenright}{\kern0pt}\ {\isasymin}\ {\isasymG}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ Successors\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ topology\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymlangle}{\isacharunderscore}{\kern0pt}{\isasymrightarrow}{\isasymrangle}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}E{\isasymlangle}p{\isasymrightarrow}{\isasymrangle}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}q{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}p{\isacharcomma}{\kern0pt}\ q{\isacharparenright}{\kern0pt}\ {\isasymin}\ E{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ Predecessors\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ topology\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ set{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isacharunderscore}{\kern0pt}{\isasymlangle}{\isasymrightarrow}{\isacharunderscore}{\kern0pt}{\isasymrangle}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}E{\isasymlangle}{\isasymrightarrow}q{\isasymrangle}\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}p{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}p{\isacharcomma}{\kern0pt}\ q{\isacharparenright}{\kern0pt}\ {\isasymin}\ E{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Synchronisability is Deciable for Tree Topology in Mailbox Communication%
+}
+\isamarkuptrue%
+%
+\isamarkupsubsubsection{Topology is a Tree%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}tree\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ set\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ topology\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ ITRoot{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}tree\ {\isacharbraceleft}{\kern0pt}p{\isacharbraceright}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ ITNode{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}tree\ P\ E{\isacharsemicolon}{\kern0pt}\ p\ {\isasymin}\ P{\isacharsemicolon}{\kern0pt}\ q\ {\isasymnotin}\ P{\isasymrbrakk}\ {\isasymLongrightarrow}\ is{\isacharunderscore}{\kern0pt}tree\ {\isacharparenleft}{\kern0pt}insert\ q\ P{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}insert\ {\isacharparenleft}{\kern0pt}p{\isacharcomma}{\kern0pt}\ q{\isacharparenright}{\kern0pt}\ E{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ tree{\isacharunderscore}{\kern0pt}topology\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}tree{\isacharunderscore}{\kern0pt}topology\ {\isasymequiv}\ is{\isacharunderscore}{\kern0pt}tree\ {\isacharparenleft}{\kern0pt}UNIV\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}peer\ set{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymG}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}root{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}topology\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}root{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}topology\ p\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}tree{\isacharunderscore}{\kern0pt}topology\ {\isasymand}\ {\isasymG}{\isasymlangle}{\isasymrightarrow}p{\isasymrangle}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}{\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}root{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}local\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}root{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}local\ p\ {\isasymequiv}\ tree{\isacharunderscore}{\kern0pt}topology\ {\isasymand}\ {\isasymP}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}{\isacharbraceright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymforall}q{\isachardot}{\kern0pt}\ p\ {\isasymnotin}\ {\isasymP}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}root\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}root\ p\ {\isasymequiv}\ is{\isacharunderscore}{\kern0pt}root{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}local\ p\ {\isasymor}\ is{\isacharunderscore}{\kern0pt}root{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}topology\ p{\isachardoublequoteclose}\isanewline
+\ \ \isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}node{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}topology\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}node{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}topology\ p\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}tree{\isacharunderscore}{\kern0pt}topology\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymexists}q{\isachardot}{\kern0pt}\ {\isasymG}{\isasymlangle}{\isasymrightarrow}p{\isasymrangle}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}q{\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}node{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}local\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}node{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}local\ p\ {\isasymequiv}\ tree{\isacharunderscore}{\kern0pt}topology\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymexists}q{\isachardot}{\kern0pt}\ {\isasymP}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}q{\isacharbraceright}{\kern0pt}\ {\isasymor}\ p\ {\isasymin}\ {\isasymP}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}node\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}is{\isacharunderscore}{\kern0pt}node\ p\ {\isasymequiv}\ is{\isacharunderscore}{\kern0pt}node{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}topology\ p\ {\isasymor}\ is{\isacharunderscore}{\kern0pt}node{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}local\ p{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsubsection{parent-child relationship in tree%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ node{\isacharunderscore}{\kern0pt}parent\ {\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}node\ p{\isacharsemicolon}{\kern0pt}\ {\isasymG}{\isasymlangle}{\isasymrightarrow}p{\isasymrangle}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}q{\isacharbraceright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsubsection{path to root and path related lemmas%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ PTRRoot{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}root\ p{\isasymrbrakk}\ {\isasymLongrightarrow}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ p\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ PTRNode{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isacharsemicolon}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ q\ as{\isacharsemicolon}{\kern0pt}\ distinct\ {\isacharparenleft}{\kern0pt}p\ {\isacharhash}{\kern0pt}\ as{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ p\ {\isacharparenleft}{\kern0pt}p\ {\isacharhash}{\kern0pt}\ as{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{definition}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}root\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ topology\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\ \isakeywordTWO{where}\ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}root\ E\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}THE\ x{\isachardot}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}root\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ get{\isacharunderscore}{\kern0pt}path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ \ {\isacharprime}{\kern0pt}peer\ list{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}get{\isacharunderscore}{\kern0pt}path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ p\ {\isasymequiv}\ \ {\isacharparenleft}{\kern0pt}THE\ ps{\isachardot}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ p\ ps{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}root\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ PFRRoot{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}root\ p{\isasymrbrakk}\ {\isasymLongrightarrow}\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}root\ p\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ PFRNode{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isacharsemicolon}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}root\ q\ as{\isacharsemicolon}{\kern0pt}\ distinct\ {\isacharparenleft}{\kern0pt}as\ {\isacharat}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}root\ p\ {\isacharparenleft}{\kern0pt}as\ {\isacharat}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}to\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ list\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ path{\isacharunderscore}{\kern0pt}refl{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ p\ {\isasymin}\ {\isasymP}{\isasymrbrakk}\ {\isasymLongrightarrow}\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}to\ p\ p\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ path{\isacharunderscore}{\kern0pt}step{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isacharsemicolon}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}to\ r\ q\ as{\isacharsemicolon}{\kern0pt}\ distinct\ {\isacharparenleft}{\kern0pt}as\ {\isacharat}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ path{\isacharunderscore}{\kern0pt}from{\isacharunderscore}{\kern0pt}to\ r\ p\ {\isacharparenleft}{\kern0pt}as\ {\isacharat}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}p{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{Influenced Language%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ is{\isacharunderscore}{\kern0pt}in{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ IL{\isacharunderscore}{\kern0pt}root{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}root\ r{\isacharsemicolon}{\kern0pt}\ w\ {\isasymin}\ {\isasymL}{\isacharparenleft}{\kern0pt}r{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ is{\isacharunderscore}{\kern0pt}in{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang\ r\ w{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\ %
+\isamarkupcmt{influenced language of root r is language of r%
+}\isanewline
+\ \ IL{\isacharunderscore}{\kern0pt}node{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isacharsemicolon}{\kern0pt}\ w\ {\isasymin}\ {\isasymL}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}in{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang\ q\ w{\isacharprime}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isacharprime}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ is{\isacharunderscore}{\kern0pt}in{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang\ p\ w{\isachardoublequoteclose}\ %
+\isamarkupcmt{p is any node and q its parent has a matching send for each of p's receives%
+}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ InfluencedLanguage\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\ p\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}w{\isachardot}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}in{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang\ p\ w{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ InfluencedLanguageSend\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsup {\isacharasterisk}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsup {\isacharasterisk}{\kern0pt}\ p\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\ p{\isacharparenright}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}\ {\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ InfluencedLanguageRecv\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharquery}{\kern0pt}\isactrlsup {\isacharasterisk}{\kern0pt}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsub {\isacharquery}{\kern0pt}\isactrlsup {\isacharasterisk}{\kern0pt}\ p\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\ p{\isacharparenright}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharquery}{\kern0pt}\ {\isachardoublequoteclose}\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ ShuffledInfluencedLanguage\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\isactrlsub {\isasymsqunion}\isactrlsub {\isasymsqunion}\ {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\isactrlsub {\isasymsqunion}\isactrlsub {\isasymsqunion}\ p\ {\isasymequiv}\ shuffled{\isacharunderscore}{\kern0pt}lang\ {\isacharparenleft}{\kern0pt}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\ p{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+%
+\isamarkupcmt{p receives from no one and there is no q that sends to p%
+}\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ no{\isacharunderscore}{\kern0pt}sends{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}or{\isacharunderscore}{\kern0pt}recvs{\isacharunderscore}{\kern0pt}in\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}no{\isacharunderscore}{\kern0pt}sends{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}or{\isacharunderscore}{\kern0pt}recvs{\isacharunderscore}{\kern0pt}in\ p\ {\isasymequiv}\ {\isacharparenleft}{\kern0pt}{\isasymP}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}{\isacharbraceright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymforall}q{\isachardot}{\kern0pt}\ p\ {\isasymnotin}\ {\isasymP}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsubsection{simulate sync with mbox word%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{fun}\isamarkupfalse%
+\ add{\isacharunderscore}{\kern0pt}matching{\isacharunderscore}{\kern0pt}recvs\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ {\isachardoublequoteopen}add{\isacharunderscore}{\kern0pt}matching{\isacharunderscore}{\kern0pt}recvs\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}add{\isacharunderscore}{\kern0pt}matching{\isacharunderscore}{\kern0pt}recvs\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ w{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}if\ is{\isacharunderscore}{\kern0pt}output\ a\isanewline
+\ \ \ \ \ \ then\ a\ {\isacharhash}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharquery}{\kern0pt}{\isasymlangle}get{\isacharunderscore}{\kern0pt}message\ a{\isasymrangle}{\isacharparenright}{\kern0pt}\ {\isacharhash}{\kern0pt}\ add{\isacharunderscore}{\kern0pt}matching{\isacharunderscore}{\kern0pt}recvs\ w\ \isanewline
+\ \ \ \ \ \ else\ a\ {\isacharhash}{\kern0pt}\ add{\isacharunderscore}{\kern0pt}matching{\isacharunderscore}{\kern0pt}recvs\ w{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsubsection{Lemma 4.4 and preparations%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ acc{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang{\isacharunderscore}{\kern0pt}word\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ ACC{\isacharunderscore}{\kern0pt}root{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}root\ r{\isacharsemicolon}{\kern0pt}\ w\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}r{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ acc{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang{\isacharunderscore}{\kern0pt}word\ r\ w{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\ %
+\isamarkupcmt{influenced language of root r is language of r%
+}\isanewline
+\ \ ACC{\isacharunderscore}{\kern0pt}node{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isacharsemicolon}{\kern0pt}\ w\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ acc{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang{\isacharunderscore}{\kern0pt}word\ q\ w{\isacharprime}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isacharprime}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ acc{\isacharunderscore}{\kern0pt}infl{\isacharunderscore}{\kern0pt}lang{\isacharunderscore}{\kern0pt}word\ p\ {\isacharparenleft}{\kern0pt}w{\isacharprime}{\kern0pt}\ {\isacharat}{\kern0pt}\ w{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ %
+\isamarkupcmt{p is any node and q its parent has a matching send for each of p's receives%
+}\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{inductive}\isamarkupfalse%
+\ concat{\isacharunderscore}{\kern0pt}infl\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ list\ \ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{for}\ p{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}{\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer{\isachardoublequoteclose}\ \isakeywordTWO{and}\ w{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ \ at{\isacharunderscore}{\kern0pt}p{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ w\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ p\ ps{\isasymrbrakk}\ {\isasymLongrightarrow}\ concat{\isacharunderscore}{\kern0pt}infl\ p\ w\ ps\ w{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\ \isanewline
+\ \ reach{\isacharunderscore}{\kern0pt}root{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}is{\isacharunderscore}{\kern0pt}root\ q{\isacharsemicolon}{\kern0pt}\ qw\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ x\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}q{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymforall}g{\isachardot}{\kern0pt}\ w{\isacharunderscore}{\kern0pt}acc{\isasymdown}\isactrlsub g\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}g{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ \ concat{\isacharunderscore}{\kern0pt}infl\ p\ w\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}q{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}\ w{\isacharunderscore}{\kern0pt}acc{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isacharunderscore}{\kern0pt}acc{\isasymdown}\isactrlsub x{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}qw{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub x\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ concat{\isacharunderscore}{\kern0pt}infl\ p\ w\ {\isacharbrackleft}{\kern0pt}q{\isacharbrackright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}qw\ {\isasymsqdot}\ w{\isacharunderscore}{\kern0pt}acc{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\ \isanewline
+\ \ node{\isacharunderscore}{\kern0pt}step{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}tree{\isacharunderscore}{\kern0pt}topology{\isacharsemicolon}{\kern0pt}\ {\isasymP}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenleft}{\kern0pt}x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharbraceleft}{\kern0pt}q{\isacharbraceright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymforall}g{\isachardot}{\kern0pt}\ w{\isacharunderscore}{\kern0pt}acc{\isasymdown}\isactrlsub g\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}g{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ path{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}root\ x\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ q\ {\isacharhash}{\kern0pt}\ ps{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ qw\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ concat{\isacharunderscore}{\kern0pt}infl\ p\ w\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ q\ {\isacharhash}{\kern0pt}\ ps{\isacharparenright}{\kern0pt}\ w{\isacharunderscore}{\kern0pt}acc{\isacharsemicolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isacharunderscore}{\kern0pt}acc{\isasymdown}\isactrlsub x{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}qw{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub x\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymrbrakk}\ {\isasymLongrightarrow}\ concat{\isacharunderscore}{\kern0pt}infl\ p\ w\ {\isacharparenleft}{\kern0pt}q{\isacharhash}{\kern0pt}ps{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}qw\ {\isasymsqdot}\ w{\isacharunderscore}{\kern0pt}acc{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsection{new formalization%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ possible{\isacharunderscore}{\kern0pt}recv{\isacharunderscore}{\kern0pt}suffixes\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ \ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymddagger}{\isacharunderscore}{\kern0pt}{\isasymddagger}\isactrlsub {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\ \ \isanewline
+\ \ {\isachardoublequoteopen}{\isasymddagger}w{\isasymddagger}\isactrlsub p\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}x{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharbar}{\kern0pt}\ x{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}w\ {\isasymsqdot}\ x{\isacharparenright}{\kern0pt}\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{abbreviation}\isamarkupfalse%
+\ possible{\isacharunderscore}{\kern0pt}send{\isacharunderscore}{\kern0pt}suffixes{\isacharunderscore}{\kern0pt}to{\isacharunderscore}{\kern0pt}peer\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ \ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ language{\isachardoublequoteclose}\ \ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}\isactrlsub {\isacharunderscore}{\kern0pt}{\isasymddagger}{\isacharunderscore}{\kern0pt}{\isasymddagger}\isactrlsub {\isacharunderscore}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbrackleft}{\kern0pt}{\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{9}}{\isadigit{0}}{\isacharbrackright}{\kern0pt}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeywordTWO{where}\ \ \isanewline
+\ \ {\isachardoublequoteopen}\isactrlsub q{\isasymddagger}w{\isasymddagger}\isactrlsub p\ {\isasymequiv}\ {\isacharbraceleft}{\kern0pt}{\isacharparenleft}{\kern0pt}x{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}\ {\isacharbar}{\kern0pt}\ x{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}w\ {\isasymsqdot}\ x{\isacharparenright}{\kern0pt}\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{definition}\isamarkupfalse%
+\ subset{\isacharunderscore}{\kern0pt}condition\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}peer\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\isanewline
+\ \ \isakeywordTWO{where}\ {\isachardoublequoteopen}subset{\isacharunderscore}{\kern0pt}condition\ p\ q\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ w\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isachardot}{\kern0pt}\ {\isasymforall}\ w{\isacharprime}{\kern0pt}\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isachardot}{\kern0pt}\isanewline
+\ \ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isacharprime}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}w{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}\isactrlsub q{\isasymddagger}w{\isacharprime}{\kern0pt}{\isasymddagger}\isactrlsub p{\isacharparenright}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isasymsubseteq}\ {\isacharparenleft}{\kern0pt}{\isasymddagger}w{\isasymddagger}\isactrlsub p{\isacharparenright}{\kern0pt}{\isasymdownharpoonright}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isakeywordONE{definition}\isamarkupfalse%
+\ theorem{\isacharunderscore}{\kern0pt}rightside\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bool{\isachardoublequoteclose}\isanewline
+\ \ \isakeywordTWO{where}\ {\isachardoublequoteopen}theorem{\isacharunderscore}{\kern0pt}rightside\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymforall}p\ {\isasymin}\ {\isasymP}{\isachardot}{\kern0pt}\ {\isasymforall}q\ {\isasymin}\ {\isasymP}{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}is{\isacharunderscore}{\kern0pt}parent{\isacharunderscore}{\kern0pt}of\ p\ q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}subset{\isacharunderscore}{\kern0pt}condition\ p\ q{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\isactrlsub {\isasymsqunion}\isactrlsub {\isasymsqunion}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{=> 1.%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{fun}\isamarkupfalse%
+\ mix{\isacharunderscore}{\kern0pt}pair\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word{\isachardoublequoteclose}\ \isakeywordTWO{where}\isanewline
+\ {\isachardoublequoteopen}mix{\isacharunderscore}{\kern0pt}pair\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ acc\ {\isacharequal}{\kern0pt}\ acc{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ {\isachardoublequoteopen}mix{\isacharunderscore}{\kern0pt}pair\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ w{\isacharprime}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ acc\ {\isacharequal}{\kern0pt}\ mix{\isacharunderscore}{\kern0pt}pair\ w{\isacharprime}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ acc{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ {\isachardoublequoteopen}mix{\isacharunderscore}{\kern0pt}pair\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ w{\isacharparenright}{\kern0pt}\ acc\ {\isacharequal}{\kern0pt}\ mix{\isacharunderscore}{\kern0pt}pair\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ w\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ acc{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharbar}{\kern0pt}\isanewline
+\ {\isachardoublequoteopen}mix{\isacharunderscore}{\kern0pt}pair\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ w{\isacharprime}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}b\ {\isacharhash}{\kern0pt}\ w{\isacharparenright}{\kern0pt}\ acc\ \ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}if\ a\ {\isacharequal}{\kern0pt}\ {\isacharbang}{\kern0pt}{\isasymlangle}get{\isacharunderscore}{\kern0pt}message\ b{\isasymrangle}\isanewline
+\ \ \ \ \ \ then\ {\isacharparenleft}{\kern0pt}if\ b\ {\isacharequal}{\kern0pt}\ {\isacharquery}{\kern0pt}{\isasymlangle}get{\isacharunderscore}{\kern0pt}message\ a{\isasymrangle}\ then\ mix{\isacharunderscore}{\kern0pt}pair\ w{\isacharprime}{\kern0pt}\ w\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ acc{\isacharparenright}{\kern0pt}\ else\ mix{\isacharunderscore}{\kern0pt}pair\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ w{\isacharprime}{\kern0pt}{\isacharparenright}{\kern0pt}\ w\ {\isacharparenleft}{\kern0pt}b\ {\isacharhash}{\kern0pt}\ acc{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ else\ mix{\isacharunderscore}{\kern0pt}pair\ w{\isacharprime}{\kern0pt}\ {\isacharparenleft}{\kern0pt}b\ {\isacharhash}{\kern0pt}\ w{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}a\ {\isacharhash}{\kern0pt}\ acc{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimdocument
+%
+\endisadelimdocument
+%
+\isatagdocument
+%
+\isamarkupsubsection{=> 2.%
+}
+\isamarkuptrue%
+%
+\endisatagdocument
+{\isafolddocument}%
+%
+\isadelimdocument
+%
+\endisadelimdocument
+\isakeywordONE{inductive}\isamarkupfalse%
+\ mix{\isacharunderscore}{\kern0pt}shuf\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}information{\isacharcomma}{\kern0pt}\ {\isacharprime}{\kern0pt}peer{\isacharparenright}{\kern0pt}\ action\ word\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeywordTWO{where}\ \ \isanewline
+\ \ mix{\isacharunderscore}{\kern0pt}shuf{\isacharunderscore}{\kern0pt}constr{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymlbrakk}vq{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbraceleft}{\kern0pt}\isactrlsub p\isactrlsub {\isacharcomma}{\kern0pt}\isactrlsub q\isactrlsub {\isacharbraceright}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}\ {\isacharequal}{\kern0pt}\ v{\isasymdown}\isactrlsub {\isacharquery}{\kern0pt}{\isasymdown}\isactrlsub {\isacharbang}{\kern0pt}\isactrlsub {\isacharquery}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ v{\isacharprime}{\kern0pt}\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}\isactrlsub {\isasymsqunion}\isactrlsub {\isasymsqunion}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ v{\isacharprime}{\kern0pt}\ {\isasymsqunion}{\isasymsqunion}\isactrlsub {\isacharquery}{\kern0pt}\ v{\isacharsemicolon}{\kern0pt}\ v\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}p{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ vq\ {\isasymin}\ {\isasymL}\isactrlsup {\isacharasterisk}{\kern0pt}{\isacharparenleft}{\kern0pt}q{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ \isanewline
+vq\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}as\ {\isasymsqdot}\ a{\isacharunderscore}{\kern0pt}send\ {\isacharhash}{\kern0pt}\ bs{\isacharparenright}{\kern0pt}{\isacharsemicolon}{\kern0pt}\ v\ {\isacharequal}{\kern0pt}\ xs\ {\isasymsqdot}\ b\ {\isacharhash}{\kern0pt}\ a{\isacharunderscore}{\kern0pt}recv\ {\isacharhash}{\kern0pt}\ ys{\isacharsemicolon}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}message\ a{\isacharunderscore}{\kern0pt}recv\ {\isacharequal}{\kern0pt}\ get{\isacharunderscore}{\kern0pt}message\ a{\isacharunderscore}{\kern0pt}send{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}input\ a{\isacharunderscore}{\kern0pt}recv{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}output\ a{\isacharunderscore}{\kern0pt}send{\isacharsemicolon}{\kern0pt}\ is{\isacharunderscore}{\kern0pt}output\ b{\isasymrbrakk}\ \isanewline
+{\isasymLongrightarrow}\ mix{\isacharunderscore}{\kern0pt}shuf\ vq\ v\ v{\isacharprime}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}mix{\isacharunderscore}{\kern0pt}pair\ as\ xs\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymsqdot}\ a{\isacharunderscore}{\kern0pt}send\ {\isacharhash}{\kern0pt}\ b\ {\isacharhash}{\kern0pt}\ a{\isacharunderscore}{\kern0pt}recv\ {\isacharhash}{\kern0pt}\ {\isacharparenleft}{\kern0pt}mix{\isacharunderscore}{\kern0pt}pair\ bs\ ys\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isanewline
+\isanewline
+\isakeywordTWO{end}\isamarkupfalse%
+\isanewline
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+\isakeywordTWO{end}\isamarkupfalse%
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=~/Desktop/isabelle-sync/Formalization_Isabelle_Nicole/TreeSync/Defs.thy%:%
+%:%6=1%:%
+%:%11=2%:%
+%:%12=2%:%
+%:%13=3%:%
+%:%14=4%:%
+%:%15=5%:%
+%:%29=7%:%
+%:%33=9%:%
+%:%43=11%:%
+%:%44=11%:%
+%:%45=12%:%
+%:%46=13%:%
+%:%47=14%:%
+%:%48=14%:%
+%:%49=15%:%
+%:%50=16%:%
+%:%51=17%:%
+%:%52=17%:%
+%:%53=18%:%
+%:%54=19%:%
+%:%55=20%:%
+%:%56=20%:%
+%:%57=21%:%
+%:%58=22%:%
+%:%59=23%:%
+%:%60=24%:%
+%:%61=25%:%
+%:%62=25%:%
+%:%63=26%:%
+%:%64=27%:%
+%:%65=28%:%
+%:%66=29%:%
+%:%67=29%:%
+%:%68=30%:%
+%:%69=31%:%
+%:%70=32%:%
+%:%71=33%:%
+%:%72=33%:%
+%:%73=34%:%
+%:%74=35%:%
+%:%75=36%:%
+%:%76=36%:%
+%:%77=37%:%
+%:%78=38%:%
+%:%79=39%:%
+%:%80=40%:%
+%:%81=40%:%
+%:%82=41%:%
+%:%83=42%:%
+%:%84=43%:%
+%:%85=44%:%
+%:%86=44%:%
+%:%87=45%:%
+%:%88=46%:%
+%:%89=47%:%
+%:%90=48%:%
+%:%91=48%:%
+%:%92=49%:%
+%:%99=51%:%
+%:%109=53%:%
+%:%110=53%:%
+%:%111=54%:%
+%:%112=55%:%
+%:%113=56%:%
+%:%114=57%:%
+%:%115=58%:%
+%:%116=58%:%
+%:%117=59%:%
+%:%118=60%:%
+%:%119=61%:%
+%:%120=62%:%
+%:%121=63%:%
+%:%122=64%:%
+%:%123=64%:%
+%:%124=65%:%
+%:%125=66%:%
+%:%126=67%:%
+%:%127=68%:%
+%:%128=69%:%
+%:%129=69%:%
+%:%130=70%:%
+%:%131=71%:%
+%:%132=72%:%
+%:%133=73%:%
+%:%134=74%:%
+%:%135=75%:%
+%:%136=75%:%
+%:%137=76%:%
+%:%138=77%:%
+%:%139=78%:%
+%:%140=79%:%
+%:%141=80%:%
+%:%142=80%:%
+%:%143=81%:%
+%:%144=82%:%
+%:%145=83%:%
+%:%146=84%:%
+%:%148=85%:%
+%:%149=85%:%
+%:%150=86%:%
+%:%151=86%:%
+%:%152=87%:%
+%:%153=88%:%
+%:%154=89%:%
+%:%155=90%:%
+%:%156=90%:%
+%:%157=91%:%
+%:%158=92%:%
+%:%159=93%:%
+%:%160=94%:%
+%:%161=95%:%
+%:%162=95%:%
+%:%163=96%:%
+%:%164=97%:%
+%:%165=98%:%
+%:%166=99%:%
+%:%167=100%:%
+%:%168=100%:%
+%:%169=101%:%
+%:%170=102%:%
+%:%171=103%:%
+%:%178=107%:%
+%:%188=109%:%
+%:%189=109%:%
+%:%190=110%:%
+%:%191=111%:%
+%:%192=112%:%
+%:%193=113%:%
+%:%194=114%:%
+%:%195=115%:%
+%:%196=116%:%
+%:%197=117%:%
+%:%198=118%:%
+%:%199=118%:%
+%:%200=119%:%
+%:%201=120%:%
+%:%202=121%:%
+%:%203=121%:%
+%:%204=122%:%
+%:%205=123%:%
+%:%206=124%:%
+%:%207=125%:%
+%:%208=126%:%
+%:%209=126%:%
+%:%210=127%:%
+%:%211=128%:%
+%:%212=129%:%
+%:%213=130%:%
+%:%214=130%:%
+%:%215=131%:%
+%:%216=132%:%
+%:%217=133%:%
+%:%218=133%:%
+%:%219=134%:%
+%:%220=135%:%
+%:%221=136%:%
+%:%222=136%:%
+%:%223=137%:%
+%:%224=138%:%
+%:%225=139%:%
+%:%226=140%:%
+%:%227=140%:%
+%:%228=141%:%
+%:%229=142%:%
+%:%230=143%:%
+%:%231=143%:%
+%:%232=144%:%
+%:%233=145%:%
+%:%234=146%:%
+%:%235=147%:%
+%:%236=148%:%
+%:%237=149%:%
+%:%238=150%:%
+%:%239=151%:%
+%:%240=152%:%
+%:%242=154%:%
+%:%243=155%:%
+%:%244=156%:%
+%:%245=157%:%
+%:%246=157%:%
+%:%247=158%:%
+%:%248=159%:%
+%:%249=160%:%
+%:%250=161%:%
+%:%251=161%:%
+%:%252=162%:%
+%:%253=163%:%
+%:%254=164%:%
+%:%255=164%:%
+%:%256=165%:%
+%:%257=166%:%
+%:%258=167%:%
+%:%259=167%:%
+%:%260=168%:%
+%:%261=169%:%
+%:%262=170%:%
+%:%263=170%:%
+%:%264=171%:%
+%:%265=172%:%
+%:%266=173%:%
+%:%267=173%:%
+%:%268=174%:%
+%:%269=175%:%
+%:%270=176%:%
+%:%271=177%:%
+%:%272=183%:%
+%:%273=184%:%
+%:%274=185%:%
+%:%275=185%:%
+%:%276=186%:%
+%:%277=187%:%
+%:%278=188%:%
+%:%279=189%:%
+%:%280=189%:%
+%:%281=190%:%
+%:%282=191%:%
+%:%283=192%:%
+%:%284=192%:%
+%:%285=193%:%
+%:%286=194%:%
+%:%287=195%:%
+%:%288=195%:%
+%:%289=196%:%
+%:%290=197%:%
+%:%291=198%:%
+%:%292=198%:%
+%:%293=199%:%
+%:%294=200%:%
+%:%295=201%:%
+%:%303=203%:%
+%:%313=205%:%
+%:%314=205%:%
+%:%315=206%:%
+%:%316=207%:%
+%:%317=208%:%
+%:%318=209%:%
+%:%319=210%:%
+%:%320=211%:%
+%:%321=212%:%
+%:%322=213%:%
+%:%323=214%:%
+%:%324=215%:%
+%:%325=216%:%
+%:%326=217%:%
+%:%328=218%:%
+%:%329=218%:%
+%:%330=219%:%
+%:%331=219%:%
+%:%332=220%:%
+%:%333=221%:%
+%:%334=222%:%
+%:%335=222%:%
+%:%336=223%:%
+%:%337=224%:%
+%:%338=225%:%
+%:%339=225%:%
+%:%340=226%:%
+%:%341=227%:%
+%:%342=228%:%
+%:%343=228%:%
+%:%344=229%:%
+%:%345=230%:%
+%:%346=231%:%
+%:%347=232%:%
+%:%348=232%:%
+%:%349=233%:%
+%:%350=234%:%
+%:%352=235%:%
+%:%353=235%:%
+%:%354=236%:%
+%:%355=236%:%
+%:%356=237%:%
+%:%357=238%:%
+%:%359=239%:%
+%:%360=239%:%
+%:%361=240%:%
+%:%362=240%:%
+%:%363=241%:%
+%:%364=242%:%
+%:%365=243%:%
+%:%366=243%:%
+%:%367=244%:%
+%:%368=245%:%
+%:%369=246%:%
+%:%370=246%:%
+%:%371=247%:%
+%:%372=248%:%
+%:%373=249%:%
+%:%374=250%:%
+%:%375=251%:%
+%:%376=251%:%
+%:%377=252%:%
+%:%378=253%:%
+%:%379=254%:%
+%:%380=255%:%
+%:%381=255%:%
+%:%382=256%:%
+%:%383=257%:%
+%:%384=258%:%
+%:%385=259%:%
+%:%386=259%:%
+%:%387=260%:%
+%:%388=261%:%
+%:%389=262%:%
+%:%390=263%:%
+%:%391=263%:%
+%:%392=263%:%
+%:%393=264%:%
+%:%394=264%:%
+%:%395=265%:%
+%:%396=266%:%
+%:%397=267%:%
+%:%398=268%:%
+%:%399=269%:%
+%:%400=269%:%
+%:%401=270%:%
+%:%402=271%:%
+%:%403=272%:%
+%:%404=273%:%
+%:%405=273%:%
+%:%406=274%:%
+%:%407=275%:%
+%:%408=276%:%
+%:%409=277%:%
+%:%410=277%:%
+%:%411=278%:%
+%:%412=279%:%
+%:%413=280%:%
+%:%420=283%:%
+%:%430=285%:%
+%:%431=285%:%
+%:%432=286%:%
+%:%433=287%:%
+%:%434=288%:%
+%:%435=288%:%
+%:%436=289%:%
+%:%437=290%:%
+%:%438=291%:%
+%:%439=291%:%
+%:%440=292%:%
+%:%441=293%:%
+%:%442=294%:%
+%:%443=295%:%
+%:%444=296%:%
+%:%445=297%:%
+%:%446=297%:%
+%:%447=298%:%
+%:%448=299%:%
+%:%449=300%:%
+%:%450=301%:%
+%:%451=302%:%
+%:%453=303%:%
+%:%454=303%:%
+%:%455=304%:%
+%:%456=304%:%
+%:%457=305%:%
+%:%458=306%:%
+%:%460=307%:%
+%:%461=307%:%
+%:%462=308%:%
+%:%463=308%:%
+%:%464=309%:%
+%:%471=312%:%
+%:%475=314%:%
+%:%485=316%:%
+%:%486=316%:%
+%:%487=317%:%
+%:%488=318%:%
+%:%489=319%:%
+%:%491=320%:%
+%:%492=320%:%
+%:%493=321%:%
+%:%494=321%:%
+%:%495=322%:%
+%:%496=323%:%
+%:%497=324%:%
+%:%498=325%:%
+%:%499=325%:%
+%:%500=326%:%
+%:%501=327%:%
+%:%502=328%:%
+%:%503=329%:%
+%:%504=329%:%
+%:%505=330%:%
+%:%506=331%:%
+%:%507=332%:%
+%:%508=333%:%
+%:%509=333%:%
+%:%510=334%:%
+%:%511=335%:%
+%:%512=335%:%
+%:%513=336%:%
+%:%514=337%:%
+%:%515=338%:%
+%:%516=338%:%
+%:%517=339%:%
+%:%518=340%:%
+%:%519=341%:%
+%:%520=341%:%
+%:%521=342%:%
+%:%522=343%:%
+%:%523=344%:%
+%:%524=345%:%
+%:%525=345%:%
+%:%526=346%:%
+%:%527=347%:%
+%:%528=348%:%
+%:%531=351%:%
+%:%532=352%:%
+%:%534=354%:%
+%:%535=355%:%
+%:%536=356%:%
+%:%537=356%:%
+%:%538=357%:%
+%:%539=358%:%
+%:%540=359%:%
+%:%541=360%:%
+%:%542=361%:%
+%:%543=362%:%
+%:%544=362%:%
+%:%545=363%:%
+%:%546=364%:%
+%:%547=365%:%
+%:%548=366%:%
+%:%555=368%:%
+%:%565=370%:%
+%:%566=370%:%
+%:%567=371%:%
+%:%569=373%:%
+%:%570=374%:%
+%:%571=375%:%
+%:%572=376%:%
+%:%573=377%:%
+%:%581=380%:%
+%:%591=382%:%
+%:%592=382%:%
+%:%593=383%:%
+%:%594=384%:%
+%:%595=385%:%
+%:%596=386%:%
+%:%598=387%:%
+%:%599=387%:%
+%:%600=388%:%
+%:%601=388%:%
+%:%602=389%:%
+%:%603=390%:%
+%:%604=391%:%
+%:%605=392%:%
+%:%606=392%:%
+%:%607=393%:%
+%:%608=394%:%
+%:%609=395%:%
+%:%610=395%:%
+%:%611=396%:%
+%:%612=397%:%
+%:%613=398%:%
+%:%614=398%:%
+%:%615=399%:%
+%:%616=400%:%
+%:%617=401%:%
+%:%618=402%:%
+%:%619=402%:%
+%:%620=403%:%
+%:%621=404%:%
+%:%628=406%:%
+%:%638=408%:%
+%:%639=408%:%
+%:%640=409%:%
+%:%641=410%:%
+%:%642=411%:%
+%:%643=411%:%
+%:%644=412%:%
+%:%646=413%:%
+%:%647=413%:%
+%:%648=414%:%
+%:%649=414%:%
+%:%650=415%:%
+%:%651=416%:%
+%:%652=417%:%
+%:%653=417%:%
+%:%654=418%:%
+%:%655=419%:%
+%:%656=420%:%
+%:%657=420%:%
+%:%658=421%:%
+%:%665=423%:%
+%:%669=425%:%
+%:%679=427%:%
+%:%680=427%:%
+%:%681=428%:%
+%:%682=429%:%
+%:%683=430%:%
+%:%684=431%:%
+%:%685=431%:%
+%:%686=432%:%
+%:%687=433%:%
+%:%688=434%:%
+%:%689=434%:%
+%:%690=435%:%
+%:%691=436%:%
+%:%692=437%:%
+%:%693=437%:%
+%:%694=438%:%
+%:%695=439%:%
+%:%696=440%:%
+%:%697=440%:%
+%:%698=441%:%
+%:%699=442%:%
+%:%700=443%:%
+%:%701=444%:%
+%:%702=444%:%
+%:%703=445%:%
+%:%704=446%:%
+%:%705=447%:%
+%:%706=447%:%
+%:%707=448%:%
+%:%708=449%:%
+%:%709=450%:%
+%:%710=450%:%
+%:%711=451%:%
+%:%718=453%:%
+%:%728=456%:%
+%:%729=456%:%
+%:%730=457%:%
+%:%737=459%:%
+%:%747=461%:%
+%:%748=461%:%
+%:%749=462%:%
+%:%750=463%:%
+%:%751=464%:%
+%:%752=465%:%
+%:%753=465%:%
+%:%754=466%:%
+%:%755=467%:%
+%:%756=467%:%
+%:%757=468%:%
+%:%758=469%:%
+%:%759=470%:%
+%:%760=470%:%
+%:%761=471%:%
+%:%762=472%:%
+%:%763=473%:%
+%:%764=474%:%
+%:%765=474%:%
+%:%766=475%:%
+%:%767=476%:%
+%:%774=478%:%
+%:%784=484%:%
+%:%785=484%:%
+%:%786=485%:%
+%:%787=485%:%
+%:%788=485%:%
+%:%789=486%:%
+%:%790=486%:%
+%:%791=486%:%
+%:%792=487%:%
+%:%793=488%:%
+%:%794=488%:%
+%:%795=489%:%
+%:%796=490%:%
+%:%797=491%:%
+%:%798=491%:%
+%:%799=492%:%
+%:%800=493%:%
+%:%801=494%:%
+%:%802=494%:%
+%:%803=495%:%
+%:%804=496%:%
+%:%805=497%:%
+%:%806=497%:%
+%:%807=498%:%
+%:%808=499%:%
+%:%810=500%:%
+%:%811=500%:%
+%:%812=501%:%
+%:%813=501%:%
+%:%814=502%:%
+%:%821=504%:%
+%:%831=507%:%
+%:%832=507%:%
+%:%833=508%:%
+%:%834=509%:%
+%:%843=514%:%
+%:%853=518%:%
+%:%854=518%:%
+%:%855=519%:%
+%:%856=519%:%
+%:%857=519%:%
+%:%858=520%:%
+%:%859=520%:%
+%:%860=520%:%
+%:%861=521%:%
+%:%862=522%:%
+%:%863=523%:%
+%:%864=523%:%
+%:%865=524%:%
+%:%866=525%:%
+%:%867=526%:%
+%:%874=528%:%
+%:%884=531%:%
+%:%885=531%:%
+%:%886=532%:%
+%:%887=533%:%
+%:%888=534%:%
+%:%889=536%:%
+%:%890=537%:%
+%:%891=537%:%
+%:%892=538%:%
+%:%893=539%:%
+%:%894=543%:%
+%:%895=544%:%
+%:%896=544%:%
+%:%897=545%:%
+%:%898=546%:%
+%:%899=547%:%
+%:%900=548%:%
+%:%901=549%:%
+%:%902=549%:%
+%:%903=550%:%
+%:%910=553%:%
+%:%920=557%:%
+%:%921=557%:%
+%:%922=558%:%
+%:%923=559%:%
+%:%924=560%:%
+%:%925=561%:%
+%:%934=565%:%
+%:%944=567%:%
+%:%945=567%:%
+%:%946=568%:%
+%:%948=570%:%
+%:%949=571%:%
+%:%950=572%:%
+%:%951=573%:%
+%:%952=574%:%
+%:%953=574%:%
+%:%960=575%:%
