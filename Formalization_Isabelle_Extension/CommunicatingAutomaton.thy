@@ -1,4 +1,7 @@
-(* Author: Kirstin Peters, Augsburg University, 2024 *)
+(*  Title:      CommunicatingAutomaton.thy
+    Author:     Kirstin Peters, Augsburg University, 2024/2025
+    Author:     Nicole Kettler, Université Côte d'Azur / TU Munich, 2025
+*)
 
 theory CommunicatingAutomaton
   imports Defs
@@ -7,10 +10,9 @@ begin
 
 declare [[quick_and_dirty=true]]
 
-section \<open>Communicating Automata\<close>
+section \<open>Communicating Automata and System Lemmas\<close>
 
-
-subsubsection \<open>projection simplifications on words/general cases\<close>
+subsection \<open>Projection Simplifications for General Cases of Words\<close>
 
 lemma proj_trio_inv:
   shows "((w\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} = ((w\<down>\<^sub>!)\<down>\<^sub>q)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}"
@@ -32,7 +34,6 @@ next
   then show ?case by (metis (no_types, lifting) filter.simps(2))
 qed
 
-
 lemma filter_recursion : "filter f (filter f xs) = filter f xs"  by simp
 
 lemma filter_head_helper :
@@ -45,7 +46,6 @@ next
   case (Cons a xs)
   then show ?case by simp
 qed
-
 
 lemma output_proj_input_yields_eps : 
   assumes "(w\<down>\<^sub>!) = w"
@@ -129,7 +129,6 @@ proof -
     have "length ((u)\<down>\<^sub>p @ (v)\<down>\<^sub>p) = length (u\<down>\<^sub>p) + length (v\<down>\<^sub>p)" by simp
     then show "False" using \<open>(u \<sqdot> v)\<down>\<^sub>p = u\<down>\<^sub>p \<sqdot> v\<down>\<^sub>p\<close> \<open>u\<down>\<^sub>p = u\<close> \<open>v\<down>\<^sub>p \<noteq> v\<close> assms same_append_eq by metis
   qed
-
   show ?thesis using t1 t2 by simp
 qed
 
@@ -164,9 +163,7 @@ lemma prefix_inv_no_signs:
 shows "prefix (w\<down>\<^sub>!\<^sub>?) (w'\<down>\<^sub>!\<^sub>?)"
   using map_mono_prefix assms by auto
 
-
-subsection \<open>Shuffled Language\<close>
-
+subsection \<open>Shuffles and the Shuffled Language\<close>
 
 lemma shuffled_rev:
   assumes "shuffled w w'"
@@ -217,11 +214,9 @@ next
   then show ?case  using shuffled_prepend_inductive by auto
 qed
 
-
 lemma shuffle_preserves_length:
   "shuffled w w' \<Longrightarrow> length w = length w'"
   by (induction rule: shuffled.induct) auto
-
 
 lemma shuffled_lang_subset_lang : 
   assumes "w \<in> L"
@@ -320,12 +315,11 @@ lemma fully_shuffled_valid_gen:
   shows "([?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>] @ xs) \<squnion>\<squnion>\<^sub>? (xs @ [?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>])"
   by (meson assms(2) fully_shuffled_gen)
 
-
 lemma shuffling_possible_to_existing_shuffle:
   assumes "shuffling_possible w" 
   shows "\<exists>w'. shuffled w w' \<and> w \<noteq> w'"   using assms shuffled.swap by fastforce
 
-subsubsection "rightmost shuffle & related"
+subsubsection "Rightmost Shuffle"
 
 lemma rightmost_shuffle_exists:
   assumes "v \<in> shuffled_lang L" and "shuffling_occurred v" 
@@ -357,8 +351,7 @@ proof -
   then show ?thesis by auto
 qed
 
-
-(*this is to uniquely obtain the shuffle used in the theorem later
+(*this is to uniquely obtain the shuffle used in the (original) theorem later
 it assumes that the word can be shuffled at least once,
 but if the word can't be shuffled the thesis in the theorem trivially holds anyways
 \<rightarrow> a case distinction over whether (w @ [?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>] @ xs) can be shuffled, is needed*)
@@ -379,7 +372,6 @@ next
         is_input (w ! Suc i) \<and>
         Suc i < |w| \<and> (\<nexists>xs a b ys. is_output a \<and> is_input b \<and> drop (Suc i) w = xs \<sqdot> a # b # ys)"
       using Cons.hyps by blast
-
     have "(a # w) = a # (xs \<sqdot> x # y # ys)"   by (simp add: w_decomp)
     have t1: "is_output ((a # w) ! (Suc i))"  by (simp add: i_def)
     have t2: "is_input ((a # w) ! (Suc (Suc i)))" by (simp add: i_def)
@@ -415,7 +407,6 @@ next
        is_output a \<and>
        is_input b \<and> w = xs \<sqdot> a # b # ys \<and> (\<nexists>xs a b ysa. is_output a \<and> is_input b \<and> ys = xs \<sqdot> a # b # ysa)" using Cons by blast   
     then obtain xs ys x y where  w_decomp: "is_output x \<and> is_input y \<and> w = xs \<sqdot> x # y # ys \<and> \<not> (shuffling_possible ys)" by blast
-
     have "(a # w) = a # (xs \<sqdot> x # y # ys)"   by (simp add: w_decomp)
     then have "is_output x \<and> is_input y \<and> (a#w) = (a#xs) \<sqdot> x # y # ys \<and> \<not> (shuffling_possible ys)" 
       using w_decomp by auto
@@ -429,7 +420,6 @@ next
     then show ?thesis by blast
   qed
 qed
-
 
 lemma rightmost_shuffle_is_shuffle:
   assumes "rightmost_shuffle v w" 
@@ -459,6 +449,8 @@ lemma fully_shuffled_valid_w_prepend:
   assumes "(w @ [?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>] @ xs) \<in> L" and "xs = xs\<down>\<^sub>!"
   shows "(w @ [?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>] @ xs) \<squnion>\<squnion>\<^sub>? (w @ xs @ [?\<langle>(a\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>])"
   by (meson assms(2) fully_shuffled_w_prepend)
+
+subsubsection "Shuffles and Send/Reception Order"
 
 lemma shuffled_keeps_send_order: 
   assumes "shuffled v v'"
@@ -553,7 +545,6 @@ proof -
     by simp
 qed
 
-
 lemma Actions_rev :
   assumes "a \<in> Act"
   shows "\<exists> s1 s2. (s1, a, s2) \<in> Transitions"
@@ -631,7 +622,6 @@ lemma ReceivingFromPeers_is_subset_of_CommunicationPartners:
     ReceivingFromPeersp_ReceivingFromPeers_eq
   by auto
 
-
 \<comment>\<open>this is to show that if p receives from no one, then there is no transition where p is the receiver\<close>
 lemma empty_receiving_from_peers : 
   fixes p :: "'peer" 
@@ -649,7 +639,6 @@ proof (rule ccontr)
     ultimately show "get_object a \<noteq> p"  using assms(1) by auto
   qed
 qed
-
 
 lemma run_rev :
   assumes "run s0 (a # w) (s1 # xs)"
@@ -713,14 +702,12 @@ next
         list.inject run.simps)
 qed
 
-
 lemma Traces_rev : 
   fixes w :: "('information, 'peer) action word"
   assumes "w \<in> Traces"
   shows "\<exists> xs. run initial w xs"
   using assms
   by (induct, blast)
-
 
 \<comment> \<open>since all states are final, if u \<sqdot> v is valid then u must also be valid 
 otherwise some transition for u is missing and hence u \<sqdot> v would be invalid\<close>
@@ -742,15 +729,13 @@ subsection \<open>Network of Communicating Automata\<close>
 context NetworkOfCA 
 begin
 
-
 lemma peer_trans_to_message_in_network:
   assumes "(s1, a, s2) \<in> \<R>(p)"
   shows "get_message a \<in> \<M>"
   by (meson CommunicatingAutomaton.ActionsOverMessages_rev CommunicatingAutomaton.action_is_action_over_message
       assms automaton_of_peer)
 
-
-subsection \<open>helpful conclusions about language/ runs / etc. in concrete cases and peer runs\<close>
+subsubsection \<open>Helpful Conclusions about Language, Runs, etc. for Concrete Cases\<close>
 
 \<comment>\<open>this is to show that if p receives from no one, then there is no transition where p is the receiver\<close>
 lemma empty_receiving_from_peers2 : 
@@ -914,8 +899,6 @@ proof -
   then show ?thesis by (meson CommunicatingAutomaton.Traces.intros automaton_of_peer)
 qed
 
-
-
 lemma lang_implies_run_alt :
   assumes "w \<in> \<L>(p)"
   shows "\<exists>s2. (\<I> p) \<midarrow>w\<rightarrow>\<^sup>*p s2"
@@ -953,7 +936,6 @@ proof -
   then have "(xs @ [a]) \<in> \<L>(p)"  by (metis Lang_app append_assoc)
   then show ?thesis  by (simp add: Lang_last_act_trans)
 qed
-
 
 lemma recv_proj_w_prepend_is_in_w:
   assumes "(w\<down>\<^sub>?) = (x # xs)" and "w \<in> \<L>(p)"
@@ -1055,7 +1037,6 @@ qed
 
 subsection \<open>Synchronous System\<close>
 
-
 lemma initial_configuration_is_synchronous_configuration:
   shows "is_sync_config \<C>\<^sub>\<I>\<^sub>\<zero>"
   unfolding is_sync_config_def
@@ -1066,7 +1047,6 @@ proof clarify
       CommunicatingAutomaton.initial_state[of p "\<S> p" "\<C>\<^sub>\<I>\<^sub>\<zero> p" \<M> "\<R> p"]
     by simp
 qed
-
 
 lemma sync_step_rev:
   fixes C1 C2 :: "'peer \<Rightarrow> 'state"
@@ -1139,7 +1119,6 @@ lemma sync_step_output_rev:
     and "C1 q \<midarrow>(?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>)\<rightarrow>\<^sub>\<C>q (C2 q)" and "\<forall>x. x \<notin> {p, q} \<longrightarrow> C1(x) = C2(x)"
   using assms sync_step_rev[of C1 "!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>" C2]
   by simp_all
-
 
 lemma sync_run_rev :
   assumes "sync_run C0 (w\<sqdot>[a]) (xc@[C])"
@@ -1249,7 +1228,6 @@ lemma sync_lang_sends_app:
   shows "u\<down>\<^sub>! \<in> \<L>\<^sub>\<zero>"
   by (metis assms filter_append sync_lang_app)
 
-
 lemma sync_run_word_configs_len_eq:
   assumes "sync_run C0 w xc"
   shows "length w = length xc" 
@@ -1261,11 +1239,9 @@ next
   then show ?case by simp
 qed
 
-
 subsection \<open>Mailbox System\<close>
 
-subsubsection \<open>Semantics and Language\<close>
-
+subsubsection "Semantics"
 
 lemma initial_mbox_alt :
   shows "(\<forall>p. \<C>\<^sub>\<I>\<^sub>\<mm> p = (\<C>\<^sub>\<I>\<^sub>\<zero> p, \<epsilon>))"
@@ -1282,7 +1258,6 @@ proof clarify
     by simp
 qed
 
-
 lemma initial_configuration_is_stable:
   shows "is_stable \<C>\<^sub>\<I>\<^sub>\<mm>"
   unfolding is_stable_def using initial_configuration_is_mailbox_configuration
@@ -1293,7 +1268,6 @@ lemma sync_config_to_mbox :
   shows "\<exists>C'. is_mbox_config C' \<and> C' = (\<lambda>p. (C p, \<epsilon>))"
   using assms initial_configuration_is_mailbox_configuration is_mbox_config_def
     is_sync_config_def by auto
-
 
 lemma mbox_step_rev:
   fixes C1 C2 :: "'peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)"
@@ -1501,8 +1475,6 @@ lemma mbox_step_input_rev:
   using assms mbox_step_rev[of C1 "?\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>" k C2]
   by simp_all
 
-
-
 \<comment> \<open>if mbox can take a bounded step, it can also take an unbounded step\<close>
 lemma mbox_step_inclusion :
   assumes "mbox_step C1 a (Some k) C2"
@@ -1512,7 +1484,7 @@ lemma mbox_step_inclusion :
       get_sender.simps is_bounded.simps(1) is_output.simps(1,2) mbox_step_output_rev(5)
       mbox_step_rev(1,10,3,5,8,9) these_empty)
 
-subsubsection "mbox step conversions to&from"
+subsubsection "Mailbox System Step Conversions Both Directions"
 
 lemma send_step_to_mbox_step:
   assumes "[a] \<in> \<L> p" and "is_output a"
@@ -1548,7 +1520,6 @@ proof -
       initial_configuration_is_mailbox_configuration s2_def by force
   then show ?thesis by auto
 qed
-
 
 lemma gen_send_step_to_mbox_step:
   assumes "(s1, !\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>, s2) \<in> \<R> p"  and "fst (C0 p) = s1" and "fst (C1 p) = s2"
@@ -1600,8 +1571,7 @@ proof -
   then show ?thesis by auto
 qed
 
-subsubsection "mbox run"
-
+subsubsection "Mailbox System Run Semantics"
 
 lemma mbox_run_rev_unbound :
   assumes "mbox_run C0 None (w\<sqdot>[a]) (xc@[C])"
@@ -1668,7 +1638,7 @@ lemma mbox_step_to_run:
   shows "mbox_run C0 None [a] [C]"
   by (metis MRComposedInf MREmpty append.left_neutral assms last_ConsL)
 
-subsubsection "mbox traces"
+subsubsection "Mailbox System Traces"
 
 lemma Mbox_Traces_rev :
   assumes "w \<in> \<T>\<^bsub>k\<^esub>"
@@ -1693,7 +1663,6 @@ qed
 lemma mbox_bounded_lang_inclusion :
   shows "\<T>\<^bsub>(Some k)\<^esub> \<subseteq> \<T>\<^bsub>None\<^esub>"
   using MboxTraces_def MboxTracesp.simps mbox_run_inclusion by fastforce
-
 
 lemma execution_implies_mbox_trace :
   assumes "w \<in> \<T>\<^bsub>k\<^esub>"
@@ -1839,7 +1808,6 @@ proof -  \<comment> \<open>C1 -> C2 in sync means we have c1 -> c2 -> c3 in mbox
     using S1 S2 S3 S4 S5 by blast  
   then have mbox_step_1 : "mbox_step ?c1 (!\<langle>(i\<^bsup>p\<rightarrow>q\<^esup>)\<rangle>) None ?c2"  using MboxSend by blast
       \<comment> \<open>we have shown that mbox takes a send step from ?c1 to ?c2, now we need to show the receive step\<close>
-
   have R1 : "is_mbox_config ?c2" using mbox_step_1 mbox_step_rev(2) by auto
   then have R2 : "fst (?c2 q) = C1 q" by simp
   then have R3 : "fst (?c3 q) = C2 q" by simp
@@ -1879,7 +1847,7 @@ qed
 
 lemma eps_in_mbox_execs: "\<epsilon> \<in> \<T>\<^bsub>None\<^esub>" using MREmpty MboxTraces.intros by blast
 
-section \<open>Synchronisability\<close>
+subsection \<open>Synchronisability\<close>
 
 lemma Edges_rev:
   fixes e :: "'peer \<times> 'peer"
@@ -1916,10 +1884,9 @@ next
     by (simp add: \<open>v\<down>\<^sub>p = v\<close> w_def)
 qed
 
-
 subsection \<open>Synchronisability is Deciable for Tree Topology in Mailbox Communication\<close>
 
-subsubsection \<open>Topology is a Tree\<close>
+subsubsection \<open>Tree Topology and Related Lemmas\<close>
 
 lemma is_tree_rev:
   assumes "is_tree P E"
@@ -2101,7 +2068,6 @@ next
   qed  
 qed
 
-
 \<comment> \<open>P? is defined on each automaton p, G is the topology graph\<close>
 \<comment> \<open>This means there may be P?(p) = {} but p \<in> P!(q), thus (q,p) \<in> \<G> and q \<in> \<G>\<langle>\<rightarrow>p\<rangle>, but q \<notin> {}\<close>
 lemma sends_of_peer_subset_of_predecessors_in_topology:
@@ -2136,7 +2102,7 @@ next
   qed
 qed
 
-subsubsection "root & node specifications and more tree related lemmas"
+subsubsection "Root and Node Specifications and More Tree Lemmas"
 
 (*combines all local info (i.e. that of each automaton and its sends/recvs)
 and receives the global information from it*)
@@ -2188,7 +2154,6 @@ next
   then show "False"  using Edges.simps assms(1) trans_to_edge by fastforce
 qed
 
-
 lemma edge_impl_psend_or_qrecv:
   assumes "\<G>\<langle>\<rightarrow>p\<rangle> = {q}" and "tree_topology"
   shows "(\<P>\<^sub>? p = {q} \<or> p \<in> \<P>\<^sub>!(q))"
@@ -2198,7 +2163,6 @@ proof (rule ccontr)
   proof -
     have "\<P>\<^sub>? p \<noteq> {q}" using \<open>\<not> (\<P>\<^sub>? p = {q} \<or> p \<in> \<P>\<^sub>! q)\<close> by auto
     have "p \<notin> \<P>\<^sub>!(q)" using \<open>\<not> (\<P>\<^sub>? p = {q} \<or> p \<in> \<P>\<^sub>! q)\<close> by auto
-
     have "\<exists>i. i\<^bsup>q\<rightarrow>p\<^esup> \<in> \<M>" using Edges.simps  assms(1) by auto
     then obtain i where m: "i\<^bsup>q\<rightarrow>p\<^esup> \<in> \<M>" by auto
     then have "\<exists>s1 a s2 pp. (s1, a, s2) \<in> snd (snd (\<A> pp)) \<and>
@@ -2228,7 +2192,6 @@ proof (rule ccontr)
       have "(\<P>\<^sub>?(p)) = {q}" 
       proof 
         show "{q} \<subseteq> \<P>\<^sub>? p" by (simp add: \<open>q \<in> \<P>\<^sub>? p\<close>)
-
         show "\<P>\<^sub>? p \<subseteq> {q}"
         proof (rule ccontr)
           assume "\<not> \<P>\<^sub>? p \<subseteq> {q}" 
@@ -2257,7 +2220,6 @@ next
   then obtain q where "\<G>\<langle>\<rightarrow>p\<rangle> = {q}" using card_1_singletonE by blast
   then show ?thesis using assms edge_impl_psend_or_qrecv by blast
 qed
-
 
 lemma root_defs_eq:
   shows "is_root_from_topology p = is_root_from_local p"
@@ -2303,7 +2265,6 @@ lemma node_defs_eq:
   using edge_impl_psend_or_qrecv global_local_eq_node by blast
 
 subsubsection "parent-child relationship in tree"
-
 
 lemma is_parent_of_rev:
   assumes "is_parent_of p q"
@@ -2426,13 +2387,11 @@ proof -
   then show ?thesis  using \<open>w\<down>\<^sub>?\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} = filter (\<lambda>x. get_object x = q) (w\<down>\<^sub>?)\<close> by presburger
 qed
 
-
 lemma filter_ignore_false_prop: 
   assumes "filter (\<lambda>x. False) w = \<epsilon>"
   shows "filter (\<lambda>x. False \<or> B) w = filter (\<lambda>x. B) w" 
   by (metis assms filter_False filter_True)
   
-
 lemma recv_lang_child_pair_proj_subset1: 
   assumes "is_parent_of p q"
   shows "(((\<L>(p))\<downharpoonright>\<^sub>?)) \<subseteq> ((((\<L>(p))\<downharpoonright>\<^sub>?)\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}))"
@@ -2451,7 +2410,7 @@ proof -
   from t1 t2 show ?thesis by blast
 qed
 
-subsubsection "path to root and path related lemmas"
+subsubsection "Path to Root and Path Related Lemmas"
 
 lemma path_to_root_rev:
   assumes "path_to_root p ps" and "ps \<noteq> [p]"
@@ -2480,7 +2439,6 @@ lemma single_path_impl_root:
   assumes "path_to_root p [p]"
   shows "is_root p"
   using assms path_to_root_rev_empty by blast
-
 
 lemma path_to_root_first_elem_is_peer: 
   assumes  "path_to_root p (x # ps)" 
@@ -2677,7 +2635,7 @@ lemma adj_in_path_parent_child:
   by (metis assms is_parent_of_rev2(2) neq_Nil_conv path_to_root_first_elem_is_peer
       path_to_root_stepback)
 
-subsubsection "path from root downwards to a node"
+subsubsection "Path from Root Downwards to a Node"
 
 lemma path_to_root_downwards:
   assumes "path_to_root q qs" and "is_parent_of p q" 
@@ -2723,7 +2681,6 @@ next
   then show ?case using \<open>is_tree (\<P>) (\<G>) \<and> is_parent_of p x \<and> path_to_root x (x # as)\<close> path_to_root.PTRNode by blast
 qed
 
-
 lemma path_from_root_rev:
   assumes "path_from_root p ps"
   shows "is_root p \<or> (\<exists>q as. tree_topology \<and> is_parent_of p q \<and> path_from_root q as \<and> distinct (as @ [p]))"
@@ -2756,7 +2713,6 @@ qed
 lemma paths_eq: 
   shows "(\<exists>ps. path_from_root p ps) = (\<exists>qs. path_to_root p qs)"
   using path_from_to path_to_from by blast
-
 
 lemma path_from_to_rev:
   assumes "path_from_to r p r2p"
@@ -2794,8 +2750,6 @@ lemma p2root_down_step:
   "(is_parent_of p q \<and> path_to_root q qs)  \<Longrightarrow> path_to_root p (p#qs)" 
   using path_to_root_downwards by auto
 
-
-(*this version does the induction correctly*)
 lemma path_to_root_exists: 
   assumes "tree_topology" and "p \<in> \<P>"
   shows "\<exists>ps. path_to_root p ps" 
@@ -2819,12 +2773,10 @@ next
     qed
 qed
 
-
 lemma edge_elem_to_edge:
   assumes "q \<in> \<G>\<langle>\<rightarrow>p\<rangle>"
   shows "(q, p) \<in> \<G>"
   using assms by (meson Set.CollectD Set.CollectE)
-
 
 lemma matching_words_to_peer_sets:
   assumes "tree_topology" and "((w\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((w'\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" and "w \<in> \<L>(p)" and "w' \<in> \<L>(q)" and "is_node p" and "is_parent_of p q" and "(w\<down>\<^sub>?) \<noteq> \<epsilon>"
@@ -2897,8 +2849,7 @@ proof -
   then show "p \<in> \<P>\<^sub>!(q)" by simp
 qed
 
-subsection "Influenced Language"
-
+subsubsection "Influenced Language"
 
 lemma is_in_infl_lang_rev_tree:
   assumes "is_in_infl_lang p w" 
@@ -3004,7 +2955,7 @@ lemma infl_parent_child_matching_ws2 :
   shows "w' \<in> \<L>\<^sup>*(p)"
   using IL_node assms(1,2,3,4) is_parent_of_rev2(1) by blast
 
-subsubsection "influenced language and its shuffles"
+subsubsection "Influenced Language and its Shuffles"
 
 lemma word_in_shuffled_infl_lang :
   fixes w :: "('information, 'peer) action word"
@@ -3056,7 +3007,6 @@ next
   then show ?case using shuffled.trans by blast
 qed
 
-
 (*any word x can be fully shuffled, i.e. decomposed into its receives xs and its sends ys*)
 lemma full_shuffle_of:
   shows "\<exists> xs ys. (xs \<sqdot> ys) \<squnion>\<squnion>\<^sub>? x \<and> xs\<down>\<^sub>? = xs \<and> ys\<down>\<^sub>! = ys"
@@ -3106,15 +3056,13 @@ next
   qed
 qed
 
-
-
 (*if an output is all the way on the right, there is no way to remove the send from the right by shuffling alone*)
 lemma shuffle_keeps_outputs_right:
   assumes "w' \<squnion>\<squnion>\<^sub>? (w)" and "is_output (last w)" 
   shows "is_output (last w')" 
   using assms shuffle_keeps_outputs_right_shuffled by metis
 
-
+subsubsection "Root Related Lemmas"
 
 lemma root_graph: 
   assumes "\<P> = {p}" and "tree_topology"
@@ -3243,9 +3191,7 @@ next
     then have "is_in_infl_lang q (w'')"  using IL_node.hyps(5) by blast
     then show ?case sorry
   qed
-
   then obtain w'' w''' where "w = (w'' @ w''')" and "(((w')\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((w''\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)" by blast
-
   then have "is_in_infl_lang q w''"  by (meson IL_node.hyps(5))
   have "w' \<in> \<L> p"  using IL_node.hyps(3) Lang_app by blast
   then have "tree_topology \<and>  is_parent_of p q \<and>  w' \<in> \<L>(p) \<and> is_in_infl_lang q w'' \<and> ((w'\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((w''\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)"
@@ -3288,8 +3234,7 @@ lemma infl_word_actor_app:
   then show ?thesis  by (metis actor_proj_app_inv)
 qed
 
-subsubsection "simulate sync with mbox word"
-
+subsubsection "Simulate Synchronous Execution with Mailbox Word"
 
 lemma add_matching_recvs_app : 
   shows "add_matching_recvs (xs \<sqdot> ys) = (add_matching_recvs xs) \<sqdot> (add_matching_recvs ys)"
@@ -3300,7 +3245,6 @@ next
   case (2 a w)
   then show ?case by simp
 qed
-
 
 lemma adding_recvs_keeps_send_order :
   shows "w\<down>\<^sub>! = (add_matching_recvs w)\<down>\<^sub>!"
@@ -3438,8 +3382,7 @@ lemma empty_sync_run_to_mbox_run :
   using assms by (metis (no_types, lifting) MREmpty Nil_is_append_conv add_matching_recvs.simps(1)
       not_Cons_self2 sync_run.simps)
 
-
-subsubsection "Lemma 4.4 and preparations"
+subsubsection "Lemma 4.4 and Preparations"
 
 lemma concat_infl_path_rev :
   assumes "concat_infl p w (q#ps) w'"
@@ -3549,7 +3492,6 @@ proof -
   qed
 qed
 
-
 lemma concat_infl_children_not_included:
   assumes "concat_infl p w ps w_acc" and "is_parent_of q p"
   shows "w_acc\<down>\<^sub>q = \<epsilon>"
@@ -3567,8 +3509,6 @@ next
   then show ?case sorry
 qed
 
-
-
 (*construct w' s.t. w1....wn is a mbox trace*)
 lemma concat_infl_w_in_w_acc:
   assumes "concat_infl p w ps w_acc"
@@ -3585,15 +3525,7 @@ next
   then show ?case  by (metis append.assoc)
 qed
 
-
-
-
-subsubsection "sync and infl lang relations"
-
-
-
-section "new formalization"
-
+subsection "Related Lemmas for New Formalization"
 
 lemma prefix_mbox_trace_valid:
   assumes "(w@v) \<in> \<L>\<^sub>\<infinity>"
@@ -3610,7 +3542,6 @@ lemma mbox_exec_to_infl_peer_word:
   shows "w\<down>\<^sub>p \<in> \<L>\<^sup>* p"
   sorry
 
-
 (*for a given execution, a child's receives need to be a prefix of the parent's sends
 i.e. the receives (if present) need to be in the same order as the sends and there can't be any receives
 missing in the middle (since buffers are FIFO), otherwise p receives something somewhere that hasn't been sent yet,
@@ -3619,7 +3550,6 @@ lemma peer_recvs_in_exec_is_prefix_of_parent_sends:
   assumes "e \<in> \<T>\<^bsub>None\<^esub>" and "is_parent_of p q"
   shows "prefix (((e\<down>\<^sub>p)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) ((((e\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>?)"
   sorry
-
 
 lemma root_infl_word_no_recvs:
   assumes "is_root p" and "w \<in> \<L>\<^sup>* p"
@@ -3636,10 +3566,6 @@ lemma matching_recvs_word_matches_sends_explicit:
   shows "(((e\<down>\<^sub>!)\<down>\<^sub>q)\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!\<^sub>? = (((add_matching_recvs (e\<down>\<^sub>!)\<down>\<^sub>?)\<down>\<^sub>p)\<down>\<^sub>!\<^sub>?)" 
   sorry
 
-
-
-
-
 (*if current exec ends on a send and the corresponding peer's buffer only contains
 this send, the matching receive can be appended (if the peer can do it)
 ! only if all prior sends have already been received! (otherwise the buffer contains something other than the 
@@ -3650,7 +3576,6 @@ and "(((((w)\<down>\<^sub>q)\<down>\<^sub>!)\<down>\<^sub>{\<^sub>p\<^sub>,\<^su
   shows "w \<sqdot> [!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>] \<sqdot> [?\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>] \<in> \<T>\<^bsub>None\<^esub>" 
   sorry
 
-
 (*adding or removing signs doesn't matter (if both words consist only of the same sign, here only receives*)
 lemma no_sign_recv_prefix_to_sign_inv:
   assumes "prefix (w\<down>\<^sub>!\<^sub>?) (w'\<down>\<^sub>!\<^sub>?)" and "w\<down>\<^sub>? = w" and "w'\<down>\<^sub>? = w'"
@@ -3660,7 +3585,6 @@ lemma no_sign_recv_prefix_to_sign_inv:
    apply auto
   sorry
 (*induction w*)
-
 
 (*given the matched execution (!a?a!b?b...) and an unrelated child word, 
 whose receives are a prefix of that execution's receives of q, find the matching parent prefix 
@@ -3680,11 +3604,9 @@ lemma subset_cond_from_child_prefix_and_parent:
   shows "\<exists>x. (wq \<sqdot> x) \<in> \<L>\<^sup>* q \<and> (((wq \<sqdot> x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = ((((wr' \<sqdot> x')\<down>\<^sub>!)\<down>\<^sub>{\<^sub>q\<^sub>,\<^sub>r\<^sub>})\<down>\<^sub>!\<^sub>?)"
   apply (rule ccontr)
   sorry
-
  (*for wr', projection to r can be added but is not necessary since it's implicity there by wr' x' being
 in r's language*)
 (*contr*)
-
 
 (*can append send to mbox exec if the peer sending it can perform the send
 since sending has no requirements other than that the sender can perform it at its current state*)
@@ -3699,8 +3621,6 @@ lemma mbox_trace_to_root_word:
   assumes "(v \<sqdot> [!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>]) \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!" and "is_root q"
   shows "(v\<down>\<^sub>q \<sqdot> [!\<langle>(i\<^bsup>q\<rightarrow>p\<^esup>)\<rangle>]) \<in> (\<L>\<^sup>*(q))"
   sorry
-
-
 
 (*if w cannot shuffle into w', then w != w' and there must be at least one ?y < !x dependency in w,
 that is reversed to !x < ?y in w' (x and y do not need to be right next to each other though)*)
@@ -3730,7 +3650,6 @@ and "e\<down>\<^sub>! = (v \<sqdot> [a])"
 shows "(e \<sqdot> xs) \<in> \<T>\<^bsub>None\<^esub>"
   sorry
 
-
 (*for peer words wq and wq = (v'q !a), if (v'q !a) is NOT a shuffle of wq
 \<rightarrow> then either the shuffle is the other way round, or the words cannot be shuffled into each other*)
 lemma diff_peer_word_impl_diff_trace:
@@ -3749,7 +3668,6 @@ this then means that both executions do not have the same traces!
 (this can then be used in the lemma below, to prove that if wq is shuffle of v'q !a, the assumption that
 both e and v' !a have the same trace is violated.
  *)
-
 
 (*same as before but the simpler case where only one action is appended to the parent word*)
 (*if parent can perform one more send, the child must be able to receive it*)
@@ -3779,16 +3697,12 @@ subset_cond_from_child_prefix_and_parent assms by blast
     then show ?thesis using t0 wqxs_L by argo
   qed
 
-
-
 lemma matched_mbox_run_to_sync_run :
   assumes "mbox_run \<C>\<^sub>\<I>\<^sub>\<mm> None (add_matching_recvs w) xcm" and "w \<in> \<T>\<^bsub>None\<^esub>\<downharpoonright>\<^sub>!"
   shows "sync_run \<C>\<^sub>\<I>\<^sub>\<zero> w xcs"
   sorry 
 
-
-subsection "theorem 4.5=>2."
-
+(*for theorem 4.5=>2.*)
 (*for given decomposed child word, decompose matching parent word in the same manner*)
 lemma decompose_vq_given_decomposed_vp:
   assumes "vq\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}\<down>\<^sub>!\<^sub>? = v\<down>\<^sub>?\<down>\<^sub>!\<^sub>?" and "v' \<in> \<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)" and "v' \<squnion>\<squnion>\<^sub>? v" and "v \<in> \<L>\<^sup>*(p)" and "vq \<in> \<L>\<^sup>*(q)" 
@@ -3796,7 +3710,5 @@ and "is_output b" and "is_input a" and "v = xs \<sqdot> b # a # ys"
 shows "\<exists> as bs. vq\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} = (as\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>} \<sqdot> (!\<langle>get_message a\<rangle>) # bs\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>})"
   sorry
 
-
 end
 end
-

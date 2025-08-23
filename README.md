@@ -1,27 +1,35 @@
-# Mechanization of Synchronizability Theory for Communicating Automata with Mailbox Semantics
+# Mechanization of Synchronizability  Theory for Communicating Automata with Mailbox Semantics 
 
+This repository contains our mechanization into Isabelle of Theorem 4.5 and necessary related results from:
+> @article{express,
+  title={Synchronisability in Mailbox Communication},
+  author={Di Giusto, Cinzia and Laversa, Laetitia and Peters, Kirstin},
+  journal={arXiv preprint arXiv:2411.14580},
+  year={2024}
+}
 
-## ISABELLE
-- [Website](https://isabelle.in.tum.de)
-    - [documentation](https://isabelle.in.tum.de/documentation.html)
-- [templates/tutorials](http://www.concrete-semantics.org/exercises.html)
-    - those are the templates in the respective folder of this repository
-- [Archive of Proofs](https://www.isa-afp.org/)
-- [Book](http://www.concrete-semantics.org/)
-- Exercises
-    - https://do.proof.in.tum.de/competitions/
-    - https://isabelle.in.tum.de/exercises/
-- [General Isabelle Zulip Chat](https://isabelle.zulipchat.com/)
-- [Library Code](https://isabelle.in.tum.de/library/HOL/index.html)
-    - [List](https://isabelle.in.tum.de/library/HOL/HOL/List.html)
-### Semantics (TUM Course)
-- [Course Website](https://www21.in.tum.de/teaching/semantics/WS24/index.html)
-- [Lecture Recordings (public!)](https://live.rbg.tum.de/?year=2023&term=W&slug=Sem&view=3)
-- [Exercises](https://www21.in.tum.de/teaching/semantics/WS24/exercises.html)
-- [Homework Submission Site](https://do.proof.in.tum.de/competitions/contest/43/)
-- [Course Zulip (probably TUM only)](https://zulip.in.tum.de/#narrow/stream/2472-Semantics-2024-Discussion)
-### Functional Data Structures (TUM Course)
-- [Course Website](https://www21.in.tum.de/teaching/fds/SS24/index.html)
-- [Lecture Recordings (TUM only)](https://live.rbg.tum.de/?year=2024&term=S&slug=FDS&view=3)
-- [Exercises](https://www21.in.tum.de/teaching/fds/SS24/exercises.html)
+## 📬 Repository Structure 📬
+
+```plaintext
+isabelle-sync/
+│
+├── 📂 Express/ # the LaTeX code for the source paper 
+│
+├── 📂 Formalization_Isabelle/ # the initially provided Isabelle formalization
+│ ├── CommunicatingAutomata.thy 
+│ └── FormalLanguages.thy 
+│
+├── 📂 Formalization_Isabelle_Extension/ # our extension of the initial Isabelle formalization
+│ ├── 📂 Synchronizability # contains the LaTeX of theories below (except CounterExamples.thy)
+│ ├── CommunicatingAutomata.thy # contains most of the Lemmas (concerning automata, systems, etc.)
+│ ├── CounterExamples.thy # contains the beginnings of the formalization of our counterexamples
+│ ├── Defs.thy # contains all definitions, inductives, functions, etc.
+│ ├── Express.thy # contains only Lemma 4.4 and Theorem 4.5
+│ └── FormalLanguages.thy # some formalization of formal languages, etc.
+│
+├── 📂 Resources/ # contains some of our learning materials, literature and older code
+│
+├── 📂 Thesis/ # contains the Master's thesis / internship report
+│
+└── README.md # You are here 📖
 

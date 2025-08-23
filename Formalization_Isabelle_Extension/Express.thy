@@ -1,13 +1,18 @@
-(* Author: Kirstin Peters, Augsburg University, 2024 *)
+(*  Title:      Express.thy
+    Author:     Kirstin Peters, Augsburg University, 2024/2025
+    Author:     Nicole Kettler, Université Côte d'Azur / TU Munich, 2025
+*)
 
 theory Express
   imports CommunicatingAutomaton
-
 begin
 
 context NetworkOfCA
 begin
 
+section "Express Paper Formalizations"
+
+subsection "Lemma 4.4"
 
 (*TODO: w projected to x is empty for all x that are children/grandchildren, etc. of q, not just the direct children
 and empty for all nodes not on the path to root from q. \<rightarrow> each node not on the path to root starting at q, performs
@@ -76,7 +81,6 @@ wn in infl lang of p, wn-1 (the matching sends) from parent of p, wn-2 with
 the matching sends of grandparent of p, ... until we reach w1 where infl lang = lang0
 \<rightarrow> then w1 w2 .... wn (all concatenated in this order of the pth) is in mbox
 *)
-
 
 (*TODO: w projected to x is empty for all x that are children/grandchildren, etc. of q, not just the direct children
 and empty for all nodes not on the path to root from q. \<rightarrow> each node not on the path to root starting at q, performs
@@ -149,7 +153,7 @@ shows "\<forall> x \<in> \<P>. x \<notin> (set ps) \<longrightarrow> w'\<down>\<
   using assms sorry
 *)
 
-
+subsection "Theorem 4.5 Preparations"
 
 (*this is the main chunk of the (<==,1.) direction of the current theorem *)
 lemma mbox_trace_with_matching_recvs_is_mbox_exec:
@@ -363,9 +367,7 @@ because if a can't be received then p can't receive a send of its parent (contra
   then show ?case by (simp add: add_matching_recvs_app w_def) 
 qed
 
-
-
-
+subsection "Theorem 4.5 Final Version"
 (*theorem current version*)
 (*state at a glance: all subproofs except <==2. need to be adjusted to reflect the new subset condition*)
 (* Nsync = L0, ENsync = T0, EMbox = Tinf/None, TMbox = Linf, E = !?, T = only sends *)
@@ -620,8 +622,6 @@ and thus we have found the matching sync trace to the arbitrary mbox trace.*)
   qed
 qed
 
-
-
 subsection \<open>Topology is a Forest\<close>
 
 inductive is_forest :: "'peer set \<Rightarrow> 'peer topology \<Rightarrow> bool" where
@@ -631,9 +631,5 @@ inductive is_forest :: "'peer set \<Rightarrow> 'peer topology \<Rightarrow> boo
 abbreviation forest_topology :: "bool" where
   "forest_topology \<equiv> is_forest (UNIV :: 'peer set) (\<G>)"
 
-
-
-
 end
 end
-

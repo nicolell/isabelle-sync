@@ -1,14 +1,13 @@
-theory Counterexamples
+theory CounterExamples
   imports CommunicatingAutomaton
-
 begin
 
 context NetworkOfCA
 begin
 
-section "counterexample stuff"
+section "Beginnings of Counterexample Formalization"
 
-subsection "second condition fix "
+subsection "Second Subset Condition Revision"
 
 (*the right set of the new subset relation, with !? signs not removed yet
 essentially it takes any prefix of p (and thus a valid word in its infl. language) 
@@ -17,7 +16,6 @@ and those that might come afterwards (i.e. in any possible suffix s.t. the conca
 → in other words, the set of all possible receives of&after prefix w (including the receives of w)*)
 abbreviation possible_recvs_of_peer_prefix :: "('information, 'peer) action word ⇒ 'peer ⇒  ('information, 'peer) action language"  ("⟦_⟧⇩_" [90, 90] 110) where  
   "⟦w⟧⇩p ≡ {y⋅x | x y. (w ⋅ x) ∈ ℒ⇧*(p) ∧ (x = x↓⇩?) ∧ prefix y (w↓⇩?)}"
-
 
 definition subset_condition1 :: "'peer ⇒ 'peer ⇒ bool"
   where "subset_condition1 p q ⟷ (∀ w ∈ ℒ⇧*(p). ((ℒ⇩!⇧*(q))⇂⇩{⇩p⇩,⇩q⇩})⇂⇩!⇩? ⊆ (⟦w⟧⇩p)⇂⇩!⇩? )"
@@ -33,7 +31,6 @@ lemma subset_cond1_parent_infl_lang:
 lemma subset_conds1_eq:
   shows "subset_condition1_alt p q ⟷ subset_condition1 p q" 
   sorry
-
 
 lemma subset_condition1_alt_concrete:
   assumes "w' ∈ ℒ⇧*(q)" and "w ∈ ℒ⇧*(p)" and  "subset_condition1 p q" 
@@ -51,8 +48,7 @@ lemma shuffled_lang_cond_for_node:
   shows "(∀p ∈ 𝒫. ((is_node p) ⟶ (((ℒ⇧*(p)) = (ℒ⇧*⇩⊔⇩⊔(p)))) ))"
   by (metis UNIV_I assms node_parent path_from_root.simps path_to_root_exists paths_eq root_defs_eq)
 
-
-subsection "counterexample 1 to original theorem"
+subsection "Counterexample 1 to Original Theorem"
 
 lemma
   assumes Aq: "𝒜 q = ({q0, q1}, q0, {(q0, (!⟨(a⇗q→p⇖)⟩), q1)})" and "is_root q" 
@@ -218,7 +214,6 @@ qed
   show ?thesis using ea ea2 by auto
 qed
 
-
 lemma CE1_infl_langs: 
  assumes Ap: "𝒜 p = ({p0, p1}, p0, {(p0, (?⟨(a⇗q→p⇖)⟩), p1), (p0, (!⟨(b⇗p→x⇖)⟩), p1)})"
 and Aq: "𝒜 q = ({q0, q1}, q0, {(q0, (!⟨(a⇗q→p⇖)⟩), q1)})"
@@ -329,11 +324,8 @@ lemma theorem_original_ver:
   shows "(is_synchronisable ⟷ (∀p ∈ 𝒫. ∀ q ∈ 𝒫. ((is_parent_of p q) ⟶ ((((ℒ⇩!⇧*(q))⇂⇩{⇩p⇩,⇩q⇩})⇂⇩!⇩? ⊆ (ℒ⇧*(p))⇂⇩!⇩?) ∧ ((ℒ⇧*(p)) = (ℒ⇧*⇩⊔⇩⊔(p)))) )))"
   using CE1_tree_topology CE1_theorem_original_wrong sorry
 
-
-
 definition theorem_orig_rightside :: "bool"
   where "theorem_orig_rightside ⟷ (∀p ∈ 𝒫. ∀ q ∈ 𝒫. ((is_parent_of p q) ⟶ ((((ℒ⇩!⇧*(q))⇂⇩{⇩p⇩,⇩q⇩})⇂⇩!⇩? ⊆ (ℒ⇧*(p))⇂⇩!⇩?) ∧ ((ℒ⇧*(p)) = (ℒ⇧*⇩⊔⇩⊔(p)))) ))"
-
 
 end
 

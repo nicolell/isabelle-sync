@@ -1,12 +1,17 @@
+(*  Title:      Defs.thy
+    Author:     Kirstin Peters, Augsburg University, 2024/2025
+    Author:     Nicole Kettler, Université Côte d'Azur / TU Munich, 2025
+*)
 
 theory Defs
     imports "HOL-Library.Sublist" FormalLanguages
-
 begin
 
-section \<open>Communicating Automata\<close>
+section \<open>Communicating Automata and System Definitions\<close>
 
-subsection \<open>Messages and Actions\<close>
+subsection \<open>Communicating Automata\<close>
+
+subsubsection \<open>Messages and Actions\<close>
 
 datatype ('information, 'peer) message =
   Message 'information 'peer 'peer  ("_\<^bsup>_\<rightarrow>_\<^esup>" [120, 120, 120] 100)
@@ -19,8 +24,6 @@ primrec get_sender :: "('information, 'peer) message \<Rightarrow> 'peer" where
 
 primrec get_receiver :: "('information, 'peer) message \<Rightarrow> 'peer" where
   "get_receiver (i\<^bsup>p\<rightarrow>q\<^esup>) = q"
-
-
 
 datatype ('information, 'peer) action =
   Output "('information, 'peer) message"  ("!\<langle>_\<rangle>" [120] 100) |
@@ -48,7 +51,7 @@ primrec get_object :: "('information, 'peer) action \<Rightarrow> 'peer" where
 abbreviation get_info :: "('information, 'peer) action \<Rightarrow> 'information" where
   "get_info a \<equiv> get_information (get_message a)"
 
-subsection \<open>Projections & Languages\<close>
+subsubsection \<open>Projections on Words and Languages\<close>
 
 abbreviation projection_on_outputs
   :: "('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word"  ("_\<down>\<^sub>!" [90] 110)
@@ -82,7 +85,7 @@ abbreviation ignore_signs_in_language
   ("_\<downharpoonright>\<^sub>!\<^sub>?" [90] 110) where
   "L\<downharpoonright>\<^sub>!\<^sub>? \<equiv> {w\<down>\<^sub>!\<^sub>? | w. w \<in> L}"
 
-\<comment> \<open>projection on receives towards p and sends from p\<close>
+\<comment> \<open>projection on receptions towards p and sends from p\<close>
 abbreviation projection_on_single_peer :: "('information, 'peer) action word  \<Rightarrow> 'peer \<Rightarrow> ('information, 'peer) action word"  ("_\<down>\<^sub>_" [90, 90] 110)
   where
     "w\<down>\<^sub>p  \<equiv> filter (\<lambda>x. get_actor x = p) w"
@@ -103,8 +106,7 @@ abbreviation projection_on_peer_pair_language
   "(L\<downharpoonright>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}) \<equiv> {(w\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}) | w. w \<in> L}"
 
 
-
-subsection \<open>Shuffled Language\<close>
+subsubsection \<open>Shuffles and the Shuffled Language\<close>
 
 inductive shuffled ::"('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
   (* Base case: every word shuffles to itself *)
@@ -176,7 +178,7 @@ abbreviation step
     "s1 \<midarrow>a\<rightarrow>\<^sub>\<C> s2 \<equiv> (s1, a, s2) \<in> Transitions"
 
 (*
-\<comment> \<open>this is the original run def, i swapped it to (a#w) (see below)\<close>
+\<comment> \<open>this is the original run def, I swapped it to (a#w) (see below)\<close>
 inductive run :: "'state \<Rightarrow> ('information, 'peer) action word \<Rightarrow> 'state list \<Rightarrow> bool" where
 REmpty:    "run s \<epsilon> ([])" |
 RComposed: "\<lbrakk>run s0 w xs; last (s0#xs) \<midarrow>a\<rightarrow> s\<rbrakk> \<Longrightarrow> run s0 (w\<sqdot>[a]) (xs@[s])"
@@ -215,7 +217,7 @@ locale NetworkOfCA =
                               m = get_message a"
 begin
 
-\<comment> \<open>all peers in network\<close>
+\<comment> \<open>get all the peers in the network\<close>
 abbreviation get_peers :: "'peer set" ("\<P>" 110) where
   "\<P> \<equiv> (UNIV :: 'peer set)"
 
@@ -232,11 +234,11 @@ abbreviation get_transitions
 abbreviation WordsOverMessages :: "('information, 'peer) message word set"  ("\<M>\<^sup>*" 100) where
   "\<M>\<^sup>* \<equiv> Alphabet.WordsOverAlphabet \<M>"
 
-\<comment> \<open>all q that p sends to in Ap (for which there is a transition !p->q in Ap)\<close>
+\<comment> \<open>all peers that p sends to in Ap (for which there is a transition !p->q in Ap)\<close>
 abbreviation sendingToPeers_of_peer :: "'peer \<Rightarrow> 'peer set"  ("\<P>\<^sub>! _" [90] 110) where
   "\<P>\<^sub>!(p) \<equiv> CommunicatingAutomaton.SendingToPeers (snd (snd (\<A> p)))"
 
-\<comment> \<open>all q that p receives from in Ap (for which there is a transition ?q->p in Ap)\<close>
+\<comment> \<open>all peers that p receives from in Ap (for which there is a transition ?q->p in Ap)\<close>
 abbreviation receivingFromPeers_of_peer :: "'peer \<Rightarrow> 'peer set"  ("\<P>\<^sub>? _" [90] 110) where
   "\<P>\<^sub>?(p) \<equiv> CommunicatingAutomaton.ReceivingFromPeers (snd (snd (\<A> p)))"
 
@@ -311,8 +313,6 @@ abbreviation SyncLang :: "('information, 'peer) action language"  ("\<L>\<^sub>\
 
 subsection \<open>Mailbox System\<close>
 
-subsubsection \<open>Semantics and Language\<close>
-
 definition is_mbox_config
   :: "('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) \<Rightarrow> bool" where
   "is_mbox_config C \<equiv> (\<forall>p. fst (C p) \<in> \<S>(p) \<and> snd (C p) \<in> \<M>\<^sup>*)"
@@ -365,8 +365,6 @@ abbreviation mbox_step_unbounded
   ("_ \<midarrow>\<langle>_, \<infinity>\<rangle>\<rightarrow> _" [90, 90, 90] 110) where
   "C1 \<midarrow>\<langle>a, \<infinity>\<rangle>\<rightarrow> C2 \<equiv> mbox_step C1 a None C2"
 
-subsubsection "mbox run"
-
 inductive mbox_run
   :: "('peer \<Rightarrow> ('state \<times> ('information, 'peer) message word)) \<Rightarrow> bound \<Rightarrow>
       ('information, 'peer) action word \<Rightarrow>
@@ -377,7 +375,6 @@ inductive mbox_run
   MRComposedInf: "\<lbrakk>mbox_run C0 None w xc; last (C0#xc) \<midarrow>\<langle>a, \<infinity>\<rangle>\<rightarrow> C\<rbrakk> \<Longrightarrow>
                 mbox_run C0 None (w\<sqdot>[a]) (xc@[C])"
 
-subsubsection "mbox traces"
 \<comment> \<open>E(mbox)\<close>
 inductive_set MboxTraces
   :: "nat option \<Rightarrow> ('information, 'peer) action language"  ("\<T>\<^bsub>_\<^esub>" [100] 120)
@@ -403,7 +400,7 @@ abbreviation MboxLangRecv :: "bound \<Rightarrow> ('information, 'peer) action l
   where
     "\<L>\<^sub>?\<^bsub>k\<^esub> \<equiv> (\<L>\<^bsub>k\<^esub>)\<downharpoonright>\<^sub>?"
 
-section \<open>Synchronisability\<close>
+subsection \<open>Synchronisability\<close>
 
 abbreviation is_synchronisable :: "bool" where
   "is_synchronisable \<equiv> \<L>\<^sub>\<infinity> = \<L>\<^sub>\<zero>"
@@ -419,8 +416,6 @@ abbreviation Successors :: "'peer topology \<Rightarrow> 'peer \<Rightarrow> 'pe
 
 abbreviation Predecessors :: "'peer topology \<Rightarrow> 'peer \<Rightarrow> 'peer set"  ("_\<langle>\<rightarrow>_\<rangle>" [90, 90] 110) where
   "E\<langle>\<rightarrow>q\<rangle> \<equiv> {p. (p, q) \<in> E}"
-
-subsection \<open>Synchronisability is Deciable for Tree Topology in Mailbox Communication\<close>
 
 subsubsection \<open>Topology is a Tree\<close>
 
@@ -450,13 +445,13 @@ abbreviation is_node_from_local :: "'peer \<Rightarrow> bool"  where
 abbreviation is_node :: "'peer \<Rightarrow> bool"  where
   "is_node p \<equiv> is_node_from_topology p \<or> is_node_from_local p"
 
-subsubsection "parent-child relationship in tree"
+subsubsection "Parent-Child Relationship in Trees"
 
 (*q is parent of p*)
 inductive is_parent_of :: "'peer \<Rightarrow> 'peer \<Rightarrow> bool" where
   node_parent : "\<lbrakk>is_node p; \<G>\<langle>\<rightarrow>p\<rangle> = {q}\<rbrakk> \<Longrightarrow> is_parent_of p q"
 
-subsubsection "path to root and path related lemmas"
+subsubsection "Path to Root"
 
 inductive path_to_root :: "'peer \<Rightarrow> 'peer list \<Rightarrow> bool" where
   PTRRoot: "\<lbrakk>is_root p\<rbrakk> \<Longrightarrow> path_to_root p [p]" |
@@ -475,7 +470,7 @@ inductive path_from_to :: "'peer \<Rightarrow> 'peer \<Rightarrow> 'peer list \<
   path_refl: "\<lbrakk>tree_topology; p \<in> \<P>\<rbrakk> \<Longrightarrow> path_from_to p p [p]" |
   path_step: "\<lbrakk>tree_topology; is_parent_of p q; path_from_to r q as; distinct (as @ [p])\<rbrakk> \<Longrightarrow> path_from_to r p (as @ [p])"
 
-subsection "Influenced Language"
+subsubsection "Influenced Language"
 
 (*fixed: without projection to p and q to the sends of w', the influenced language 
 is only correct if each node sends to exactly one child
@@ -501,7 +496,7 @@ abbreviation ShuffledInfluencedLanguage :: "'peer \<Rightarrow> ('information, '
 abbreviation no_sends_to_or_recvs_in :: "'peer \<Rightarrow> bool"  where
   "no_sends_to_or_recvs_in p \<equiv> (\<P>\<^sub>?(p) = {} \<and> (\<forall>q. p \<notin> \<P>\<^sub>!(q)))"
 
-subsubsection "simulate sync with mbox word"
+subsubsection "Add Matching Receives Function"
 
 \<comment> \<open>for each sending action, add the matching receive action directly after it\<close>
 fun add_matching_recvs :: "('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word" where
@@ -512,7 +507,6 @@ fun add_matching_recvs :: "('information, 'peer) action word \<Rightarrow> ('inf
 
 
 subsubsection "Lemma 4.4 and preparations"
-
 
 (*this should do the same thing as concat_infl but more straightforward *)
 inductive acc_infl_lang_word :: "'peer \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where
@@ -525,12 +519,11 @@ inductive concat_infl :: "'peer \<Rightarrow> ('information, 'peer) action word 
   reach_root: "\<lbrakk>is_root q; qw \<in> \<L>\<^sup>*(q); path_to_root x (x # [q]); (\<forall>g. w_acc\<down>\<^sub>g \<in> \<L>\<^sup>*(g));  concat_infl p w (x # [q]) w_acc; (((w_acc\<down>\<^sub>x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((qw\<down>\<^sub>{\<^sub>x\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> concat_infl p w [q] (qw \<sqdot> w_acc)" | (*end condition*)
   node_step: "\<lbrakk>tree_topology; \<P>\<^sub>?(x) = {q}; (\<forall>g. w_acc\<down>\<^sub>g \<in> \<L>\<^sup>*(g)); path_to_root x (x # q # ps); qw \<in> \<L>\<^sup>*(q); concat_infl p w (x # q # ps) w_acc; (((w_acc\<down>\<^sub>x)\<down>\<^sub>?)\<down>\<^sub>!\<^sub>?) = (((qw\<down>\<^sub>{\<^sub>x\<^sub>,\<^sub>q\<^sub>})\<down>\<^sub>!)\<down>\<^sub>!\<^sub>?)\<rbrakk> \<Longrightarrow> concat_infl p w (q#ps) (qw \<sqdot> w_acc)" 
 
-section "new formalization"
+subsection "New Formalization of the Main Theorem"
 
 (*all receives possible in Aq, after performing actions in w*)
 abbreviation possible_recv_suffixes :: "('information, 'peer) action word \<Rightarrow> 'peer \<Rightarrow>  ('information, 'peer) action language"  ("\<ddagger>_\<ddagger>\<^sub>_" [90, 90] 110) where  
   "\<ddagger>w\<ddagger>\<^sub>p \<equiv> {x\<down>\<^sub>? | x. (w \<sqdot> x) \<in> \<L>\<^sup>*(p)}"
-
 
 (*all possible sends from q to p in Aq, after performing actions in w
 if p is not child of q, the set is trivially {\<epsilon>}*)
@@ -539,7 +532,6 @@ abbreviation possible_send_suffixes_to_peer :: "'peer \<Rightarrow> ('informatio
 
 (*for all words w in p, for all w' that provide all the sends for the receives in w,
 w must be able to receive anything that q might send after performing w'.
-
 (there must be at least one such w' per w, otherwise w is not in the influenced language of p)*)
 definition subset_condition :: "'peer \<Rightarrow> 'peer \<Rightarrow> bool"
   where "subset_condition p q \<longleftrightarrow> (\<forall> w \<in> \<L>\<^sup>*(p). \<forall> w' \<in> \<L>\<^sup>*(q).
@@ -549,9 +541,9 @@ definition subset_condition :: "'peer \<Rightarrow> 'peer \<Rightarrow> bool"
 definition theorem_rightside :: "bool"
   where "theorem_rightside \<longleftrightarrow> (\<forall>p \<in> \<P>. \<forall>q \<in> \<P>. ((is_parent_of p q) \<longrightarrow> ((subset_condition p q) \<and> ((\<L>\<^sup>*(p)) = (\<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p)))) ))"
 
+subsubsection "First Proof Direction Mix Constructions"
 
-subsection "=> 1. "
-
+(*\<Rightarrow> 1.*)
 (*mix some w' of L*(Aq) with matching w of L*(Ap) s.t. each send in q (to p!) is directly followed
 by the matching send. The order of the peer words in the result word is kept*)
 fun mix_pair :: "('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word" where
@@ -562,14 +554,12 @@ fun mix_pair :: "('information, 'peer) action word \<Rightarrow> ('information, 
       then (if b = ?\<langle>get_message a\<rangle> then mix_pair w' w (a # b # acc) else mix_pair (a # w') w (b # acc))
       else mix_pair w' (b # w) (a # acc))"
 
-subsection "=> 2."
+(*\<Rightarrow> 2.*)
 (*construction: do mix_pair until k is reached, for k and k+1 instead put vq's send and then both v!k and v!(k+1) and then continue with mix_pair construction*)
 inductive mix_shuf :: "('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> ('information, 'peer) action word \<Rightarrow> bool" where  
   mix_shuf_constr: "\<lbrakk>vq\<down>\<^sub>!\<down>\<^sub>{\<^sub>p\<^sub>,\<^sub>q\<^sub>}\<down>\<^sub>!\<^sub>? = v\<down>\<^sub>?\<down>\<^sub>!\<^sub>?; v' \<in> \<L>\<^sup>*\<^sub>\<squnion>\<^sub>\<squnion>(p); v' \<squnion>\<squnion>\<^sub>? v; v \<in> \<L>\<^sup>*(p); vq \<in> \<L>\<^sup>*(q); 
 vq = (as \<sqdot> a_send # bs); v = xs \<sqdot> b # a_recv # ys; get_message a_recv = get_message a_send; is_input a_recv; is_output a_send; is_output b\<rbrakk> 
 \<Longrightarrow> mix_shuf vq v v' ((mix_pair as xs []) \<sqdot> a_send # b # a_recv # (mix_pair bs ys []))"
-
-
 
 end
 end
