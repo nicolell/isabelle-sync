@@ -21,6 +21,7 @@ isabelle-sync/
 │
 ├── 📂 Formalization_Isabelle_Extension/ # our extension of the initial Isabelle formalization
 │ ├── 📂 Synchronizability # contains the LaTeX of theories below (except CounterExamples.thy)
+│ │ └── 📂 document # contains all theories (except CounterExamples.thy) as pdf 
 │ ├── CommunicatingAutomata.thy # contains most of the Lemmas (concerning automata, systems, etc.)
 │ ├── CounterExamples.thy # contains the beginnings of the formalization of our counterexamples
 │ ├── Defs.thy # contains all definitions, inductives, functions, etc.
