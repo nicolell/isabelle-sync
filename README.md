@@ -46,6 +46,7 @@ isabelle-sync/
 ## 📫 Theory Hierarchy 📫
 
 The dependencies of the theories are as follows:
+
 <img 
 style="display: block; margin: auto;"
 src="Latex_Exports\Extended_Formalization\session_graph.jpg" alt="drawing" width="300"/>
