@@ -27,18 +27,20 @@ isabelle-sync/
 │ └── FormalLanguages.thy # some formalization of formal languages, etc.
 │
 ├── 📂 Latex_Exports/ # contains the LaTeX exports of both formalizations
-│ ├── 📂 Extended_Formalization # contains the exported extension
-│ │ ├── 📂 Synchronizability # the folder created using Isabelle's export functionality
+│ ├── 📂 Extended_Formalization/ # contains the exported extension
+│ │ ├── 📂 Synchronizability/ # the folder created using Isabelle's export functionality
 │ │ ├── Synchronizability_latex.zip # the LaTeX code 
 │ │ └── Synchronizability.pdf # the pdf compiled using the latex code above
-│ ├── 📂 Original_Formalization # contains the exported original formalization
-│ │ ├── 📂 Original # the folder created using Isabelle's export functionality
+│ ├── 📂 Original_Formalization/ # contains the exported original formalization
+│ │ ├── 📂 Original/ # the folder created using Isabelle's export functionality
 │ │ ├── Original_latex.zip # the LaTeX code 
 │ │ └── Original.pdf # the pdf compiled using the latex code above
 │
 ├── 📂 Resources/ # contains some of our learning materials, literature and older code
 │
 ├── 📂 Thesis/ # contains the Master's thesis / internship report
+│ ├── 📂 Short_Thesis/ # contains the Mémoire de Master for Université Côte d'Azur
+│ └── TUM_final_thesis.pdf # the Master's thesis for the Technical University of Munich
 │
 └── README.md # You are here 📖
 ```
