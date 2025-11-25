@@ -36,7 +36,6 @@ isabelle-sync/
 │ │ ├── Original_latex.zip # the LaTeX code 
 │ │ └── Original.pdf # the pdf compiled using the latex code above
 │
-├── 📂 Resources/ # contains some of our learning materials, literature and older code
 │
 ├── 📂 Thesis/ # contains the Master's thesis / internship report
 │ ├── 📂 Short_Thesis/ # contains the Mémoire de Master for Université Côte d'Azur
